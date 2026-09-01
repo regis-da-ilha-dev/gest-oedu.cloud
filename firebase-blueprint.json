@@ -1,0 +1,210 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "createdAt": { "type": "number" },
+        "role": { "type": "string", "enum": ["admin", "user", "collaborator"] }
+      },
+      "required": ["uid", "email", "displayName", "createdAt", "role"]
+    },
+    "Subject": {
+      "title": "Subject",
+      "description": "A study subject",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "color": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["uid", "name", "color", "createdAt"]
+    },
+    "Topic": {
+      "title": "Topic",
+      "description": "A specific topic within a subject",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "subjectId": { "type": "string" },
+        "name": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "in-progress", "completed"] },
+        "theoryDone": { "type": "boolean" },
+        "exercisesDone": { "type": "boolean" },
+        "revisionDone": { "type": "boolean" },
+        "questionsTotal": { "type": "number" },
+        "questionsCorrect": { "type": "number" },
+        "lastStudyDate": { "type": "number" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["uid", "subjectId", "name", "status", "createdAt"]
+    },
+    "StudySession": {
+      "title": "Study Session",
+      "description": "A recorded study session",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "subjectId": { "type": "string" },
+        "topicId": { "type": "string" },
+        "date": { "type": "number" },
+        "durationMinutes": { "type": "number" },
+        "questionsTotal": { "type": "number" },
+        "questionsCorrect": { "type": "number" },
+        "notes": { "type": "string" }
+      },
+      "required": ["uid", "subjectId", "topicId", "date", "durationMinutes"]
+    },
+    "Flashcard": {
+      "title": "Flashcard",
+      "description": "A study flashcard with SRS metadata",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "subjectId": { "type": "string" },
+        "topicId": { "type": "string" },
+        "front": { "type": "string" },
+        "back": { "type": "string" },
+        "explanation": { "type": "string" },
+        "interval": { "type": "number" },
+        "repetition": { "type": "number" },
+        "easeFactor": { "type": "number" },
+        "nextReviewDate": { "type": "number" },
+        "lastReviewedAt": { "type": "number" },
+        "createdAt": { "type": "number" },
+        "packId": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "caption": { "type": "string" }
+      },
+      "required": ["uid", "subjectId", "front", "back", "interval", "repetition", "easeFactor", "nextReviewDate", "createdAt"]
+    },
+    "UserSubscription": {
+      "title": "User Subscription",
+      "description": "User's current plan and limits",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "plan": { "type": "string", "enum": ["free", "pro", "elite"] },
+        "status": { "type": "string" },
+        "flashcardsCount": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["uid", "plan", "updatedAt"]
+    },
+    "Question": {
+      "title": "Question",
+      "description": "A question in the question bank",
+      "type": "object",
+      "properties": {
+        "text": { "type": "string" },
+        "options": { "type": "array", "items": { "type": "string" } },
+        "correctOptionIndex": { "type": "number" },
+        "explanation": { "type": "string" },
+        "subjectId": { "type": "string" },
+        "topicId": { "type": "string" },
+        "year": { "type": "number" },
+        "source": { "type": "string", "enum": ["ai", "human"] },
+        "bank": { "type": "string" },
+        "institution": { "type": "string" },
+        "position": { "type": "string" },
+        "level": { "type": "string" },
+        "difficulty": { "type": "string", "enum": ["easy", "medium", "hard"] },
+        "createdAt": { "type": "number" },
+        "authorId": { "type": "string" }
+      },
+      "required": ["text", "options", "correctOptionIndex", "subjectId", "year", "source", "createdAt", "authorId"]
+    },
+    "QuestionAnswer": {
+      "title": "Question Answer",
+      "description": "A user's answer to a question",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "questionId": { "type": "string" },
+        "selectedOptionIndex": { "type": "number" },
+        "isCorrect": { "type": "boolean" },
+        "answeredAt": { "type": "number" }
+      },
+      "required": ["uid", "questionId", "selectedOptionIndex", "isCorrect", "answeredAt"]
+    },
+    "StoreProduct": {
+      "title": "Store Product",
+      "description": "Recommended product in the app store",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "category": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "link": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["title", "description", "category", "imageUrl", "link", "createdAt"]
+    },
+    "Schedule": {
+      "title": "Weekly Schedule",
+      "description": "User weekly study schedule",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "segunda": { "type": "array" },
+        "terca": { "type": "array" },
+        "quarta": { "type": "array" },
+        "quinta": { "type": "array" },
+        "sexta": { "type": "array" },
+        "sabado": { "type": "array" },
+        "domingo": { "type": "array" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["uid", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{uid}": {
+      "schema": "UserProfile",
+      "description": "User profiles"
+    },
+    "/subjects/{subjectId}": {
+      "schema": "Subject",
+      "description": "Study subjects"
+    },
+    "/topics/{topicId}": {
+      "schema": "Topic",
+      "description": "Study topics"
+    },
+    "/sessions/{sessionId}": {
+      "schema": "StudySession",
+      "description": "Study sessions"
+    },
+    "/flashcards/{flashcardId}": {
+      "schema": "Flashcard",
+      "description": "Study flashcards"
+    },
+    "/subscriptions/{uid}": {
+      "schema": "UserSubscription",
+      "description": "User subscriptions"
+    },
+    "/questions/{questionId}": {
+      "schema": "Question",
+      "description": "Question bank"
+    },
+    "/questionAnswers/{answerId}": {
+      "schema": "QuestionAnswer",
+      "description": "User's answers to questions"
+    },
+    "/products/{productId}": {
+      "schema": "StoreProduct",
+      "description": "Store products"
+    },
+    "/schedules/{uid}": {
+      "schema": "Schedule",
+      "description": "User weekly schedules"
+    }
+  }
+}

@@ -1,0 +1,354 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: {uid}
+    // Fields:
+    //   - uid: string (required)
+    //   - email: string (required, email)
+    //   - displayName: string (required)
+    //   - photoURL: string (optional)
+    //   - createdAt: number (required)
+    //
+    // Collection: subjects
+    // Document ID: {subjectId}
+    // Fields:
+    //   - uid: string (required)
+    //   - name: string (required)
+    //   - color: string (required)
+    //   - createdAt: number (required)
+    //
+    // Collection: topics
+    // Document ID: {topicId}
+    // Fields:
+    //   - uid: string (required)
+    //   - subjectId: string (required)
+    //   - name: string (required)
+    //   - status: string (required, enum: pending, in-progress, completed)
+    //   - theoryDone: bool (required)
+    //   - exercisesDone: bool (required)
+    //   - revisionDone: bool (required)
+    //   - questionsTotal: number (required)
+    //   - questionsCorrect: number (required)
+    //   - lastStudyDate: number (optional)
+    //   - createdAt: number (required)
+    //
+    // Collection: sessions
+    // Document ID: {sessionId}
+    // Fields:
+    //   - uid: string (required)
+    //   - subjectId: string (required)
+    //   - topicId: string (required)
+    //   - date: number (required)
+    //   - durationMinutes: number (required)
+    //   - questionsTotal: number (required)
+    //   - questionsCorrect: number (required)
+    //   - notes: string (optional)
+    //
+    // Collection: questions
+    // Document ID: {questionId}
+    // Fields:
+    //   - text: string (required)
+    //   - options: list (required)
+    //   - correctOptionIndex: number (required)
+    //   - explanation: string (optional)
+    //   - subjectId: string (required)
+    //   - topicId: string (optional)
+    //   - year: number (required)
+    //   - source: string (required, enum: ai, human)
+    //   - difficulty: string (optional, enum: easy, medium, hard)
+    //   - createdAt: number (required)
+    //   - authorId: string (required)
+    //
+    // Collection: questionAnswers
+    // Document ID: {answerId}
+    // Fields:
+    //   - uid: string (required)
+    //   - questionId: string (required)
+    //   - selectedOptionIndex: number (required)
+    //   - isCorrect: bool (required)
+    //   - answeredAt: number (required)
+    //
+    // Collection: products
+    // Document ID: {productId}
+    // Fields:
+    //   - title: string (required)
+    //   - description: string (required)
+    //   - imageUrl: string (required)
+    //   - link: string (required)
+    //   - createdAt: number (required)
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isDocOwner() {
+      return isAuthenticated() && request.auth.uid == resource.data.uid;
+    }
+
+    function uidUnchanged() {
+      return !('uid' in request.resource.data) || request.resource.data.uid == request.auth.uid;
+    }
+
+    function uidNotModified() {
+      return !('uid' in request.resource.data) || request.resource.data.uid == resource.data.uid;
+    }
+
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+
+    function isValidUser(data) {
+      return hasRequiredFields(['uid', 'email', 'displayName', 'createdAt']) &&
+             isValidEmail(data.email) &&
+             data.displayName is string && data.displayName.size() > 0 && data.displayName.size() < 100 &&
+             data.createdAt is number &&
+             (!('role' in data) || data.role in ['admin', 'user', 'colaborador']);
+    }
+
+    function isValidSubject(data) {
+      return hasRequiredFields(['uid', 'name', 'color', 'createdAt']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 1000 &&
+             data.color is string && data.color.size() >= 4 && data.color.size() <= 30 &&
+             (!('icon' in data) || data.icon is string) &&
+             data.createdAt is number;
+    }
+
+    function isValidTopic(data, isUpdate) {
+      return (isUpdate || hasRequiredFields(['uid', 'subjectId', 'name', 'status', 'createdAt'])) &&
+             (!('uid' in data) || data.uid is string) &&
+             (!('subjectId' in data) || data.subjectId is string) &&
+             (!('name' in data) || (data.name is string && data.name.size() > 0 && data.name.size() <= 1000)) &&
+             (!('status' in data) || data.status in ['pending', 'in-progress', 'completed']) &&
+             (!('theoryDone' in data) || data.theoryDone is bool) &&
+             (!('exercisesDone' in data) || data.exercisesDone is bool) &&
+             (!('revisionDone' in data) || data.revisionDone is bool) &&
+             (!('questionsTotal' in data) || (data.questionsTotal is number && data.questionsTotal >= 0)) &&
+             (!('questionsCorrect' in data) || (data.questionsCorrect is number && data.questionsCorrect >= 0)) &&
+             (!('lastStudyDate' in data) || data.lastStudyDate == null || data.lastStudyDate is number) &&
+             (!('createdAt' in data) || data.createdAt is number);
+    }
+
+    function isValidSession(data) {
+      return hasRequiredFields(['uid', 'subjectId', 'topicId', 'date', 'durationMinutes']) &&
+             data.uid is string && data.uid.size() > 0 && data.uid.size() <= 128 &&
+             data.subjectId is string && data.subjectId.size() > 0 && data.subjectId.size() <= 128 &&
+             data.topicId is string && data.topicId.size() > 0 && data.topicId.size() <= 128 &&
+             data.date is number &&
+             data.durationMinutes is number && data.durationMinutes > 0 &&
+             (!('questionsTotal' in data) || (data.questionsTotal is number && data.questionsTotal >= 0)) &&
+             (!('questionsCorrect' in data) || (data.questionsCorrect is number && data.questionsCorrect >= 0)) &&
+             (!('notes' in data) || (data.notes is string && data.notes.size() <= 2000));
+    }
+
+    function isValidFlashcard(data) {
+      return hasRequiredFields(['uid', 'subjectId', 'front', 'back', 'interval', 'repetition', 'easeFactor', 'nextReviewDate', 'createdAt']) &&
+             (data.uid == request.auth.uid || isAdmin()) &&
+             data.subjectId is string &&
+             (!('topicId' in data) || data.topicId == null || data.topicId is string) &&
+             (!('packId' in data) || data.packId == null || data.packId is string) &&
+             data.front is string && data.front.size() > 0 && data.front.size() < 50000 &&
+             data.back is string && data.back.size() > 0 && data.back.size() < 50000 &&
+             (!('explanation' in data) || data.explanation == null || (data.explanation is string && data.explanation.size() < 50000)) &&
+             (!('imageUrl' in data) || data.imageUrl == null || data.imageUrl is string) &&
+             (!('caption' in data) || data.caption == null || data.caption is string) &&
+             data.interval is number &&
+             data.repetition is number &&
+             data.easeFactor is number &&
+             data.nextReviewDate is number &&
+             data.createdAt is number;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+             (request.auth.token.email == "oeditordeimagens@gmail.com" ||
+              (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+               get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'));
+    }
+
+    function isCollaborator() {
+      return isAuthenticated() && 
+             (isAdmin() || 
+              (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+               get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'colaborador'));
+    }
+
+    function isValidSubscription(data) {
+      return hasRequiredFields(['uid', 'plan', 'updatedAt']) &&
+             (data.uid == request.auth.uid || isAdmin()) &&
+             data.plan in ['free', 'pro', 'elite'] &&
+             data.updatedAt is number;
+    }
+
+    function isValidQuestion(data) {
+      return hasRequiredFields(['text', 'options', 'correctOptionIndex', 'subjectId', 'createdAt']) &&
+             data.text is string && data.text.size() > 0 && data.text.size() < 100000 &&
+             data.options is list && data.options.size() >= 2 &&
+             data.correctOptionIndex is number &&
+             data.subjectId is string &&
+             (!('year' in data) || data.year == null || data.year is number) &&
+             (!('source' in data) || data.source == null || data.source is string) &&
+             (!('difficulty' in data) || data.difficulty == null || data.difficulty is string) &&
+             (!('bank' in data) || data.bank == null || data.bank is string) &&
+             (!('institution' in data) || data.institution == null || data.institution is string) &&
+             (!('position' in data) || data.position == null || data.position is string) &&
+             (!('level' in data) || data.level == null || data.level is string) &&
+             (!('topicId' in data) || data.topicId == null || data.topicId is string) &&
+             (!('explanation' in data) || data.explanation == null || (data.explanation is string && data.explanation.size() < 100000)) &&
+             (!('authorId' in data) || data.authorId == null || data.authorId is string) &&
+             (!('areaOfFormation' in data) || data.areaOfFormation == null || data.areaOfFormation is string) &&
+             (!('areaOfAction' in data) || data.areaOfAction == null || data.areaOfAction is string) &&
+             (!('modality' in data) || data.modality == null || data.modality is string) &&
+             (!('imageUrl' in data) || data.imageUrl == null || data.imageUrl is string) &&
+             (!('imageAlign' in data) || data.imageAlign == null || data.imageAlign is string) &&
+             data.createdAt is number;
+    }
+
+    function isValidQuestionAnswer(data) {
+      return hasRequiredFields(['uid', 'questionId', 'selectedOptionIndex', 'isCorrect', 'answeredAt']) &&
+             data.uid == request.auth.uid &&
+             data.questionId is string &&
+             data.selectedOptionIndex is number &&
+             data.isCorrect is bool &&
+             data.answeredAt is number;
+    }
+
+    function isValidStoreProduct(data) {
+      return hasRequiredFields(['title', 'description', 'category', 'imageUrl', 'link', 'createdAt']) &&
+             data.title is string && data.title.size() > 0 && data.title.size() <= 200 &&
+             data.description is string && data.description.size() > 0 && data.description.size() <= 2000 &&
+             data.category is string && data.category.size() <= 100 &&
+             data.imageUrl is string && data.imageUrl.size() < 1000 &&
+             data.link is string && data.link.size() < 1000 &&
+             data.createdAt is number;
+    }
+
+    function isValidSchedule(data) {
+      return hasRequiredFields(['uid', 'updatedAt']) &&
+             data.uid is string &&
+             data.updatedAt is number &&
+             (!('segunda' in data) || data.segunda is list) &&
+             (!('terca' in data) || data.terca is list) &&
+             (!('quarta' in data) || data.quarta is list) &&
+             (!('quinta' in data) || data.quinta is list) &&
+             (!('sexta' in data) || data.sexta is list) &&
+             (!('sabado' in data) || data.sabado is list) &&
+             (!('domingo' in data) || data.domingo is list);
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      // Only allow creating as 'user' role by default, unless admin
+      allow create: if (isOwner(uid) || isAdmin()) && 
+                    isValidUser(request.resource.data) && 
+                    request.resource.data.uid == uid &&
+                    (isAdmin() || !('role' in request.resource.data) || request.resource.data.role == 'user');
+      // Only admin can change roles
+      allow update: if (isOwner(uid) || isAdmin()) && 
+                    isValidUser(request.resource.data) && 
+                    request.resource.data.uid == uid &&
+                    uidNotModified() && 
+                    (isAdmin() || request.resource.data.role == resource.data.role);
+      allow delete: if isAdmin();
+    }
+
+    match /subjects/{subjectId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && (request.resource.data.uid == request.auth.uid || isAdmin()) && isValidSubject(request.resource.data);
+      allow update: if isAuthenticated() && (request.auth.uid == resource.data.uid || isAdmin()) && isValidSubject(request.resource.data) && uidNotModified();
+      allow delete: if isAuthenticated() && (request.auth.uid == resource.data.uid || isAdmin());
+    }
+
+    match /topics/{topicId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && (request.resource.data.uid == request.auth.uid || isAdmin()) && isValidTopic(request.resource.data, false);
+      allow update: if isAuthenticated() && (request.auth.uid == resource.data.uid || isAdmin()) && 
+                    isValidTopic(request.resource.data, true) && 
+                    (!('uid' in resource.data) || uidNotModified());
+      allow delete: if isAuthenticated() && (request.auth.uid == resource.data.uid || isAdmin());
+    }
+
+    match /sessions/{sessionId} {
+      allow read: if isAuthenticated() && (request.auth.uid == resource.data.uid || isAdmin());
+      allow create: if isAuthenticated() && (request.resource.data.uid == request.auth.uid || isAdmin()) && isValidSession(request.resource.data);
+      allow update: if isAuthenticated() && (request.auth.uid == resource.data.uid || isAdmin()) && isValidSession(request.resource.data) && uidNotModified();
+      allow delete: if isAuthenticated() && (request.auth.uid == resource.data.uid || isAdmin());
+    }
+
+    match /flashcards/{flashcardId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidFlashcard(request.resource.data) && (isOwner(request.resource.data.uid) || isAdmin());
+      allow update: if (isDocOwner() || isAdmin()) && isValidFlashcard(request.resource.data) && uidNotModified();
+      allow delete: if isDocOwner() || isAdmin();
+    }
+
+    match /subscriptions/{uid} {
+      allow read: if isAuthenticated() && (request.auth.uid == uid || isAdmin());
+      allow create: if isAuthenticated() && (request.auth.uid == uid || isAdmin()) && isValidSubscription(request.resource.data);
+      allow update: if isAuthenticated() && (request.auth.uid == uid || isAdmin()) && isValidSubscription(request.resource.data);
+    }
+
+    match /questions/{questionId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidQuestion(request.resource.data);
+      allow update: if isAuthenticated() && isValidQuestion(request.resource.data);
+      allow delete: if isAuthenticated() && (isCollaborator() || resource.data.authorId == request.auth.uid || !('authorId' in resource.data));
+    }
+
+    match /questionAnswers/{answerId} {
+      allow read: if isAuthenticated() && (resource.data.uid == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && request.resource.data.uid == request.auth.uid && isValidQuestionAnswer(request.resource.data);
+      allow update: if isAuthenticated() && resource.data.uid == request.auth.uid && isValidQuestionAnswer(request.resource.data) && uidNotModified();
+      allow delete: if isAuthenticated() && (resource.data.uid == request.auth.uid || isAdmin());
+    }
+
+    match /products/{productId} {
+      allow read: if isAuthenticated();
+      allow create: if isAdmin() && isValidStoreProduct(request.resource.data);
+      allow update: if isAdmin() && isValidStoreProduct(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /schedules/{uid} {
+      allow read: if isAuthenticated() && (request.auth.uid == uid || isAdmin());
+      allow create: if isAuthenticated() && (request.auth.uid == uid || isAdmin()) && isValidSchedule(request.resource.data);
+      allow update: if isAuthenticated() && (request.auth.uid == uid || isAdmin()) && isValidSchedule(request.resource.data) && uidNotModified();
+      allow delete: if isAuthenticated() && (request.auth.uid == uid || isAdmin());
+    }
+
+    // Default Deny (moved to bottom)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

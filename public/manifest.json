@@ -1,0 +1,22 @@
+{
+  "name": "Flashcards & Questões",
+  "short_name": "Estudos",
+  "description": "Plataforma de estudos com flashcards e banco de questões especializado.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4f46e5",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/4345/4345016.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/4345/4345016.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
