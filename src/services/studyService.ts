@@ -23,6 +23,7 @@ import { db, handleFirestoreError, OperationType, storage, auth } from '../lib/f
 import { PMMA_QUESTIONS, PMMA_FLASHCARDS } from '../data/pmmaEstatutoData';
 import { Subject, Topic, StudySession, UserProfile, Flashcard, UserSubscription, Question, QuestionAnswer, StoreProduct } from '../types';
 import { sanitizeText } from '../lib/utils';
+import { safeStorage } from '../lib/storage';
 
 // In-memory lookup caches to prevent redundant Firestore reads during bulk CSV imports
 const subjectMemoryCache = new Map<string, string>();
@@ -137,7 +138,7 @@ export const studyService = {
     try {
       const now = Date.now();
       const lastWriteKey = `last_access_write_${uid}`;
-      const lastWriteStr = typeof localStorage !== 'undefined' ? localStorage.getItem(lastWriteKey) : null;
+      const lastWriteStr = safeStorage.getItem(lastWriteKey);
       const lastWrite = lastWriteStr ? parseInt(lastWriteStr, 10) : 0;
       const SIX_HOURS = 6 * 60 * 60 * 1000;
       const isAdmin = email === 'oeditordeimagens@gmail.com';
@@ -229,9 +230,7 @@ export const studyService = {
         }
       }
 
-      if (typeof localStorage !== 'undefined') {
-        localStorage.setItem(lastWriteKey, String(now));
-      }
+      safeStorage.setItem(lastWriteKey, String(now));
     } catch (error) {
       handleFirestoreError(error, OperationType.WRITE, `users/${uid}`);
     }

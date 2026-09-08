@@ -92,7 +92,7 @@ export default function MultiSelect({
             initial={{ opacity: 0, y: 4, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 4, scale: 0.95 }}
-            className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl border border-slate-100 z-50 overflow-hidden"
+            className="absolute top-full left-0 mt-2 w-full min-w-[220px] sm:min-w-full max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-xl border border-slate-100 z-50 overflow-hidden"
           >
             {showSearch && (
               <div className="p-2 border-b border-slate-50">

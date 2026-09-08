@@ -64,6 +64,7 @@ import { Subject, Topic, StudySession, Flashcard, UserSubscription, QuestionAnsw
 import { format, startOfWeek, endOfWeek, isWithinInterval, getDayOfYear } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { cn, safeFormat } from '../lib/utils';
+import { safeStorage } from '../lib/storage';
 import { studyService } from '../services/studyService';
 import FlashcardReview from './FlashcardReview';
 
@@ -136,7 +137,7 @@ const playAlertSound = () => {
     osc.start();
     osc.stop(ctx.currentTime + 0.4);
   } catch (e) {
-    console.error("Audio trigger failed:", e);
+    // Audio context may be restricted by autoplay policy in iframe
   }
 };
 
@@ -281,9 +282,9 @@ export default function Dashboard({
   const [alerts, setAlerts] = useState<RevisionAlert[]>(() => {
     try {
       if (!userId) return [];
-      const saved = localStorage.getItem(`gestaoedu_alerts_${userId}`);
+      const saved = safeStorage.getItem(`gestaoedu_alerts_${userId}`);
       return saved ? JSON.parse(saved) : [];
-    } catch (e) {
+    } catch {
       return [];
     }
   });
@@ -306,24 +307,24 @@ export default function Dashboard({
   React.useEffect(() => {
     if (!userId) return;
     try {
-      const saved = localStorage.getItem(`gestaoedu_alerts_${userId}`);
+      const saved = safeStorage.getItem(`gestaoedu_alerts_${userId}`);
       if (saved) {
         setAlerts(JSON.parse(saved));
       } else {
         setAlerts([]);
       }
-    } catch (e) {
-      console.error("Failed to read alerts from localStorage:", e);
+    } catch {
+      // Fallback
     }
   }, [userId]);
 
-  // Sync alerts database with localStorage
+  // Sync alerts database with safeStorage
   React.useEffect(() => {
     if (!userId) return;
     try {
-      localStorage.setItem(`gestaoedu_alerts_${userId}`, JSON.stringify(alerts));
-    } catch (e) {
-      console.error("Failed to write alerts to localStorage:", e);
+      safeStorage.setItem(`gestaoedu_alerts_${userId}`, JSON.stringify(alerts));
+    } catch {
+      // Fallback
     }
   }, [alerts, userId]);
 
@@ -349,14 +350,14 @@ export default function Dashboard({
           setFiredAlert(newlyFired);
           playAlertSound();
           
-          if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
-            try {
+          try {
+            if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
               new Notification(`🔔 Hora de Revisar: ${newlyFired.topicName}`, {
                 body: `Está na hora de colocar em prática seu estudo de ${newlyFired.subjectName}! (${newlyFired.notes})`,
               });
-            } catch (err) {
-              console.error("Browser notification failed", err);
             }
+          } catch {
+            // Notification not permitted in iframe sandbox
           }
         }
       }
@@ -367,10 +368,14 @@ export default function Dashboard({
   }, [alerts]);
 
   const requestBrowserNotificationPermission = () => {
-    if (typeof window !== 'undefined' && 'Notification' in window) {
-      if (Notification.permission === 'default') {
-        Notification.requestPermission().catch(() => {});
+    try {
+      if (typeof window !== 'undefined' && 'Notification' in window) {
+        if (Notification.permission === 'default') {
+          Notification.requestPermission().catch(() => {});
+        }
       }
+    } catch {
+      // Not allowed in iframe
     }
   };
 
@@ -771,7 +776,7 @@ export default function Dashboard({
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
         <StatCard 
           title="Tópicos Concluídos" 
           value={completedTopics > 0 ? `${completedTopics} de ${totalTopics}` : "Começar!"} 
@@ -809,7 +814,7 @@ export default function Dashboard({
       {/* 2. Nova Seção Central: "Foco Diário & Execução" */}
       <div className="space-y-4">
         <h3 className="text-lg font-black text-slate-800 tracking-tight">Cronograma de Estudos</h3>
-        <div className="bg-white rounded-3xl border border-slate-200 p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-8 shadow-sm">
+        <div className="bg-white rounded-3xl border border-slate-200 p-4 sm:p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 shadow-sm">
           {/* Coluna Esquerda: Cronograma Semanal de Segunda a Domingo */}
           <div className="space-y-4 flex flex-col justify-between">
             <div>
@@ -824,7 +829,7 @@ export default function Dashboard({
               </div>
 
               {/* Seletor de Dias da Semana (Pills) */}
-              <div className="flex gap-1 p-1 bg-slate-50 border border-slate-100 rounded-2xl mb-4 overflow-x-auto">
+              <div className="flex gap-1 p-1 bg-slate-50 border border-slate-100 rounded-2xl mb-4 overflow-x-auto no-scrollbar">
                 {DAYS_CONFIG.map((day) => {
                   const isActive = activeDay === day.key;
                   const list = (scheduleData as any)[day.key] || [];
@@ -1092,7 +1097,7 @@ export default function Dashboard({
                   key={source.id} 
                   onClick={() => !loadingCards && handleStartReview(source)}
                   className={cn(
-                    "bg-white p-5 rounded-2xl border border-slate-200 flex flex-col justify-between hover:shadow-md hover:border-indigo-200 hover:-translate-y-0.5 transition-all text-left group cursor-pointer relative overflow-hidden select-none h-[210px] w-full",
+                    "bg-white p-5 rounded-2xl border border-slate-200 flex flex-col justify-between hover:shadow-md hover:border-indigo-200 hover:-translate-y-0.5 transition-all text-left group cursor-pointer relative overflow-hidden select-none min-h-[210px] h-auto w-full",
                     loadingCards && "opacity-50 cursor-not-allowed"
                   )}
                 >

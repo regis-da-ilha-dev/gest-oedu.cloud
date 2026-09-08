@@ -3,7 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>GestãoEdu - Dashboard de Estudos</title>
+    <title>GestãoEdu</title>
+    <meta name="description" content="Sistema completo para gestão de estudos, acompanhamento de matérias, tópicos, revisões e desempenho em questões." />
+    <meta property="og:title" content="GestãoEdu" />
+    <meta property="og:description" content="Sistema completo para gestão de estudos, acompanhamento de matérias, tópicos, revisões e desempenho em questões." />
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#4f46e5" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -12,13 +15,15 @@
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/4345/4345016.png" />
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/4345/4345016.png" />
     <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js').catch(err => {
-            console.log('SW registration failed: ', err);
+      try {
+        if (window.self === window.top && 'serviceWorker' in navigator && window.location.protocol === 'https:') {
+          window.addEventListener('load', () => {
+            try {
+              navigator.serviceWorker.register('/sw.js').catch(() => {});
+            } catch (e) {}
           });
-        });
-      }
+        }
+      } catch (e) {}
     </script>
   </head>
   <body>

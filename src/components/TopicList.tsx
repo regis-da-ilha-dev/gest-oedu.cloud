@@ -32,6 +32,7 @@ import {
 import { Subject, Topic } from '../types';
 import { cn } from '../lib/utils';
 import { EDITAL_PRESETS, EditalPreset, PresetSubject } from '../data/editalPresets';
+import { safeStorage } from '../lib/storage';
 
 interface TopicListProps {
   topics: Topic[];
@@ -107,9 +108,9 @@ export default function TopicList({
 
   // Editable Contest Presets state (stored in LocalStorage)
   const [presetsList, setPresetsList] = useState<EditalPreset[]>(() => {
-    const saved = localStorage.getItem('sde_custom_presets_v2');
-    if (saved) {
-      try {
+    try {
+      const saved = safeStorage.getItem('sde_custom_presets_v2');
+      if (saved) {
         const parsed = JSON.parse(saved) as EditalPreset[];
         const merged = [...parsed];
         EDITAL_PRESETS.forEach(staticPreset => {
@@ -118,9 +119,9 @@ export default function TopicList({
           }
         });
         return merged;
-      } catch (e) {
-        console.error("Error loading custom presets, falling back to static:", e);
       }
+    } catch {
+      // Fall back to static presets
     }
     return EDITAL_PRESETS;
   });
@@ -417,7 +418,7 @@ export default function TopicList({
 
   // Sync custom presets to LocalStorage when they change
   useEffect(() => {
-    localStorage.setItem('sde_custom_presets_v2', JSON.stringify(presetsList));
+    safeStorage.setItem('sde_custom_presets_v2', JSON.stringify(presetsList));
   }, [presetsList]);
 
   const handleSelectPreset = (presetId: string) => {
@@ -921,11 +922,11 @@ export default function TopicList({
       {/* Control Actions & Tabs */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         {/* View mode switcher tabs */}
-        <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl w-fit border border-slate-200/50">
+        <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl w-full sm:w-fit border border-slate-200/50 overflow-x-auto no-scrollbar">
           <button
             onClick={() => setViewMode('verticalizado')}
             className={cn(
-              "px-4 py-2 rounded-lg font-bold text-xs flex items-center gap-1.5 transition-all",
+              "px-3.5 sm:px-4 py-2 rounded-lg font-bold text-xs flex items-center gap-1.5 transition-all whitespace-nowrap shrink-0",
               viewMode === 'verticalizado' 
                 ? "bg-white text-slate-900 shadow-sm" 
                 : "text-slate-600 hover:text-slate-900"
@@ -937,7 +938,7 @@ export default function TopicList({
           <button
             onClick={() => setViewMode('table')}
             className={cn(
-              "px-4 py-2 rounded-lg font-bold text-xs flex items-center gap-1.5 transition-all",
+              "px-3.5 sm:px-4 py-2 rounded-lg font-bold text-xs flex items-center gap-1.5 transition-all whitespace-nowrap shrink-0",
               viewMode === 'table' 
                 ? "bg-white text-slate-900 shadow-sm" 
                 : "text-slate-600 hover:text-slate-900"
@@ -949,7 +950,7 @@ export default function TopicList({
           <button
             onClick={() => setViewMode('biblioteca')}
             className={cn(
-              "px-4 py-2 rounded-lg font-bold text-xs flex items-center gap-1.5 transition-all",
+              "px-3.5 sm:px-4 py-2 rounded-lg font-bold text-xs flex items-center gap-1.5 transition-all whitespace-nowrap shrink-0",
               viewMode === 'biblioteca' 
                 ? "bg-white text-slate-900 shadow-sm" 
                 : "text-slate-600 hover:text-slate-900"
@@ -961,7 +962,7 @@ export default function TopicList({
         </div>
 
         {/* Buttons */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
           {onCleanupDuplicatesAndEmpty && (
             <button
               onClick={() => setShowCleanupConfirm(true)}
@@ -1015,13 +1016,13 @@ export default function TopicList({
         </div>
         
         {uniquePositions.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            <div className="relative">
+          <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+            <div className="relative w-full sm:w-auto">
               <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
               <select
                 value={selectedPosition}
                 onChange={(e) => setSelectedPosition(e.target.value)}
-                className="pl-9 pr-8 py-2 text-sm rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none appearance-none bg-white min-w-[180px] transition-all font-bold text-slate-700"
+                className="pl-9 pr-8 py-2 text-sm rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none appearance-none bg-white w-full sm:min-w-[180px] transition-all font-bold text-slate-700"
               >
                 <option value="all">Filtro: Todos os Cargos</option>
                 {uniquePositions.map(pos => (
@@ -1042,13 +1043,13 @@ export default function TopicList({
           </div>
         )}
         
-        <div className="flex items-center gap-2">
-          <div className="relative">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+          <div className="relative w-full sm:w-auto">
             <Filter className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
             <select
               value={selectedSubject}
               onChange={(e) => setSelectedSubject(e.target.value)}
-              className="pl-9 pr-8 py-2 text-sm rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none appearance-none bg-white min-w-[200px] transition-all font-medium text-slate-700"
+              className="pl-9 pr-8 py-2 text-sm rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none appearance-none bg-white w-full sm:min-w-[200px] transition-all font-medium text-slate-700"
             >
               <option value="all">Filtro: Todas as Matérias</option>
               {subjects.map(s => (
@@ -1502,7 +1503,7 @@ export default function TopicList({
 
                                   {/* Action Buttons */}
                                   <td className="px-6 py-3.5 text-right">
-                                    <div className="flex items-center justify-end gap-2.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div className="flex items-center justify-end gap-2.5 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
                                       <button 
                                         onClick={() => onStudy(topic.id)}
                                         className="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
@@ -1741,7 +1742,7 @@ export default function TopicList({
 
                       {/* General actions */}
                       <td className="px-6 py-4">
-                        <div className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="flex items-center justify-end gap-1.5 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
                           <button 
                             onClick={() => onStudy(topic.id)}
                             className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"

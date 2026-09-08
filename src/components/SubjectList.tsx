@@ -200,7 +200,7 @@ export default function SubjectList({ subjects, onAdd, onDelete, onEdit, onSelec
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-slate-700">Ícone</label>
-                <div className="grid grid-cols-7 gap-1 p-2 border border-slate-100 rounded-lg">
+                <div className="grid grid-cols-4 sm:grid-cols-7 gap-1.5 p-2 border border-slate-100 rounded-xl max-h-40 overflow-y-auto no-scrollbar">
                   {AVAILABLE_ICONS.map(({ name, icon: Icon }) => (
                     <button
                       key={name}

@@ -63,15 +63,20 @@ export function addFirestoreErrorListener(listener: FirestoreErrorListener) {
 }
 
 export function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null, isBackground?: boolean) {
+  const errorMessage = error instanceof Error ? error.message : String(error);
+  const isAuthOrPermission = errorMessage.includes('permission-denied') || 
+                             errorMessage.includes('permissions') || 
+                             errorMessage.includes('insufficient');
+
   const errInfo: FirestoreErrorInfo = {
-    error: error instanceof Error ? error.message : String(error),
+    error: errorMessage,
     authInfo: {
       userId: auth.currentUser?.uid,
       email: auth.currentUser?.email,
       emailVerified: auth.currentUser?.emailVerified,
       isAnonymous: auth.currentUser?.isAnonymous,
       tenantId: auth.currentUser?.tenantId,
-      providerInfo: auth.currentUser?.providerData.map(provider => ({
+      providerInfo: auth.currentUser?.providerData?.map(provider => ({
         providerId: provider.providerId,
         displayName: provider.displayName,
         email: provider.email,
@@ -80,15 +85,18 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
     },
     operationType,
     path
-  }
+  };
+
   const finalError = new Error(JSON.stringify(errInfo));
-  console.error('Firestore Error: ', JSON.stringify(errInfo));
+  if (!isAuthOrPermission) {
+    console.warn('Firestore Operation Notice: ', JSON.stringify(errInfo));
+  }
   
   errorListeners.forEach(listener => {
     try {
       listener(finalError);
-    } catch (e) {
-      console.error('Error in error listener', e);
+    } catch {
+      // Ignore listener callback error
     }
   });
 
@@ -96,19 +104,7 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
     ? !isBackground 
     : (operationType !== OperationType.LIST && operationType !== OperationType.GET);
 
-  if (shouldThrow) {
+  if (shouldThrow && !isAuthOrPermission) {
     throw finalError;
   }
 }
-
-// Connection test
-async function testConnection() {
-  try {
-    await getDocFromServer(doc(db, 'test', 'connection'));
-  } catch (error) {
-    if(error instanceof Error && error.message.includes('the client is offline')) {
-      console.error("Please check your Firebase configuration.");
-    }
-  }
-}
-testConnection();
