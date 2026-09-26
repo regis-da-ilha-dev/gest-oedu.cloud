@@ -22,13 +22,13 @@ async function startServer() {
   const app = express();
   const PORT = 3000;
 
-  // Health check route - MUST be first
+  // Health check route - MUST be first and respond immediately
   app.get("/api/health", (req, res) => {
     res.json({ 
       status: "ok", 
       uptime: process.uptime(),
       timestamp: new Date().toISOString(),
-      env: process.env.NODE_ENV 
+      env: process.env.NODE_ENV || 'development'
     });
   });
 
@@ -145,14 +145,38 @@ async function startServer() {
     }
   });
 
-  // Vite middleware for development
+  // Vite / static middleware setup
+  let viteMiddleware: express.Handler | null = null;
+  let viteReadyPromise: Promise<void> | null = null;
+
   if (process.env.NODE_ENV !== "production") {
     console.log("🛠️ Running in DEVELOPMENT mode with Vite middleware");
-    const vite = await createViteServer({
+    viteReadyPromise = createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
+    }).then((vite) => {
+      viteMiddleware = vite.middlewares;
+      console.log("⚡ Vite dev server initialized and ready.");
+    }).catch((err) => {
+      console.error("❌ Failed to initialize Vite dev server:", err);
     });
-    app.use(vite.middlewares);
+
+    app.use(async (req, res, next) => {
+      if (viteMiddleware) {
+        return viteMiddleware(req, res, next);
+      }
+      if (viteReadyPromise) {
+        try {
+          await viteReadyPromise;
+          if (viteMiddleware) {
+            return viteMiddleware(req, res, next);
+          }
+        } catch (e) {
+          return next(e);
+        }
+      }
+      next();
+    });
   } else {
     const distPath = path.join(process.cwd(), "dist");
     console.log(`📦 Running in PRODUCTION mode serving from: ${distPath}`);
@@ -176,6 +200,7 @@ async function startServer() {
     });
   });
 
+  // Start listening immediately on 0.0.0.0:3000
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`✅ Server is listening on 0.0.0.0:${PORT}`);
   });

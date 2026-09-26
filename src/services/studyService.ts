@@ -21,7 +21,8 @@ import {
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, handleFirestoreError, OperationType, storage, auth } from '../lib/firebase';
 import { PMMA_QUESTIONS, PMMA_FLASHCARDS } from '../data/pmmaEstatutoData';
-import { Subject, Topic, StudySession, UserProfile, Flashcard, UserSubscription, Question, QuestionAnswer, StoreProduct } from '../types';
+import { EDITAL_PRESETS } from '../data/editalPresets';
+import { Subject, Topic, StudySession, UserProfile, Flashcard, UserSubscription, Question, QuestionAnswer, StoreProduct, LandingPageConfig, Concurso } from '../types';
 import { sanitizeText } from '../lib/utils';
 import { safeStorage } from '../lib/storage';
 
@@ -2100,6 +2101,156 @@ export const studyService = {
       }, { merge: true });
     } catch (error) {
       handleFirestoreError(error, OperationType.UPDATE, `schedules/${uid}`);
+    }
+  },
+
+  // Landing Page CMS Configuration
+  subscribeToLandingPageConfig(callback: (config: LandingPageConfig | null) => void) {
+    const cacheKey = 'site_config_landing_page';
+    return multicastSubscribe(
+      cacheKey,
+      () => doc(db, 'site_config', 'landing_page'),
+      (snapshot) => snapshot.exists() ? ({ id: snapshot.id, ...snapshot.data() } as LandingPageConfig) : null,
+      callback,
+      (error) => handleFirestoreError(error, OperationType.GET, 'site_config/landing_page')
+    );
+  },
+
+  async updateLandingPageConfig(configData: Partial<LandingPageConfig>) {
+    try {
+      const configRef = doc(db, 'site_config', 'landing_page');
+      const cleaned = this.cleanObject({
+        ...configData,
+        updatedAt: Date.now()
+      });
+      await setDoc(configRef, cleaned, { merge: true });
+    } catch (error) {
+      handleFirestoreError(error, OperationType.WRITE, 'site_config/landing_page');
+    }
+  },
+
+  // Concursos Showcase (Vitrine de Concursos em Destaque)
+  subscribeToFeaturedConcursos(callback: (concursos: Concurso[]) => void) {
+    const cacheKey = 'featured_concursos';
+    return multicastSubscribe(
+      cacheKey,
+      () => query(collection(db, 'concursos'), where('isFeatured', '==', true)),
+      (snapshot) => {
+        const list: Concurso[] = [];
+        snapshot.forEach((d: any) => {
+          list.push({ id: d.id, ...d.data() } as Concurso);
+        });
+        return list.sort((a, b) => (a.featuredOrder ?? 999) - (b.featuredOrder ?? 999) || (b.updatedAt || 0) - (a.updatedAt || 0));
+      },
+      callback,
+      (error) => handleFirestoreError(error, OperationType.GET, 'concursos')
+    );
+  },
+
+  subscribeToAllConcursos(callback: (concursos: Concurso[]) => void) {
+    const cacheKey = 'all_concursos';
+    return multicastSubscribe(
+      cacheKey,
+      () => collection(db, 'concursos'),
+      (snapshot) => {
+        const list: Concurso[] = [];
+        snapshot.forEach((d: any) => {
+          list.push({ id: d.id, ...d.data() } as Concurso);
+        });
+        return list.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+      },
+      callback,
+      (error) => handleFirestoreError(error, OperationType.GET, 'concursos')
+    );
+  },
+
+  async addConcurso(concursoData: Omit<Concurso, 'id' | 'createdAt' | 'updatedAt'>) {
+    try {
+      const now = Date.now();
+      const cleaned = this.cleanObject({
+        ...concursoData,
+        createdAt: now,
+        updatedAt: now
+      });
+      const docRef = await addDoc(collection(db, 'concursos'), cleaned);
+      return docRef.id;
+    } catch (error) {
+      handleFirestoreError(error, OperationType.CREATE, 'concursos');
+    }
+  },
+
+  async updateConcurso(id: string, updates: Partial<Concurso>) {
+    try {
+      const docRef = doc(db, 'concursos', id);
+      const cleaned = this.cleanObject({
+        ...updates,
+        updatedAt: Date.now()
+      });
+      await updateDoc(docRef, cleaned);
+    } catch (error) {
+      handleFirestoreError(error, OperationType.UPDATE, `concursos/${id}`);
+    }
+  },
+
+  async deleteConcurso(id: string) {
+    try {
+      await deleteDoc(doc(db, 'concursos', id));
+    } catch (error) {
+      handleFirestoreError(error, OperationType.DELETE, `concursos/${id}`);
+    }
+  },
+
+  async toggleConcursoFeatured(id: string, isFeatured: boolean) {
+    return this.updateConcurso(id, { isFeatured });
+  },
+
+  async syncDefaultConcursosFromPresets(): Promise<number> {
+    try {
+      const existing = await getDocs(collection(db, 'concursos'));
+      const existingTitles = new Set<string>();
+      existing.forEach(d => {
+        const data = d.data();
+        if (data.title) existingTitles.add(data.title.toLowerCase().trim());
+      });
+
+      const batch = writeBatch(db);
+      let count = 0;
+
+      for (let i = 0; i < EDITAL_PRESETS.length; i++) {
+        const p = EDITAL_PRESETS[i];
+        if (existingTitles.has(p.title.toLowerCase().trim())) continue;
+
+        const newDocRef = doc(collection(db, 'concursos'));
+        const now = Date.now();
+        const concursoData: Omit<Concurso, 'id'> = {
+          title: p.title,
+          institution: p.institution,
+          banca: p.banca || 'A Definir',
+          status: i === 0 ? 'Edital Publicado' : (i === 1 ? 'Inscrições Abertas' : 'Banca Definida'),
+          vagas: i === 0 ? '2.000 vagas' : (i === 1 ? '1.000 vagas' : 'Vagas Imediatas + CR'),
+          remuneracao: i === 0 ? 'R$ 5.200,00' : (i === 1 ? 'R$ 6.300,00' : 'R$ 7.800,00'),
+          escolaridade: p.difficulty === 'Superior' ? 'Nível Superior' : 'Nível Médio',
+          dataProva: 'A definir no cronograma oficial',
+          inscricaoPeriodo: 'Consulte o edital oficial',
+          editalUrl: '',
+          isFeatured: true,
+          featuredOrder: i + 1,
+          description: p.description,
+          tags: [p.institution, p.banca, p.difficulty],
+          createdAt: now,
+          updatedAt: now
+        };
+        batch.set(newDocRef, this.cleanObject(concursoData));
+        count++;
+      }
+
+      if (count > 0) {
+        await batch.commit();
+      }
+      return count;
+    } catch (error) {
+      handleFirestoreError(error, OperationType.WRITE, 'concursos/sync');
+      return 0;
     }
   }
 };

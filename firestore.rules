@@ -262,6 +262,22 @@ service cloud.firestore {
              (!('domingo' in data) || data.domingo is list);
     }
 
+    function isValidLandingPageConfig(data) {
+      return hasRequiredFields(['heroTitle', 'heroSubtitle', 'updatedAt']) &&
+             data.heroTitle is string && data.heroTitle.size() > 0 && data.heroTitle.size() <= 300 &&
+             data.heroSubtitle is string && data.heroSubtitle.size() > 0 && data.heroSubtitle.size() <= 1500 &&
+             data.updatedAt is number;
+    }
+
+    function isValidConcurso(data) {
+      return hasRequiredFields(['title', 'institution', 'isFeatured', 'createdAt', 'updatedAt']) &&
+             data.title is string && data.title.size() > 0 && data.title.size() <= 300 &&
+             data.institution is string && data.institution.size() > 0 && data.institution.size() <= 200 &&
+             data.isFeatured is bool &&
+             data.createdAt is number &&
+             data.updatedAt is number;
+    }
+
     // ===============================================================
     // Rules
     // ===============================================================
@@ -344,6 +360,17 @@ service cloud.firestore {
       allow create: if isAuthenticated() && (request.auth.uid == uid || isAdmin()) && isValidSchedule(request.resource.data);
       allow update: if isAuthenticated() && (request.auth.uid == uid || isAdmin()) && isValidSchedule(request.resource.data) && uidNotModified();
       allow delete: if isAuthenticated() && (request.auth.uid == uid || isAdmin());
+    }
+
+    match /site_config/{configId} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidLandingPageConfig(request.resource.data);
+    }
+
+    match /concursos/{concursoId} {
+      allow read: if true;
+      allow create, update: if isAdmin() && isValidConcurso(request.resource.data);
+      allow delete: if isAdmin();
     }
 
     // Default Deny (moved to bottom)

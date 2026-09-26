@@ -163,6 +163,54 @@
         "updatedAt": { "type": "number" }
       },
       "required": ["uid", "updatedAt"]
+    },
+    "LandingPageConfig": {
+      "title": "Landing Page CMS Configuration",
+      "description": "Customizable content for the public landing page",
+      "type": "object",
+      "properties": {
+        "heroTitle": { "type": "string" },
+        "heroSubtitle": { "type": "string" },
+        "heroBadge": { "type": "string" },
+        "ctaPrimaryText": { "type": "string" },
+        "ctaSecondaryText": { "type": "string" },
+        "bannerImageUrl": { "type": "string" },
+        "announcementText": { "type": "string" },
+        "statsUsers": { "type": "string" },
+        "statsUsersLabel": { "type": "string" },
+        "statsQuestions": { "type": "string" },
+        "statsQuestionsLabel": { "type": "string" },
+        "statsApproval": { "type": "string" },
+        "statsApprovalLabel": { "type": "string" },
+        "whatsappLink": { "type": "string" },
+        "instagramLink": { "type": "string" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["heroTitle", "heroSubtitle", "updatedAt"]
+    },
+    "Concurso": {
+      "title": "Concurso / Edital",
+      "description": "Concurso or public exam notice displayed in showcase",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "institution": { "type": "string" },
+        "banca": { "type": "string" },
+        "status": { "type": "string" },
+        "vagas": { "type": "string" },
+        "remuneracao": { "type": "string" },
+        "escolaridade": { "type": "string" },
+        "dataProva": { "type": "string" },
+        "inscricaoPeriodo": { "type": "string" },
+        "editalUrl": { "type": "string" },
+        "isFeatured": { "type": "boolean" },
+        "featuredOrder": { "type": "number" },
+        "description": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "createdAt": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["title", "institution", "isFeatured", "createdAt", "updatedAt"]
     }
   },
   "firestore": {
@@ -205,6 +253,14 @@
     "/schedules/{uid}": {
       "schema": "Schedule",
       "description": "User weekly schedules"
+    },
+    "/site_config/{configId}": {
+      "schema": "LandingPageConfig",
+      "description": "Public site CMS configurations"
+    },
+    "/concursos/{concursoId}": {
+      "schema": "Concurso",
+      "description": "Concursos and public exam notices showcase"
     }
   }
 }

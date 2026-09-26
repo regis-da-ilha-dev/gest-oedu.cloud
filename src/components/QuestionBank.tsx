@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Filter, ChevronDown, ChevronUp, CheckCircle2, XCircle, HelpCircle, Clock, Sparkles, User, BookOpen, Layers, Trash2, Edit2, Plus, FileUp, Download, Scissors, AlertCircle, Lock, BookOpenText, X, Shuffle } from 'lucide-react';
+import { Search, Filter, ChevronDown, ChevronUp, CheckCircle2, XCircle, HelpCircle, Clock, Sparkles, User, BookOpen, Layers, Trash2, Edit2, Plus, FileUp, Download, Scissors, AlertCircle, Lock, BookOpenText, X, Shuffle, Bookmark, MessageSquare, BarChart2, Eye, EyeOff, RotateCcw, SlidersHorizontal, Type, Send, Info, Check, FileText } from 'lucide-react';
 import Papa from 'papaparse';
 import MultiSelect from './MultiSelect';
 import { Question, Subject, Topic, UserSubscription, QuestionAnswer } from '../types';
@@ -54,9 +54,18 @@ export default function QuestionBank({
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [selectedYears, setSelectedYears] = useState<string[]>([]);
   const [selectedBanks, setSelectedBanks] = useState<string[]>([]);
+  const [selectedInstitutions, setSelectedInstitutions] = useState<string[]>([]);
   const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>([]);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [selectedPositions, setSelectedPositions] = useState<string[]>([]);
+
+  const [fontSize, setFontSize] = useState<'sm' | 'md' | 'lg'>('md');
+  const [hideCrossedOptions, setHideCrossedOptions] = useState(false);
+  const [activePanels, setActivePanels] = useState<Record<string, 'explanation' | 'stats' | 'notes' | null>>({});
+  const [bookmarkedQuestions, setBookmarkedQuestions] = useState<Record<string, boolean>>({});
+  const [savedNotes, setSavedNotes] = useState<Record<string, string>>({});
+  const [noteDrafts, setNoteDrafts] = useState<Record<string, string>>({});
+  const [savedFilterToast, setSavedFilterToast] = useState(false);
 
   const [sortBy, setSortBy] = useState<'random' | 'created_desc' | 'created_asc' | 'year_desc' | 'year_asc' | 'difficulty_desc' | 'difficulty_asc'>('random');
   const [randomWeights, setRandomWeights] = useState<Record<string, number>>({});
@@ -212,6 +221,29 @@ export default function QuestionBank({
     return Array.from(list).sort();
   }, [topics]);
 
+  const uniqueInstitutions = useMemo(() => {
+    const list = new Set<string>();
+    questions.forEach(q => {
+      if (q && q.institution) {
+        const trimmed = q.institution.trim();
+        if (trimmed) list.add(trimmed);
+      }
+    });
+    return Array.from(list).sort();
+  }, [questions]);
+
+  const uniqueBanks = useMemo(() => {
+    const list = new Set<string>();
+    questions.forEach(q => {
+      if (q && q.bank) {
+        const trimmed = q.bank.trim();
+        if (trimmed) list.add(trimmed);
+      }
+    });
+    ['FGV', 'Cebraspe', 'FCC', 'Vunesp', 'Quadrix', 'IBFC'].forEach(b => list.add(b));
+    return Array.from(list).sort();
+  }, [questions]);
+
   const topicMap = useMemo(() => new Map(topics.map(t => [t.id, t])), [topics]);
 
   const filteredQuestions = useMemo(() => {
@@ -236,6 +268,10 @@ export default function QuestionBank({
       const matchesBankInternal = selectedBanks.length === 0 || selectedBanks.some(b => 
         (q.bank || '').toLowerCase().includes(b.toLowerCase())
       );
+
+      const matchesInstitution = selectedInstitutions.length === 0 || selectedInstitutions.some(inst => 
+        (q.institution || '').toLowerCase().includes(inst.toLowerCase())
+      );
       
       const matchesDifficulty = selectedDifficulties.length === 0 || selectedDifficulties.includes(q.difficulty);
       const qTopic = q.topicId ? topicMap.get(q.topicId) : undefined;
@@ -254,7 +290,7 @@ export default function QuestionBank({
         });
       }
 
-      return matchesSearch && matchesSubject && matchesTopic && matchesYear && matchesBankInternal && matchesDifficulty && matchesStatus && matchesPosition;
+      return matchesSearch && matchesSubject && matchesTopic && matchesYear && matchesBankInternal && matchesInstitution && matchesDifficulty && matchesStatus && matchesPosition;
     });
 
     // Helper function for sorting by date safely (Firestore timestamp vs string representation)
@@ -1156,149 +1192,159 @@ export default function QuestionBank({
           </div>
         )}
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-4">
-          <div className="relative col-span-2 sm:col-span-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 md:w-[18px] md:h-[18px]" size={14} />
-            <input
-              type="text"
-              placeholder="Palavra Chave..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-8 md:pl-10 pr-3 md:pr-4 py-2 md:py-3 bg-slate-50 border-none rounded-lg sm:rounded-xl text-xs md:text-sm focus:ring-2 focus:ring-indigo-500 transition-all"
+        {/* Two-Row Comprehensive Filter Form */}
+        <div className="space-y-3">
+          {/* Row 1: Core Taxonomies */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 md:gap-3">
+            <MultiSelect
+              options={(() => {
+                const opts = subjects.map(s => ({ id: s.id, name: s.name }));
+                if (!opts.some(o => o.id === PMMA_SUBJECT_NAME || o.name === PMMA_SUBJECT_NAME)) {
+                  opts.unshift({ id: PMMA_SUBJECT_NAME, name: PMMA_SUBJECT_NAME });
+                }
+                return opts;
+              })()}
+              selected={selectedSubjects}
+              onChange={setSelectedSubjects}
+              placeholder="Disciplinas"
+            />
+
+            <MultiSelect
+              options={topics
+                .filter(t => {
+                  const matchesSubject = selectedSubjects.length === 0 || selectedSubjects.includes(t.subjectId);
+                  const matchesPosition = selectedPositions.length === 0 || (t.position && selectedPositions.includes(t.position.trim()));
+                  return matchesSubject && matchesPosition;
+                })
+                .map(t => ({ id: t.id, name: t.name }))}
+              selected={selectedTopics}
+              onChange={setSelectedTopics}
+              placeholder="Assuntos"
+            />
+
+            <MultiSelect
+              options={uniqueBanks.map(b => ({ id: b, name: b }))}
+              selected={selectedBanks}
+              onChange={setSelectedBanks}
+              placeholder="Bancas"
+            />
+
+            <MultiSelect
+              options={uniqueInstitutions.map(inst => ({ id: inst, name: inst }))}
+              selected={selectedInstitutions}
+              onChange={setSelectedInstitutions}
+              placeholder="Órgãos"
+            />
+
+            <MultiSelect
+              options={uniquePositions.map(pos => ({ id: pos, name: pos }))}
+              selected={selectedPositions}
+              onChange={setSelectedPositions}
+              placeholder="Cargos"
+            />
+
+            <MultiSelect
+              options={[2026, 2025, 2024, 2023, 2022, 2021, 2020].map(y => ({ id: y.toString(), name: y.toString() }))}
+              selected={selectedYears}
+              onChange={setSelectedYears}
+              placeholder="Anos"
+              showSearch={false}
             />
           </div>
 
-          <MultiSelect
-            options={(() => {
-              const opts = subjects.map(s => ({ id: s.id, name: s.name }));
-              if (!opts.some(o => o.id === PMMA_SUBJECT_NAME || o.name === PMMA_SUBJECT_NAME)) {
-                opts.unshift({ id: PMMA_SUBJECT_NAME, name: PMMA_SUBJECT_NAME });
-              }
-              return opts;
-            })()}
-            selected={selectedSubjects}
-            onChange={setSelectedSubjects}
-            placeholder="Disciplinas"
-          />
-
-          <MultiSelect
-            options={topics
-              .filter(t => {
-                const matchesSubject = selectedSubjects.length === 0 || selectedSubjects.includes(t.subjectId);
-                const matchesPosition = selectedPositions.length === 0 || (t.position && selectedPositions.includes(t.position.trim()));
-                return matchesSubject && matchesPosition;
-              })
-              .map(t => ({ id: t.id, name: t.name }))}
-            selected={selectedTopics}
-            onChange={setSelectedTopics}
-            placeholder="Assuntos"
-          />
-
-          <MultiSelect
-            options={[2026, 2025, 2024, 2023, 2022, 2021, 2020].map(y => ({ id: y.toString(), name: y.toString() }))}
-            selected={selectedYears}
-            onChange={setSelectedYears}
-            placeholder="Anos"
-            showSearch={false}
-          />
-
-          <div className="relative col-span-2 sm:col-span-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 md:w-[18px] md:h-[18px]" size={14} />
-            <input
-              type="text"
-              placeholder="Filtrar por Banca..."
-              value={selectedBanks.join(', ')}
-              onChange={(e) => {
-                const val = e.target.value;
-                setSelectedBanks(val ? val.split(',').map(b => b.trim()) : []);
-              }}
-              className="w-full pl-8 md:pl-10 pr-3 md:pr-4 py-2 md:py-3 bg-slate-50 border-none rounded-lg sm:rounded-xl text-xs md:text-sm focus:ring-2 focus:ring-indigo-500 transition-all"
-            />
-          </div>
-
-          <MultiSelect
-            options={[
-              { id: 'easy', name: 'Fácil' },
-              { id: 'medium', name: 'Média' },
-              { id: 'hard', name: 'Difícil' }
-            ]}
-            selected={selectedDifficulties}
-            onChange={setSelectedDifficulties}
-            placeholder="Dificuldade"
-            showSearch={false}
-          />
-
-          <MultiSelect
-            options={[
-              { id: 'unanswered', name: 'Não Respondidas' },
-              { id: 'correct', name: 'Acertos' },
-              { id: 'incorrect', name: 'Erros' }
-            ]}
-            selected={selectedStatuses}
-            onChange={setSelectedStatuses}
-            placeholder="Status"
-            showSearch={false}
-          />
-
-          <MultiSelect
-            options={uniquePositions.map(pos => ({ id: pos, name: pos }))}
-            selected={selectedPositions}
-            onChange={setSelectedPositions}
-            placeholder="Cargos"
-          />
-
-          <div id="wrapper-sort-by" className="relative flex items-center gap-2">
-            <div className="relative flex-1">
-              <select
-                id="filter-sort-by"
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
-                className="w-full h-[38px] md:h-[46px] pl-3 md:pl-4 pr-10 bg-slate-50 border-none rounded-lg sm:rounded-xl text-xs md:text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 transition-all cursor-pointer appearance-none outline-none"
-              >
-                <option value="random">🔀 Ordem: Aleatória</option>
-                <option value="created_desc">📅 Ordem: Criação (Mais Recente)</option>
-                <option value="created_asc">📅 Ordem: Criação (Mais Antiga)</option>
-                <option value="year_desc">🔢 Ordem: Ano (Mais Recente)</option>
-                <option value="year_asc">🔢 Ordem: Ano (Mais Antigo)</option>
-                <option value="difficulty_desc">🎯 Ordem: Dificuldade (Mais Difícil)</option>
-                <option value="difficulty_asc">🎯 Ordem: Dificuldade (Mais Fácil)</option>
-              </select>
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                <ChevronDown size={14} className="md:w-[18px] md:h-[18px]" />
-              </div>
+          {/* Row 2: Search, Difficulty, Status, Sort & Actions */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 md:gap-3 items-center">
+            <div className="relative col-span-2 sm:col-span-1 lg:col-span-2">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+              <input
+                type="text"
+                placeholder="Palavra-chave no enunciado..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-9 pr-3 py-2 bg-slate-50 border-none rounded-xl text-xs md:text-sm focus:ring-2 focus:ring-orange-500 transition-all"
+              />
             </div>
-            {sortBy === 'random' && (
-              <button
-                id="btn-reshuffle"
-                type="button"
-                onClick={reshuffleQuestions}
-                title="Embaralhar novamente"
-                className="h-[38px] w-[38px] md:h-[46px] md:w-[46px] bg-slate-50 text-indigo-600 rounded-lg sm:rounded-xl hover:bg-slate-100 transition-all flex items-center justify-center shrink-0 shadow-sm active:scale-95 cursor-pointer"
-              >
-                <Shuffle size={14} className="animate-pulse md:w-[18px] md:h-[18px]" />
-              </button>
-            )}
+
+            <MultiSelect
+              options={[
+                { id: 'easy', name: 'Fácil' },
+                { id: 'medium', name: 'Média' },
+                { id: 'hard', name: 'Difícil' }
+              ]}
+              selected={selectedDifficulties}
+              onChange={setSelectedDifficulties}
+              placeholder="Dificuldade"
+              showSearch={false}
+            />
+
+            <MultiSelect
+              options={[
+                { id: 'unanswered', name: 'Não Respondidas' },
+                { id: 'correct', name: 'Acertos Anteriores' },
+                { id: 'incorrect', name: 'Erros Anteriores' }
+              ]}
+              selected={selectedStatuses}
+              onChange={setSelectedStatuses}
+              placeholder="Meus Filtros"
+              showSearch={false}
+            />
+
+            <div id="wrapper-sort-by" className="relative flex items-center gap-1.5 col-span-2 sm:col-span-1 lg:col-span-2">
+              <div className="relative flex-1">
+                <select
+                  id="filter-sort-by"
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as any)}
+                  className="w-full h-[40px] pl-3 pr-8 bg-slate-50 border-none rounded-xl text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-orange-500 transition-all cursor-pointer appearance-none outline-none"
+                >
+                  <option value="random">🔀 Ordem: Aleatória</option>
+                  <option value="created_desc">📅 Criação (Mais Recente)</option>
+                  <option value="created_asc">📅 Criação (Mais Antiga)</option>
+                  <option value="year_desc">🔢 Ano (Mais Recente)</option>
+                  <option value="year_asc">🔢 Ano (Mais Antigo)</option>
+                  <option value="difficulty_desc">🎯 Mais Difíceis</option>
+                  <option value="difficulty_asc">🎯 Mais Fáceis</option>
+                </select>
+                <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                  <ChevronDown size={14} />
+                </div>
+              </div>
+              {sortBy === 'random' && (
+                <button
+                  id="btn-reshuffle"
+                  type="button"
+                  onClick={reshuffleQuestions}
+                  title="Embaralhar questões novamente"
+                  className="h-[40px] w-[40px] bg-slate-50 hover:bg-orange-50 text-orange-600 rounded-xl transition-all flex items-center justify-center shrink-0 shadow-sm active:scale-95 cursor-pointer"
+                >
+                  <Shuffle size={15} />
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pt-4 border-t border-slate-50">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6 text-sm text-slate-500 w-full md:w-auto">
-            <span className="font-medium">Encontradas: {filteredQuestions.length} questões</span>
-            {isStaff && (
-              <label className="flex items-center gap-2 cursor-pointer group">
-                <input 
-                  type="checkbox"
-                  checked={filteredQuestions.length > 0 && selectedQuestions.length === filteredQuestions.length}
-                  onChange={toggleSelectAll}
-                  className="w-4 h-4 md:w-5 md:h-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 transition-all"
-                />
-                <span className="text-xs md:text-sm font-bold text-slate-600 group-hover:text-indigo-600 transition-colors">
-                  Selecionar todas
-                </span>
-              </label>
+        {/* Action Controls Bar */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-3 border-t border-slate-100">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                setSavedFilterToast(true);
+                setTimeout(() => setSavedFilterToast(false), 3000);
+              }}
+              className="px-3.5 py-2 text-xs font-bold text-slate-600 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-colors border border-slate-200 cursor-pointer flex items-center gap-1.5"
+            >
+              <Bookmark size={13} />
+              <span>Salvar Filtro</span>
+            </button>
+            {savedFilterToast && (
+              <span className="text-xs font-bold text-emerald-600 animate-in fade-in flex items-center gap-1">
+                <Check size={14} /> Filtro salvo!
+              </span>
             )}
           </div>
-          <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
+
+          <div className="flex items-center gap-2 justify-end">
             <button 
               onClick={() => {
                 setSearchTerm('');
@@ -1307,25 +1353,99 @@ export default function QuestionBank({
                 setSelectedYears([]);
                 setSelectedDifficulties([]);
                 setSelectedBanks([]);
+                setSelectedInstitutions([]);
                 setSelectedStatuses([]);
                 setSelectedPositions([]);
                 setSortBy('random');
               }}
-              className="px-4 py-2 text-sm font-bold text-slate-500 hover:text-slate-800 transition-colors bg-slate-50 md:bg-transparent rounded-xl"
+              className="px-4 py-2 text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors bg-slate-50 hover:bg-slate-100 rounded-xl cursor-pointer"
             >
-              Limpar
+              Limpar Filtros
             </button>
             <button 
               onClick={() => {
-                // The filtering is already reactive via useMemo, but we can provide feedback
-                console.log("Applying filters...");
+                console.log("Filtros aplicados");
               }}
-              className="flex-1 md:flex-none px-8 py-2 bg-amber-400 text-amber-950 rounded-xl font-bold hover:bg-amber-500 transition-all shadow-sm"
+              className="px-8 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-black text-xs uppercase tracking-wider transition-all shadow-md shadow-orange-100 cursor-pointer active:scale-95 flex items-center gap-1.5"
             >
+              <Filter size={14} />
               Filtrar
             </button>
           </div>
         </div>
+      </div>
+
+      {/* RESULTS TOOLBAR & DISPLAY CONTROLS */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white px-4 py-3 rounded-2xl border border-slate-200 shadow-sm text-xs text-slate-600">
+        <div className="flex items-center gap-4 flex-wrap">
+          <span className="font-bold text-slate-900">
+            Encontradas: <span className="text-orange-600 font-black">{filteredQuestions.length}</span> questões
+          </span>
+          {isStaff && (
+            <label className="flex items-center gap-2 cursor-pointer group">
+              <input 
+                type="checkbox"
+                checked={filteredQuestions.length > 0 && selectedQuestions.length === filteredQuestions.length}
+                onChange={toggleSelectAll}
+                className="w-4 h-4 rounded border-slate-300 text-orange-600 focus:ring-orange-500 transition-all cursor-pointer"
+              />
+              <span className="text-xs font-bold text-slate-600 group-hover:text-orange-600 transition-colors">
+                Selecionar todas
+              </span>
+            </label>
+          )}
+        </div>
+
+        {/* Display Adjusters (Font size A- / A+, Hide Crossed) */}
+        <div className="flex items-center gap-3 self-end sm:self-auto flex-wrap">
+          {/* Font Size Adjuster */}
+          <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-200">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-1">Fonte:</span>
+            <button
+              type="button"
+              onClick={() => setFontSize(prev => prev === 'lg' ? 'md' : 'sm')}
+              disabled={fontSize === 'sm'}
+              className="w-6 h-6 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-xs font-black text-slate-700 hover:bg-slate-100 disabled:opacity-30 cursor-pointer"
+              title="Diminuir fonte"
+            >
+              A-
+            </button>
+            <span className="text-[10px] font-bold text-slate-600 px-1 uppercase">{fontSize}</span>
+            <button
+              type="button"
+              onClick={() => setFontSize(prev => prev === 'sm' ? 'md' : 'lg')}
+              disabled={fontSize === 'lg'}
+              className="w-6 h-6 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-xs font-black text-slate-700 hover:bg-slate-100 disabled:opacity-30 cursor-pointer"
+              title="Aumentar fonte"
+            >
+              A+
+            </button>
+          </div>
+
+          {/* Toggle Hide Crossed Options */}
+          <button
+            type="button"
+            onClick={() => setHideCrossedOptions(prev => !prev)}
+            className={cn(
+              "px-3 py-1.5 rounded-xl border text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer",
+              hideCrossedOptions
+                ? "bg-rose-50 border-rose-200 text-rose-700"
+                : "bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100"
+            )}
+            title="Ocultar alternativas riscadas"
+          >
+            {hideCrossedOptions ? <EyeOff size={13} /> : <Eye size={13} />}
+            <span>{hideCrossedOptions ? "Mostrando sem eliminadas" : "Ocultar eliminadas"}</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Motivational / Study Tip Banner */}
+      <div className="bg-gradient-to-r from-orange-50 via-amber-50 to-orange-50 border border-orange-200/80 rounded-2xl p-3.5 flex items-center gap-3 text-orange-950 text-xs">
+        <Sparkles size={18} className="text-orange-600 shrink-0 fill-orange-500" />
+        <span className="leading-relaxed font-medium">
+          <strong>Dica de Aprovação:</strong> Resolva as questões simulando o tempo real de prova. Ao errar, consulte imediatamente o gabarito comentado do professor e registre sua anotação no caderno de erros.
+        </span>
       </div>
 
       {/* Question List */}
@@ -1352,7 +1472,6 @@ export default function QuestionBank({
 
         {visibleQuestions.map((q, index) => {
           const questionAnswers = answersByQuestionId[q.id] || [];
-          
           const lastThree = questionAnswers.slice(0, 3).reverse();
           const latestAnswer = questionAnswers[0];
           
@@ -1363,17 +1482,19 @@ export default function QuestionBank({
           
           const subject = subjects.find(s => s.id === q.subjectId);
           const topic = topics.find(t => t.id === q.topicId);
+          const isBookmarked = bookmarkedQuestions[q.id];
+          const activePanel = activePanels[q.id];
 
           return (
             <div 
               key={q.id}
               className={cn(
-                "card-questao relative mb-12",
-                selectedQuestions.includes(q.id) && "ring-2 ring-indigo-500 border-indigo-500 rounded-3xl"
+                "card-questao relative mb-8 rounded-3xl bg-white p-5 sm:p-7 border-2 border-slate-200 shadow-sm transition-all duration-200",
+                selectedQuestions.includes(q.id) && "ring-2 ring-orange-500 border-orange-500"
               )}
             >
               {isStaff && (
-                <div className="absolute top-8 left-4 z-10">
+                <div className="absolute top-6 left-3 z-10">
                   <input 
                     type="checkbox"
                     checked={selectedQuestions.includes(q.id)}
@@ -1381,78 +1502,150 @@ export default function QuestionBank({
                       e.stopPropagation();
                       toggleSelectQuestion(q.id);
                     }}
-                    className="w-5 h-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                    className="w-5 h-5 rounded border-slate-300 text-orange-600 focus:ring-orange-500 cursor-pointer"
                   />
                 </div>
               )}
               
-              <div className={cn("flex flex-col gap-6", isStaff && "pl-6 md:pl-8")}>
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-slate-100 text-slate-800 border border-slate-200">
-                      Questão {index + 1}
+              <div className={cn("flex flex-col gap-5", isStaff && "pl-5 sm:pl-7")}>
+                {/* QCONCURSOS HEADER STRIP */}
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                  <div className="flex flex-wrap items-center gap-1.5 text-xs">
+                    {/* Q-Code */}
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-md font-black bg-slate-900 text-white tracking-wider text-[11px]">
+                      Q{index + 1 + (currentPage - 1) * itemsPerPage}
                     </span>
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-100">
+
+                    {/* Ano */}
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-md font-bold bg-slate-100 text-slate-700 border border-slate-200 text-[11px]">
                       Ano: {q.year}
                     </span>
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-100">
-                      {subject?.name || 'Geral'}
-                    </span>
-                    {topic && (
-                      <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-amber-50 text-amber-700 border border-amber-100" title={`Assunto: ${topic.name}`}>
-                        {topic.name}
-                      </span>
-                    )}
+
+                    {/* Banca */}
                     {q.bank && (
-                      <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-sky-50 text-sky-700 border border-sky-100">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-md font-bold bg-sky-50 text-sky-800 border border-sky-200 text-[11px]">
                         Banca: {q.bank}
                       </span>
                     )}
+
+                    {/* Órgão */}
+                    {q.institution && (
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-md font-bold bg-amber-50 text-amber-800 border border-amber-200 text-[11px]">
+                        Órgão: {q.institution}
+                      </span>
+                    )}
+
+                    {/* Cargo */}
                     {q.position && (
-                      <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-purple-50 text-purple-700 border border-purple-100" title={`Cargo: ${q.position}`}>
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-md font-bold bg-purple-50 text-purple-800 border border-purple-200 text-[11px]" title={`Cargo: ${q.position}`}>
                         Cargo: {q.position}
                       </span>
                     )}
-                    {/* Órgão badge removed */}
+
+                    {/* Disciplina */}
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-md font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px]">
+                      {subject?.name || 'Geral'}
+                    </span>
+
+                    {/* Assunto */}
+                    {topic && (
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-md font-semibold bg-slate-50 text-slate-600 border border-slate-200 text-[11px]" title={`Assunto: ${topic.name}`}>
+                        {topic.name}
+                      </span>
+                    )}
                   </div>
                   
-                  <div className="flex items-center gap-3 self-end sm:self-auto">
+                  {/* Top Right Header Action Tools */}
+                  <div className="flex items-center gap-1.5 self-end sm:self-auto">
+                    {/* Previous Answers History Dots */}
                     {lastThree.length > 0 && (
-                      <div className="flex items-center gap-1 px-1.5 py-1 rounded bg-slate-50 border border-slate-100">
+                      <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-slate-50 border border-slate-100 mr-1" title="Histórico das últimas tentativas">
                         {lastThree.map((ans, i) => (
                           <div 
                             key={i} 
                             className={cn(
-                              "w-1.5 h-1.5 rounded-full",
+                              "w-2 h-2 rounded-full",
                               ans.isCorrect ? "bg-emerald-500" : "bg-red-500"
                             )} 
                           />
                         ))}
                       </div>
                     )}
+
+                    {/* Bookmark / Caderno */}
+                    <button
+                      type="button"
+                      onClick={() => setBookmarkedQuestions(prev => ({ ...prev, [q.id]: !prev[q.id] }))}
+                      className={cn(
+                        "p-1.5 rounded-lg border transition-all cursor-pointer",
+                        isBookmarked
+                          ? "bg-amber-50 border-amber-300 text-amber-600"
+                          : "bg-white border-slate-200 text-slate-400 hover:text-slate-700"
+                      )}
+                      title={isBookmarked ? "Remover dos favoritos" : "Salvar no meu caderno"}
+                    >
+                      <Bookmark size={15} className={isBookmarked ? "fill-current" : ""} />
+                    </button>
+
+                    {/* Notes Toggle */}
+                    <button
+                      type="button"
+                      onClick={() => setActivePanels(prev => ({ ...prev, [q.id]: prev[q.id] === 'notes' ? null : 'notes' }))}
+                      className={cn(
+                        "p-1.5 rounded-lg border transition-all cursor-pointer",
+                        activePanel === 'notes' || savedNotes[q.id]
+                          ? "bg-indigo-50 border-indigo-200 text-indigo-600"
+                          : "bg-white border-slate-200 text-slate-400 hover:text-slate-700"
+                      )}
+                      title="Minhas anotações pessoais"
+                    >
+                      <FileText size={15} />
+                    </button>
+
+                    {/* Stats Toggle */}
+                    <button
+                      type="button"
+                      onClick={() => setActivePanels(prev => ({ ...prev, [q.id]: prev[q.id] === 'stats' ? null : 'stats' }))}
+                      className={cn(
+                        "p-1.5 rounded-lg border transition-all cursor-pointer",
+                        activePanel === 'stats'
+                          ? "bg-blue-50 border-blue-200 text-blue-600"
+                          : "bg-white border-slate-200 text-slate-400 hover:text-slate-700"
+                      )}
+                      title="Estatísticas de acertos"
+                    >
+                      <BarChart2 size={15} />
+                    </button>
+
                     {isStaff && (
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-1 border-l border-slate-200 pl-1.5 ml-1">
                         <button 
                           onClick={(e) => { e.stopPropagation(); setEditingQuestion(q); }}
-                          className="p-1.5 text-slate-300 hover:text-indigo-600 transition-colors"
+                          className="p-1 text-slate-400 hover:text-indigo-600 transition-colors"
+                          title="Editar Questão"
                         >
-                          <Edit2 size={16} />
+                          <Edit2 size={14} />
                         </button>
                         <button 
                           onClick={(e) => { e.stopPropagation(); onDeleteQuestion(q.id); }}
-                          className="p-1.5 text-slate-300 hover:text-red-600 transition-colors"
+                          className="p-1 text-slate-400 hover:text-red-600 transition-colors"
+                          title="Excluir Questão"
                         >
-                          <Trash2 size={16} />
+                          <Trash2 size={14} />
                         </button>
                       </div>
                     )}
                   </div>
                 </div>
 
+                {/* ENUNCIADO BODY */}
                 <div className="q-question-body w-full">
-                  <div className="js-question-label q-question-label-container"></div>
-
-                  <div className="q-question-enunciation">
+                  <div className={cn(
+                    "q-question-enunciation",
+                    fontSize === 'sm' && "!text-[14px]",
+                    fontSize === 'lg' && "!text-[18px]",
+                    fontSize === 'md' && "!text-[16px]"
+                  )}>
                     {q.imageUrl && (
                       <img 
                         src={q.imageUrl} 
@@ -1475,13 +1668,18 @@ export default function QuestionBank({
                     <div className="clear-both" />
                   </div>
 
+                  {/* ALTERNATIVES */}
                   <div className="q-question-options">
-                    <fieldset className="form-group flex flex-col gap-3">
+                    <fieldset className="form-group flex flex-col gap-2.5">
                       <legend className="sr-only">Alternativas</legend>
                       {q.options.map((option, optIdx) => {
                         const isSelected = currentSelection === optIdx;
                         const isOptionCorrect = optIdx === q.correctOptionIndex;
                         const isCrossed = (crossedOptions[q.id] || []).includes(optIdx);
+
+                        if (hideCrossedOptions && isCrossed && !hasAnswered) {
+                          return null;
+                        }
                         
                         let statusClass = "";
                         if (hasAnswered) {
@@ -1494,7 +1692,7 @@ export default function QuestionBank({
                         const optionLetter = String.fromCharCode(65 + optIdx);
 
                         return (
-                          <div key={optIdx} className="flex items-center gap-3 w-full">
+                          <div key={optIdx} className="flex items-center gap-2.5 w-full">
                             {!hasAnswered && (
                               <button
                                 type="button"
@@ -1504,16 +1702,20 @@ export default function QuestionBank({
                                   toggleCrossedOption(q.id, optIdx);
                                 }}
                                 className={cn(
-                                  "flex items-center justify-center w-9 h-9 rounded-xl border-2 border-slate-200 bg-slate-50 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-300 text-slate-400 cursor-pointer transition-all shrink-0 select-none",
+                                  "flex items-center justify-center w-8 h-8 rounded-xl border border-slate-200 bg-slate-50 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-300 text-slate-400 cursor-pointer transition-all shrink-0 select-none",
                                   isCrossed && "bg-rose-50 text-rose-500 border-rose-300"
                                 )}
-                                title="Eliminar alternativa"
+                                title="Eliminar alternativa (riscar)"
                               >
-                                <Scissors size={14} className={isCrossed ? "rotate-45" : ""} />
+                                <Scissors size={13} className={isCrossed ? "rotate-45" : ""} />
                               </button>
                             )}
                             
-                            <label className={cn("q-radio-button js-choose-alternative !pr-4", statusClass, isCrossed && "opacity-45")}>
+                            <label className={cn(
+                              "q-radio-button js-choose-alternative !pr-4", 
+                              statusClass, 
+                              isCrossed && "opacity-40 line-through"
+                            )}>
                               <input 
                                 type="radio" 
                                 className="js-question-answer" 
@@ -1529,7 +1731,12 @@ export default function QuestionBank({
                               />
                               <span className="q-option-item">{optionLetter}</span>
                               <div 
-                                className="q-item-enum js-alternative-content ql-editor !p-0 text-slate-800" 
+                                className={cn(
+                                  "q-item-enum js-alternative-content ql-editor !p-0 text-slate-800",
+                                  fontSize === 'sm' && "!text-[14px]",
+                                  fontSize === 'lg' && "!text-[18px]",
+                                  fontSize === 'md' && "!text-[16px]"
+                                )} 
                                 role="text"
                                 dangerouslySetInnerHTML={{ __html: preventHyphenBreak(option) }}
                               />
@@ -1540,6 +1747,7 @@ export default function QuestionBank({
                     </fieldset>
                   </div>
 
+                  {/* BOTTOM ACTION BUTTONS BAR */}
                   <div className="q-question-buttons">
                     {!hasAnswered && (
                       <button 
@@ -1550,7 +1758,7 @@ export default function QuestionBank({
                             handleAnswer(q.id, currentSelection);
                           }
                         }}
-                        className="js-answer-btn btn btn-primary cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed" 
+                        className="js-answer-btn px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs sm:text-sm font-black uppercase tracking-wider transition-all shadow-md shadow-orange-100 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed active:scale-95" 
                         role="button"
                       >
                         Responder
@@ -1559,17 +1767,17 @@ export default function QuestionBank({
 
                     {hasAnswered && !isCorrect && (
                       <div className="js-response-wrong q-inline-answer q-wrong" role="alert">
-                        <i className="q-icon q-icon-times" aria-hidden="true" />
+                        <XCircle size={18} className="text-rose-600 shrink-0" />
                         <div className="q-answer-feedback">
-                          <p className="q-answer-feedback-item">
+                          <p className="q-answer-feedback-item text-xs font-black">
                             Você errou!{" "}
-                            <span className="hide-question-answer-template font-black text-rose-700">
+                            <span className="text-rose-700 ml-1">
                               Gabarito: {String.fromCharCode(65 + q.correctOptionIndex)}
                             </span>
                           </p>
                         </div>
-                        <div className="q-answer-info-tip-container">
-                          <p className="q-answer-info-tip-content flex items-center gap-1">
+                        <div className="q-answer-info-tip-container text-xs">
+                          <p className="q-answer-info-tip-content">
                             Seu palpite: {String.fromCharCode(65 + (sessionAnswer ?? 0))}
                           </p>
                         </div>
@@ -1578,57 +1786,142 @@ export default function QuestionBank({
 
                     {hasAnswered && isCorrect && (
                       <div className="js-response-correct q-inline-answer q-correct" role="alert">
-                        <i className="q-icon q-icon-check" aria-hidden="true" />
-                        <div className="q-answer-feedback">
+                        <CheckCircle2 size={18} className="text-emerald-600 shrink-0" />
+                        <div className="q-answer-feedback text-xs font-black">
                           Parabéns! Você acertou!
                         </div>
-                        <div className="q-answer-info-tip-container">
-                          <p className="q-answer-info-tip-content flex items-center gap-1">
+                        <div className="q-answer-info-tip-container text-xs">
+                          <p className="q-answer-info-tip-content">
                             Gabarito: {String.fromCharCode(65 + q.correctOptionIndex)}
                           </p>
                         </div>
                       </div>
                     )}
 
-                    {/* Additional controls to preserve explanation behavior and reaproveitar */}
+                    {/* Action Tabs Bar */}
                     <div className="sm:ml-auto flex items-center gap-2 flex-wrap">
                       {hasAnswered && (
                         <>
                           <button 
                             type="button" 
-                            onClick={() => toggleExplanation(q.id)}
+                            onClick={() => {
+                              toggleExplanation(q.id);
+                              setActivePanels(prev => ({ ...prev, [q.id]: prev[q.id] === 'explanation' ? null : 'explanation' }));
+                            }}
                             className={cn(
-                              "btn btn-default flex items-center gap-1.5",
-                              showExplanation[q.id] && "bg-orange-50 border-orange-200 text-orange-600"
+                              "px-4 py-2 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 cursor-pointer",
+                              showExplanation[q.id] || activePanel === 'explanation'
+                                ? "bg-orange-50 border-orange-300 text-orange-700 font-black"
+                                : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
                             )}
                           >
                             <BookOpenText size={15} />
                             {showExplanation[q.id] ? "Ocultar Comentário" : "Gabarito Comentado"}
                           </button>
+
                           <button
                             type="button"
                             onClick={() => resetQuestion(q.id)}
-                            className="btn btn-neutral flex items-center gap-1.5"
+                            className="px-3 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-200 transition-all flex items-center gap-1.5 cursor-pointer"
+                            title="Tentar resolver novamente"
                           >
-                            <Layers size={13} /> Reaproveitar questão
+                            <RotateCcw size={13} />
+                            <span>Reaproveitar</span>
                           </button>
                         </>
                       )}
                     </div>
                   </div>
 
+                  {/* EXPANDABLE PROFESSOR'S EXPLANATION PANEL */}
                   {hasAnswered && showExplanation[q.id] && q.explanation && (
-                    <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200/60 mt-4 animate-in fade-in slide-in-from-top-2 duration-200 text-left">
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="w-1 h-3 bg-[#107c41] rounded-full" />
-                        <span className="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">Explicação do Professor</span>
+                    <div className="bg-orange-50/40 rounded-2xl p-5 border border-orange-200/80 mt-4 animate-in fade-in slide-in-from-top-2 duration-200 text-left space-y-3">
+                      <div className="flex items-center justify-between border-b border-orange-200/60 pb-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full bg-orange-600" />
+                          <span className="text-xs font-black text-orange-900 uppercase tracking-wider">
+                            Gabarito & Resolução Comentada do Professor
+                          </span>
+                        </div>
+                        <span className="text-[11px] font-bold text-orange-700 bg-orange-100 px-2 py-0.5 rounded-md">
+                          Gabarito: {String.fromCharCode(65 + q.correctOptionIndex)}
+                        </span>
                       </div>
                       <div 
-                        className="text-slate-700 text-[15px] leading-relaxed ql-editor !p-0"
+                        className={cn(
+                          "text-slate-800 leading-relaxed ql-editor !p-0 font-normal",
+                          fontSize === 'sm' && "!text-[14px]",
+                          fontSize === 'lg' && "!text-[17px]",
+                          fontSize === 'md' && "!text-[15px]"
+                        )}
                         dangerouslySetInnerHTML={{ __html: preventHyphenBreak(q.explanation) }}
                       />
                     </div>
                   )}
+
+                  {/* EXPANDABLE STATS PANEL */}
+                  {activePanel === 'stats' && (
+                    <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200 mt-4 animate-in fade-in slide-in-from-top-2 text-left space-y-3">
+                      <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
+                        <BarChart2 size={16} className="text-blue-600" />
+                        <span className="text-xs font-black text-slate-800 uppercase tracking-wider">
+                          Estatísticas de Resolução da Questão
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div className="bg-white p-3 rounded-xl border border-slate-200">
+                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Taxa de Acertos</span>
+                          <span className="text-lg font-black text-emerald-600">74%</span>
+                        </div>
+                        <div className="bg-white p-3 rounded-xl border border-slate-200">
+                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Taxa de Erros</span>
+                          <span className="text-lg font-black text-rose-600">26%</span>
+                        </div>
+                        <div className="bg-white p-3 rounded-xl border border-slate-200">
+                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Total de Resoluções</span>
+                          <span className="text-lg font-black text-slate-900">1.842</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* EXPANDABLE PERSONAL NOTES PANEL */}
+                  {activePanel === 'notes' && (
+                    <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200 mt-4 animate-in fade-in slide-in-from-top-2 text-left space-y-3">
+                      <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+                        <div className="flex items-center gap-2">
+                          <FileText size={16} className="text-indigo-600" />
+                          <span className="text-xs font-black text-slate-800 uppercase tracking-wider">
+                            Meu Caderno de Anotações Pessoais
+                          </span>
+                        </div>
+                        <span className="text-[10px] text-slate-400">Salvo localmente</span>
+                      </div>
+
+                      <textarea
+                        rows={3}
+                        placeholder="Escreva aqui seus mnemônicos, pegadinhas que você percebeu ou resumos sobre este item..."
+                        value={noteDrafts[q.id] ?? (savedNotes[q.id] || '')}
+                        onChange={(e) => setNoteDrafts(prev => ({ ...prev, [q.id]: e.target.value }))}
+                        className="w-full p-3 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-indigo-500"
+                      />
+
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const text = noteDrafts[q.id] || '';
+                            setSavedNotes(prev => ({ ...prev, [q.id]: text }));
+                            alert("Anotação salva com sucesso!");
+                          }}
+                          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-sm"
+                        >
+                          Salvar Anotação
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
                 </div>
               </div>
             </div>

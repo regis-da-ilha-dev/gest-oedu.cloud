@@ -26,6 +26,7 @@ import StudySessionList from './components/StudySessionList';
 import PomodoroTimer from './components/PomodoroTimer';
 import PerformanceCharts from './components/PerformanceCharts';
 import Auth from './components/Auth';
+import LandingPage from './components/LandingPage';
 import AdminPanel from './components/AdminPanel';
 import Support from './components/Support';
 import Store from './components/Store';
@@ -242,11 +243,11 @@ export default function App() {
 
   if (!user) {
     return (
-      <Auth 
+      <LandingPage 
         onLogin={handleLogin} 
         onClearError={() => setLoginError(null)}
         isLoading={isLoggingIn} 
-        error={loginError} 
+        loginError={loginError} 
       />
     );
   }

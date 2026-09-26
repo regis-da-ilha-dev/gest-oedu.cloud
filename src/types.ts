@@ -118,3 +118,58 @@ export interface StoreProduct {
   link: string;
   createdAt: number;
 }
+
+export interface LandingPageConfig {
+  heroTitle?: string;
+  heroSubtitle?: string;
+  heroBadge?: string;
+  ctaPrimaryText?: string;
+  ctaSecondaryText?: string;
+  bannerImageUrl?: string;
+  announcementText?: string;
+  statsUsers?: string;
+  statsUsersLabel?: string;
+  statsQuestions?: string;
+  statsQuestionsLabel?: string;
+  statsApproval?: string;
+  statsApprovalLabel?: string;
+  whatsappLink?: string;
+  instagramLink?: string;
+  videoUrl?: string;
+  features?: {
+    id: string;
+    title: string;
+    description: string;
+    icon: string;
+  }[];
+  testimonials?: {
+    id: string;
+    name: string;
+    role: string;
+    comment: string;
+    avatarUrl?: string;
+  }[];
+  updatedAt?: number;
+}
+
+export interface Concurso {
+  id: string;
+  title: string;
+  institution: string;
+  banca?: string;
+  status: string;
+  vagas?: string;
+  remuneracao?: string;
+  escolaridade?: string;
+  dataProva?: string;
+  inscricaoPeriodo?: string;
+  editalUrl?: string;
+  isFeatured: boolean;
+  featuredOrder?: number;
+  description?: string;
+  tags?: string[];
+  imageUrl?: string;
+  createdAt: number;
+  updatedAt: number;
+}
+
