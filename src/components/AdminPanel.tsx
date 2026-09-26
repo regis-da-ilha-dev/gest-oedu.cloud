@@ -79,7 +79,8 @@ export default function AdminPanel() {
     heroSubtitle: "Estude de forma estratégica com o maior ecossistema integrado: banco de questões atualizado, gabaritos comentados, flashcards com repetição espaçada (SRS), cronograma inteligente e editais verticalizados.",
     ctaPrimaryText: "Começar Gratuitamente",
     ctaSecondaryText: "Conhecer Planos e Preços",
-    announcementText: "🎁 Bônus Exclusivo: Ganhe 10 Dias de Teste Grátis no Plano Concurseiro Elite ao se cadastrar hoje!",
+    announcementText: "🎁 Bônus Exclusivo: Ganhe 10 Dias de Teste Grátis em Todos os Planos ao se cadastrar hoje!",
+    statsTitle: "META",
     statsUsers: "+15.000",
     statsUsersLabel: "Estudantes Ativos",
     statsQuestions: "+60.000",
@@ -87,7 +88,7 @@ export default function AdminPanel() {
     statsApproval: "94%",
     statsApprovalLabel: "Índice de Eficiência",
     whatsappLink: "https://wa.me/5598988888888",
-    instagramLink: "https://www.instagram.com/sdeconcursos_"
+    instagramLink: "https://www.instagram.com/sqconcursos_"
   });
   const [isSavingCms, setIsSavingCms] = useState(false);
   const [cmsSavedToast, setCmsSavedToast] = useState(false);
@@ -844,6 +845,17 @@ export default function AdminPanel() {
               <h4 className="text-sm font-black text-slate-900 uppercase tracking-wide border-b border-slate-100 pb-2">
                 Números e Métricas da Plataforma
               </h4>
+
+              <div className="mb-4">
+                <label className="text-xs font-bold text-slate-700 block mb-1">Título da Seção de Métricas (ex: META)</label>
+                <input
+                  type="text"
+                  placeholder="META"
+                  value={cmsConfig.statsTitle || ''}
+                  onChange={(e) => setCmsConfig(prev => ({ ...prev, statsTitle: e.target.value }))}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:bg-white focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+                />
+              </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">

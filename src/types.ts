@@ -127,6 +127,7 @@ export interface LandingPageConfig {
   ctaSecondaryText?: string;
   bannerImageUrl?: string;
   announcementText?: string;
+  statsTitle?: string;
   statsUsers?: string;
   statsUsersLabel?: string;
   statsQuestions?: string;

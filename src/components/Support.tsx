@@ -1,11 +1,12 @@
 import React from 'react';
-import { Headset, Mail, MessageCircle, Clock, ShieldCheck, HelpCircle, ExternalLink } from 'lucide-react';
+import { Headset, Mail, MessageCircle, Clock, ShieldCheck, HelpCircle, ExternalLink, Instagram } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export default function Support() {
   const contactInfo = {
     whatsapp: "(98) 98828-4885",
-    email: "sdeconcursos@gmail.com",
+    instagram: "https://www.instagram.com/sqconcursos_/",
+    email: "sqconcursos@gmail.com",
     hours: "Segunda a Sexta, das 08h às 18h",
   };
 
@@ -31,7 +32,7 @@ export default function Support() {
         <p className="text-slate-500">Estamos aqui para ajudar você a alcançar sua aprovação.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Contact Cards */}
         <motion.div 
           whileHover={{ y: -5 }}
@@ -50,6 +51,28 @@ export default function Support() {
               className="inline-flex items-center gap-2 text-green-600 font-bold hover:underline"
             >
               {contactInfo.whatsapp}
+              <ExternalLink size={14} />
+            </a>
+          </div>
+        </motion.div>
+
+        <motion.div 
+          whileHover={{ y: -5 }}
+          className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4"
+        >
+          <div className="w-12 h-12 bg-pink-100 text-pink-600 rounded-xl flex items-center justify-center">
+            <Instagram size={24} />
+          </div>
+          <div>
+            <h3 className="font-bold text-slate-900">Instagram</h3>
+            <p className="text-sm text-slate-500 mb-4">Acompanhe novidades, dicas e editais.</p>
+            <a 
+              href={contactInfo.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-pink-600 font-bold hover:underline"
+            >
+              @sqconcursos_
               <ExternalLink size={14} />
             </a>
           </div>

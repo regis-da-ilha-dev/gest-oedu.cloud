@@ -17,21 +17,23 @@ export default function Pricing({ subscription, userId, onUpgrade }: PricingProp
       id: 'free',
       name: 'Gratuito',
       price: '0',
-      description: 'Para quem está começando a organizar os estudos.',
+      description: 'Ideal para iniciar sua preparação com organização essencial.',
       features: [
+        '🎁 10 Dias de Teste Grátis de Todos os Recursos',
         'Controle de estudos ilimitado',
         'Até 50 flashcards pessoais',
         '10 questões/dia no Banco',
         'Filtros básicos de questões'
       ],
       notIncluded: [
-        'Flashcards ilimitados',
-        'Acesso ilimitado ao Banco',
-        'Gabarito comentado',
-        'Estatísticas avançadas',
+        'Flashcards ilimitados pós-degustação',
+        'Banco de questões ilimitado pós-degustação',
+        'Gabarito comentado pós-degustação',
+        'Estatísticas avançadas pós-degustação',
       ],
-      buttonText: 'Plano Atual',
+      buttonText: 'Começar Grátis',
       highlight: false,
+      badge: '10 Dias Grátis no Início'
     },
     {
       id: 'pro',
@@ -40,6 +42,7 @@ export default function Pricing({ subscription, userId, onUpgrade }: PricingProp
       period: 'ano',
       description: 'Otimize sua memorização e prática de questões com recursos avançados.',
       features: [
+        '🎁 10 Dias de Teste Grátis para Testar',
         'Até 1000 flashcards',
         'Acesso ILIMITADO ao Banco',
         'Filtros avançados (Banca/Ano)',
@@ -49,9 +52,10 @@ export default function Pricing({ subscription, userId, onUpgrade }: PricingProp
         'Flashcards ilimitados',
         'Suporte prioritário',
       ],
-      buttonText: 'Fazer Upgrade',
+      buttonText: 'Testar Pro (10 Dias Grátis)',
       highlight: true,
       icon: Zap,
+      badge: '10 Dias Grátis'
     },
     {
       id: 'elite',
@@ -66,10 +70,10 @@ export default function Pricing({ subscription, userId, onUpgrade }: PricingProp
         'Suporte prioritário WhatsApp'
       ],
       notIncluded: [],
-      buttonText: 'Seja Elite',
+      buttonText: 'Testar Elite (10 Dias Grátis)',
       highlight: false,
       icon: Star,
-      badge: '10 Dias Grátis Ao Entrar'
+      badge: '10 Dias Grátis'
     },
   ];
 
@@ -80,7 +84,7 @@ export default function Pricing({ subscription, userId, onUpgrade }: PricingProp
     }
 
     const phoneNumber = "5598988284885"; // Número de WhatsApp atualizado
-    const message = `Olá! Gostaria de adquirir o plano *${planName}* (R$ ${planPrice}/${planPeriod}) no GestãoEdu. Como posso prosseguir com o pagamento?`;
+    const message = `Olá! Gostaria de testar/adquirir o plano *${planName}* (R$ ${planPrice}/${planPeriod}) com 10 dias grátis no GestãoEdu. Como posso prosseguir?`;
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 
@@ -89,7 +93,7 @@ export default function Pricing({ subscription, userId, onUpgrade }: PricingProp
 
   return (
     <div className="space-y-8 py-6">
-      {/* 10-Day Elite Trial Header Banner */}
+      {/* 10-Day Free Trial Header Banner for All Plans */}
       <div className="max-w-4xl mx-auto bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-3xl p-6 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 border border-amber-400">
         <div className="flex items-center gap-4">
           <div className="p-3 bg-white/20 rounded-2xl shrink-0 shadow-inner">
@@ -97,11 +101,11 @@ export default function Pricing({ subscription, userId, onUpgrade }: PricingProp
           </div>
           <div>
             <span className="text-[10px] font-black uppercase tracking-widest text-amber-950 bg-amber-300 px-3 py-1 rounded-full inline-block mb-1">
-              Bônus Automático para Novos Usuários
+              Bônus Automático para Todos os Planos
             </span>
-            <h3 className="text-xl font-extrabold text-white tracking-tight">10 Dias de Teste Grátis no Plano Elite!</h3>
+            <h3 className="text-xl font-extrabold text-white tracking-tight">10 Dias de Teste Grátis em Todos os Planos!</h3>
             <p className="text-xs text-amber-100 mt-1 max-w-xl leading-relaxed">
-              Todos os novos cadastros (fora administradores) ganham automaticamente 10 dias de acesso total aos recursos do Plano Elite sem precisar cadastrar cartão de crédito.
+              Todos os novos usuários ganham 10 dias de teste grátis com acesso ilimitado para experimentar qualquer plano da plataforma, sem necessidade de cartão de crédito.
             </p>
           </div>
         </div>
@@ -196,9 +200,9 @@ export default function Pricing({ subscription, userId, onUpgrade }: PricingProp
           <ShieldCheck size={40} />
         </div>
         <div className="flex-1 text-center md:text-left">
-          <h4 className="text-lg font-bold text-slate-900">Garantia de Satisfação</h4>
+          <h4 className="text-lg font-bold text-slate-900">10 Dias de Teste Grátis & Garantia Total</h4>
           <p className="text-sm text-slate-500">
-            Teste qualquer plano pro por 7 dias. Se não gostar, devolvemos seu dinheiro sem perguntas.
+            Você tem 10 dias de teste grátis em todos os planos para experimentar cada recurso com tranquilidade. Se não se adaptar, não há cobrança nem burocracia.
           </p>
         </div>
         <div className="flex items-center gap-2 text-amber-500">

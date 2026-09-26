@@ -156,12 +156,12 @@ export default function Layout({ children, user, userProfile, subscription, onLo
           <div className="px-3.5 py-2 mb-3 bg-slate-50/80 rounded-2xl border-2 border-slate-100">
             <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Proprietário</p>
             <a 
-              href="https://www.instagram.com/sdeconcursos_" 
+              href="https://www.instagram.com/sqconcursos_/" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-xs font-black text-indigo-600 hover:text-indigo-700 transition-colors flex items-center gap-1"
             >
-              @sdeconcursos_
+              @sqconcursos_
             </a>
           </div>
 
@@ -209,16 +209,16 @@ export default function Layout({ children, user, userProfile, subscription, onLo
                     isExpired ? "text-red-900" : "text-amber-900"
                   )}>
                     {isExpired 
-                      ? "Seu período de 10 dias de teste do Plano Elite expirou!" 
-                      : `Sua degustação do Plano Elite expira em ${daysRemaining} ${daysRemaining === 1 ? 'dia' : 'dias'}`}
+                      ? "Seu período de 10 dias de teste grátis expirou!" 
+                      : `Seu período de teste grátis (10 dias) expira em ${daysRemaining} ${daysRemaining === 1 ? 'dia' : 'dias'}`}
                   </h4>
                   <p className={cn(
                     "text-xs mt-0.5 leading-relaxed",
                     isExpired ? "text-red-700" : "text-amber-700"
                   )}>
                     {isExpired 
-                      ? "Seu prazo de degustação terminou. Atualize seu plano para manter o acesso ilimitado ou mude para o Plano Gratuito." 
-                      : "Aproveite todos os recursos ilimitados durante o seu período de teste grátis."}
+                      ? "Seu prazo de 10 dias de degustação terminou. Escolha um dos planos para continuar aproveitando os recursos completos ou selecione o Plano Gratuito." 
+                      : "Aproveite todos os recursos completos liberados durante o seu período de 10 dias de teste grátis."}
                   </p>
                 </div>
               </div>

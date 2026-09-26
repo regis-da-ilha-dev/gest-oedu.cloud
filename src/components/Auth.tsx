@@ -133,7 +133,9 @@ export default function Auth({ onLogin, onClearError, isLoading, error }: AuthPr
     {
       name: 'Gratuito',
       price: '0',
+      badge: '10 Dias Grátis no Início',
       features: [
+        '🎁 10 Dias de Teste Grátis de Todos os Recursos',
         'Controle de estudos ilimitado',
         'Até 50 flashcards pessoais',
         '10 questões/dia no Banco',
@@ -146,7 +148,9 @@ export default function Auth({ onLogin, onClearError, isLoading, error }: AuthPr
       name: 'Estudante Pro',
       price: '50,00',
       period: 'ano',
+      badge: '10 Dias Grátis para Testar',
       features: [
+        '🎁 10 Dias de Teste Grátis Automático',
         'Até 1000 flashcards',
         'Acesso ILIMITADO ao Banco',
         'Filtros avançados (Banca/Ano)',
@@ -160,7 +164,7 @@ export default function Auth({ onLogin, onClearError, isLoading, error }: AuthPr
       name: 'Concurseiro Elite',
       price: '100,00',
       period: 'ano',
-      badge: '10 Dias Grátis para Novos Usuários',
+      badge: '10 Dias Grátis no Cadastro',
       features: [
         '🎁 10 Dias de Teste Grátis Automático',
         'Flashcards ILIMITADOS',
@@ -185,18 +189,18 @@ export default function Auth({ onLogin, onClearError, isLoading, error }: AuthPr
             <p className="text-slate-500">Sua jornada de estudos organizada e eficiente.</p>
           </div>
 
-          {/* 10-Day Elite Trial Promotion Banner */}
+          {/* 10-Day Free Trial Promotion Banner for All Plans */}
           <div className="bg-amber-500/10 border-2 border-amber-500/30 rounded-2xl p-4 flex items-center gap-3">
             <div className="p-2.5 bg-amber-500 text-white rounded-xl shrink-0 shadow-sm">
               <Star size={20} className="fill-current" />
             </div>
             <div className="flex-1">
               <span className="text-[10px] font-black uppercase tracking-wider text-amber-700 bg-amber-100 px-2 py-0.5 rounded-md inline-block mb-1">
-                Bônus Automático
+                Bônus Automático para Todos os Planos
               </span>
-              <h4 className="text-xs font-bold text-slate-900">10 Dias de Teste Grátis no Plano Elite!</h4>
+              <h4 className="text-xs font-bold text-slate-900">10 Dias de Teste Grátis em Todos os Planos!</h4>
               <p className="text-[11px] text-slate-600 leading-tight mt-0.5">
-                Ao entrar ou se cadastrar, você ganha 10 dias de acesso total ilimitado automaticamente, sem necessidade de cartão.
+                Ao entrar ou se cadastrar, você tem 10 dias de degustação gratuita em qualquer plano para experimentar todas as ferramentas, sem compromisso e sem precisar de cartão.
               </p>
             </div>
           </div>
@@ -504,13 +508,13 @@ export default function Auth({ onLogin, onClearError, isLoading, error }: AuthPr
             <div className="pt-2">
               <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Proprietário deste app</p>
               <a 
-                href="https://www.instagram.com/sdeconcursos_" 
+                href="https://www.instagram.com/sqconcursos_/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-sm font-bold text-indigo-600 hover:text-indigo-700 transition-colors"
                 id="footer-instagram-link"
               >
-                @sdeconcursos_
+                @sqconcursos_
               </a>
             </div>
           </footer>

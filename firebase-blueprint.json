@@ -176,6 +176,7 @@
         "ctaSecondaryText": { "type": "string" },
         "bannerImageUrl": { "type": "string" },
         "announcementText": { "type": "string" },
+        "statsTitle": { "type": "string" },
         "statsUsers": { "type": "string" },
         "statsUsersLabel": { "type": "string" },
         "statsQuestions": { "type": "string" },

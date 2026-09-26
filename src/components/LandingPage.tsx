@@ -17,6 +17,7 @@ import {
   Award, 
   ChevronDown, 
   TrendingUp,
+  Target,
   MessageCircle,
   Instagram,
   Mail,
@@ -62,7 +63,8 @@ export default function LandingPage({
     heroSubtitle: "Estude de forma estratégica com o maior ecossistema integrado: banco de questões atualizado, gabaritos comentados, flashcards com repetição espaçada (SRS), cronograma inteligente e editais verticalizados.",
     ctaPrimaryText: "Começar Gratuitamente",
     ctaSecondaryText: "Conhecer Planos e Preços",
-    announcementText: "🎁 Bônus Exclusivo: Ganhe 10 Dias de Teste Grátis no Plano Concurseiro Elite ao se cadastrar hoje!",
+    announcementText: "🎁 Bônus Exclusivo: Ganhe 10 Dias de Teste Grátis em Todos os Planos ao se cadastrar hoje!",
+    statsTitle: "META",
     statsUsers: "+15.000",
     statsUsersLabel: "Estudantes Ativos",
     statsQuestions: "+60.000",
@@ -70,7 +72,7 @@ export default function LandingPage({
     statsApproval: "94%",
     statsApprovalLabel: "Índice de Eficiência",
     whatsappLink: "https://wa.me/5598988888888",
-    instagramLink: "https://www.instagram.com/sdeconcursos_"
+    instagramLink: "https://www.instagram.com/sqconcursos_"
   });
 
   // Auth Modal State
@@ -181,8 +183,10 @@ export default function LandingPage({
       name: 'Gratuito',
       price: '0',
       period: 'mês',
+      badge: '🎁 10 Dias Grátis no Início',
       description: 'Ideal para conhecer a metodologia e organizar os primeiros ciclos de estudos.',
       features: [
+        '🎁 10 Dias de Teste Grátis de Todos os Recursos',
         'Controle de estudos ilimitado',
         'Até 50 flashcards pessoais',
         '10 questões/dia no Banco',
@@ -191,16 +195,17 @@ export default function LandingPage({
       ],
       icon: BookOpen,
       color: 'bg-slate-100 text-slate-700',
-      btnText: 'Criar Conta Grátis'
+      btnText: 'Cadastrar com 10 Dias Grátis'
     },
     {
       id: 'pro',
       name: 'Estudante Pro',
       price: '50,00',
       period: 'ano',
-      badge: 'Mais Popular',
+      badge: 'Mais Popular • 10 Dias Grátis',
       description: 'Para concurseiros focados que buscam alto rendimento e resolução contínua.',
       features: [
+        '🎁 10 Dias de Teste Grátis para Testar',
         'Até 1.000 flashcards ativos',
         'Acesso ILIMITADO ao Banco de Questões',
         'Filtros completos (Banca, Ano, Dificuldade)',
@@ -210,7 +215,7 @@ export default function LandingPage({
       icon: Zap,
       color: 'bg-indigo-600 text-white',
       highlight: true,
-      btnText: 'Assinar Plano Pro'
+      btnText: 'Testar Pro por 10 Dias Grátis'
     },
     {
       id: 'elite',
@@ -229,7 +234,7 @@ export default function LandingPage({
       ],
       icon: Star,
       color: 'bg-amber-500 text-white',
-      btnText: 'Testar Elite Grátis'
+      btnText: 'Testar Elite por 10 Dias Grátis'
     }
   ];
 
@@ -289,7 +294,7 @@ export default function LandingPage({
                 className="text-orange-600 hover:text-orange-700 flex items-center gap-1 font-extrabold"
               >
                 <Instagram size={16} />
-                @sdeconcursos_
+                @{cmsConfig.instagramLink.replace(/\/$/, '').split('/').pop() || 'sqconcursos_'}
               </a>
             )}
           </nav>
@@ -353,31 +358,39 @@ export default function LandingPage({
                 </a>
               </div>
 
-              {/* Trust Indicators / Stats */}
-              <div className="pt-8 border-t border-slate-200/80 grid grid-cols-3 gap-4 max-w-lg mx-auto lg:mx-0">
-                <div>
-                  <span className="text-2xl sm:text-3xl font-black text-slate-900 block">
-                    {cmsConfig.statsUsers}
-                  </span>
-                  <span className="text-xs font-bold text-slate-500">
-                    {cmsConfig.statsUsersLabel}
+              {/* Trust Indicators / Stats (Nossa Meta) */}
+              <div className="pt-8 border-t border-slate-200/80 max-w-lg mx-auto lg:mx-0">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-xs font-black uppercase tracking-widest text-slate-800 bg-slate-100 border border-slate-200 px-3 py-1 rounded-full inline-flex items-center gap-1.5 shadow-sm">
+                    <Target size={14} className="text-orange-600" />
+                    <span>{cmsConfig.statsTitle || 'META'}</span>
                   </span>
                 </div>
-                <div>
-                  <span className="text-2xl sm:text-3xl font-black text-orange-600 block">
-                    {cmsConfig.statsQuestions}
-                  </span>
-                  <span className="text-xs font-bold text-slate-500">
-                    {cmsConfig.statsQuestionsLabel}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-2xl sm:text-3xl font-black text-emerald-600 block">
-                    {cmsConfig.statsApproval}
-                  </span>
-                  <span className="text-xs font-bold text-slate-500">
-                    {cmsConfig.statsApprovalLabel}
-                  </span>
+                <div className="grid grid-cols-3 gap-4">
+                  <div>
+                    <span className="text-2xl sm:text-3xl font-black text-slate-900 block">
+                      {cmsConfig.statsUsers}
+                    </span>
+                    <span className="text-xs font-bold text-slate-500">
+                      {cmsConfig.statsUsersLabel}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-2xl sm:text-3xl font-black text-orange-600 block">
+                      {cmsConfig.statsQuestions}
+                    </span>
+                    <span className="text-xs font-bold text-slate-500">
+                      {cmsConfig.statsQuestionsLabel}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-2xl sm:text-3xl font-black text-emerald-600 block">
+                      {cmsConfig.statsApproval}
+                    </span>
+                    <span className="text-xs font-bold text-slate-500">
+                      {cmsConfig.statsApprovalLabel}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -543,7 +556,7 @@ export default function LandingPage({
             </div>
             <h3 className="text-xl font-bold text-slate-900">Garantia & Suporte Especializado</h3>
             <p className="text-sm text-slate-500 leading-relaxed">
-              Criado e mantido por especialistas em concursos (@sdeconcursos_). Suporte ágil e foco total nas suas necessidades práticas de estudo.
+              Criado e mantido por especialistas em concursos (@sqconcursos_). Suporte ágil e foco total nas suas necessidades práticas de estudo.
             </p>
           </div>
         </div>
@@ -554,13 +567,13 @@ export default function LandingPage({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="text-center max-w-2xl mx-auto space-y-3">
             <span className="text-xs font-black uppercase tracking-widest text-orange-600 bg-orange-100/70 px-3 py-1 rounded-full border border-orange-200">
-              Investimento no seu Futuro
+              10 Dias Grátis em Todos os Planos
             </span>
             <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
               Planos e Preços Transparentes
             </h2>
             <p className="text-slate-500 text-sm sm:text-base leading-relaxed">
-              Sem mensalidades abusivas. Escolha o plano ideal e garanta todas as ferramentas para conquistar a sua aprovação.
+              Todos os planos contam com 10 dias de teste grátis sem burocracia e sem cartão de crédito para você experimentar todas as ferramentas na prática.
             </p>
           </div>
 
@@ -635,15 +648,15 @@ export default function LandingPage({
             ))}
           </div>
 
-          {/* 7-Day Guarantee Banner */}
+          {/* 10-Day Free Trial & Guarantee Banner */}
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm max-w-2xl mx-auto flex items-center gap-4 sm:gap-6">
             <div className="w-14 h-14 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center shrink-0">
               <ShieldCheck size={32} />
             </div>
             <div>
-              <h4 className="text-base font-black text-slate-900">Garantia Incondicional de 7 Dias</h4>
+              <h4 className="text-base font-black text-slate-900">10 Dias Grátis em Todos os Planos & Garantia Total</h4>
               <p className="text-xs sm:text-sm text-slate-500 mt-0.5 leading-relaxed">
-                Você pode testar qualquer recurso do GestãoEdu. Se por qualquer motivo não ficar 100% satisfeito, basta solicitar o reembolso. Risco zero para você.
+                Você pode testar qualquer recurso do GestãoEdu por 10 dias gratuitamente. Risco zero para você focar no que realmente importa: a sua aprovação.
               </p>
             </div>
           </div>
@@ -738,7 +751,7 @@ export default function LandingPage({
             Pronto para transformar seus estudos e ver seu nome no Diário Oficial?
           </h2>
           <p className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
-            Junte-se a milhares de concurseiros que estudam com método e disciplina. Cadastre-se grátis e libere 10 dias de acesso Elite automático.
+            Junte-se a milhares de concurseiros que estudam com método e disciplina. Cadastre-se e ganhe 10 dias de teste grátis para experimentar qualquer plano sem compromisso.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <button
@@ -783,7 +796,7 @@ export default function LandingPage({
                 className="text-orange-600 hover:text-orange-700 font-black flex items-center gap-1"
               >
                 <Instagram size={14} />
-                @sdeconcursos_
+                @{cmsConfig.instagramLink.replace(/\/$/, '').split('/').pop() || 'sqconcursos_'}
               </a>
             )}
           </div>
@@ -814,7 +827,7 @@ export default function LandingPage({
                 {authMode === 'login' 
                   ? 'Entre para continuar seu cronograma de estudos.'
                   : authMode === 'register'
-                  ? 'Libere 10 dias de teste grátis no Plano Elite automaticamente.'
+                  ? 'Ganhe 10 dias de teste grátis em todos os planos automaticamente ao se cadastrar.'
                   : 'Digite seu e-mail para receber o link de redefinição.'}
               </p>
             </div>

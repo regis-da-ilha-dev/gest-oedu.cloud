@@ -188,7 +188,7 @@ export const studyService = {
         }
       }
 
-      // Check/Initialize Subscription with 10-day Elite Trial for non-admins
+      // Check/Initialize Subscription with 10-day Full Trial (all plans) for non-admins
       const subRef = doc(db, 'subscriptions', uid);
       const subDoc = await getDoc(subRef);
       const TEN_DAYS = 10 * 24 * 60 * 60 * 1000;
