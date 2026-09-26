@@ -115,7 +115,7 @@ export default function FlashcardReview({ cards: initialCards, subjects = [], on
           </div>
           <button
             onClick={onClose}
-            className="w-full py-4 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition-all shadow-lg"
+            className="w-full py-4 bg-orange-600 text-white rounded-2xl font-bold hover:bg-orange-700 transition-all shadow-lg"
           >
             Voltar
           </button>
@@ -178,7 +178,7 @@ export default function FlashcardReview({ cards: initialCards, subjects = [], on
 
           <button
             onClick={onClose}
-            className="w-full py-4 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition-all shadow-lg hover:shadow-indigo-200"
+            className="w-full py-4 bg-orange-600 text-white rounded-2xl font-bold hover:bg-orange-700 transition-all shadow-lg hover:shadow-orange-200"
           >
             Voltar para a Lista
           </button>
@@ -210,7 +210,7 @@ export default function FlashcardReview({ cards: initialCards, subjects = [], on
           <div className="flex items-center gap-4 sm:gap-6">
             <div className="w-32 sm:w-48 h-1.5 sm:h-2 bg-slate-100 rounded-full overflow-hidden hidden md:block">
               <div 
-                className="h-full bg-indigo-600 transition-all duration-500" 
+                className="h-full bg-orange-600 transition-all duration-500" 
                 style={{ width: `${((currentIndex + 1) / cards.length) * 100}%` }}
               />
             </div>
@@ -410,7 +410,7 @@ export default function FlashcardReview({ cards: initialCards, subjects = [], on
               <RatingButton 
                 label="Fácil" 
                 sublabel="Em 7 dias"
-                color={isFocusMode ? "bg-indigo-500/20 text-indigo-400 border-indigo-500/30 font-bold" : "bg-indigo-50 text-indigo-600 border-indigo-100 font-bold"}
+                color={isFocusMode ? "bg-orange-500/20 text-orange-400 border-orange-500/30 font-bold" : "bg-orange-50 text-orange-600 border-orange-100 font-bold"}
                 onClick={() => handleRate(5)}
                 icon={Zap}
               />

@@ -88,7 +88,7 @@ export default function Layout({ children, user, userProfile, subscription, onLo
       {/* Mobile Header */}
       <header className="md:hidden bg-white border-b-2 border-slate-200 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
         <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 bg-indigo-500 border-2 border-b-4 border-indigo-700 rounded-xl flex items-center justify-center text-white shadow-sm">
+          <div className="w-9 h-9 bg-orange-500 border-2 border-b-4 border-orange-600 rounded-xl flex items-center justify-center text-white shadow-sm">
             <BookOpen size={18} />
           </div>
           <div>
@@ -116,7 +116,7 @@ export default function Layout({ children, user, userProfile, subscription, onLo
         {/* Drawer Header on Mobile & Desktop */}
         <div className="p-5 sm:p-6 border-b border-slate-100 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 md:w-11 md:h-11 bg-indigo-500 border-2 border-b-4 border-indigo-700 rounded-2xl flex items-center justify-center text-white shadow-sm">
+            <div className="w-10 h-10 md:w-11 md:h-11 bg-orange-500 border-2 border-b-4 border-orange-600 rounded-2xl flex items-center justify-center text-white shadow-sm">
               <BookOpen size={22} className="md:w-6 md:h-6" />
             </div>
             <div>
@@ -142,7 +142,7 @@ export default function Layout({ children, user, userProfile, subscription, onLo
               className={({ isActive }) => cn(
                 "w-full flex items-center gap-3.5 px-3.5 sm:px-4 py-2.5 rounded-2xl text-xs font-extrabold uppercase tracking-wide transition-all duration-100 border-2",
                 isActive
-                  ? "bg-indigo-50/60 text-indigo-700 border-indigo-200 border-b-4 shadow-sm"
+                  ? "bg-orange-50 text-orange-700 border-orange-200 border-b-4 shadow-sm"
                   : "text-slate-500 border-transparent hover:bg-slate-50 hover:text-slate-800"
               )}
             >
@@ -159,7 +159,7 @@ export default function Layout({ children, user, userProfile, subscription, onLo
               href="https://www.instagram.com/sqconcursos_/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-xs font-black text-indigo-600 hover:text-indigo-700 transition-colors flex items-center gap-1"
+              className="text-xs font-black text-orange-600 hover:text-orange-700 transition-colors flex items-center gap-1"
             >
               @sqconcursos_
             </a>
@@ -167,7 +167,7 @@ export default function Layout({ children, user, userProfile, subscription, onLo
 
           <div className="flex items-center gap-3 px-3 py-2 mb-1">
             {user?.photoURL ? (
-              <img src={user.photoURL} alt={user.displayName} className="w-8 h-8 rounded-full ring-2 ring-indigo-100" referrerPolicy="no-referrer" />
+              <img src={user.photoURL} alt={user.displayName} className="w-8 h-8 rounded-full ring-2 ring-orange-200" referrerPolicy="no-referrer" />
             ) : (
               <div className="w-8 h-8 bg-slate-200 rounded-full flex items-center justify-center text-slate-500">
                 <User size={16} />
@@ -263,7 +263,7 @@ export default function Layout({ children, user, userProfile, subscription, onLo
             className={({ isActive }) => cn(
               "flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all select-none min-w-[58px]",
               isActive 
-                ? "text-indigo-600 font-extrabold" 
+                ? "text-orange-600 font-extrabold" 
                 : "text-slate-400 hover:text-slate-600 font-semibold"
             )}
           >
@@ -271,9 +271,9 @@ export default function Layout({ children, user, userProfile, subscription, onLo
               <>
                 <div className={cn(
                   "p-1 rounded-xl transition-all",
-                  isActive ? "bg-indigo-50" : ""
+                  isActive ? "bg-orange-50" : ""
                 )}>
-                  <item.icon size={19} className={isActive ? "text-indigo-600" : "text-slate-400"} />
+                  <item.icon size={19} className={isActive ? "text-orange-600" : "text-slate-400"} />
                 </div>
                 <span className="text-[10px] tracking-tight leading-none mt-0.5">{item.label}</span>
               </>

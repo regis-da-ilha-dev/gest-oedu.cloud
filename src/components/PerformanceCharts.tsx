@@ -60,7 +60,7 @@ class ChartErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBounda
 }
 
 const DISTINCT_SUBJECT_COLORS = [
-  '#6366f1', // Indigo
+  '#f97316', // Indigo
   '#ec4899', // Pink
   '#10b981', // Emerald
   '#f59e0b', // Amber
@@ -113,7 +113,7 @@ const ResizeContainer = ({ children, height }: ResizeContainerProps) => {
     <div ref={containerRef} className="w-full" style={{ height: `${height}px` }}>
       {dimensions && dimensions.width > 0 ? children(dimensions.width, dimensions.height) : (
         <div className="w-full h-full flex items-center justify-center">
-          <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-6 h-6 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
         </div>
       )}
     </div>
@@ -190,7 +190,7 @@ const VelocimeterGauge = ({ value }: { value: number }) => {
           y={ly}
           textAnchor="middle"
           dy="0.35em"
-          className="text-[13px] font-black fill-indigo-600 font-sans tracking-tight select-none"
+          className="text-[13px] font-black fill-orange-600 font-sans tracking-tight select-none"
         >
           {Math.round(value)}%
         </text>
@@ -492,7 +492,7 @@ const PerformanceCharts = React.memo(({ subjects, topics, sessions, flashcards, 
     const validSubjects = (subjects || []).filter(s => s && s.id);
 
     validSubjects.forEach((sub, idx) => {
-      if (sub.color && sub.color !== '#6366f1' && !usedColors.has(sub.color)) {
+      if (sub.color && sub.color !== '#f97316' && !usedColors.has(sub.color)) {
         map.set(sub.id, sub.color);
         usedColors.add(sub.color);
       } else {
@@ -519,7 +519,7 @@ const PerformanceCharts = React.memo(({ subjects, topics, sessions, flashcards, 
             name: String(subject.name || 'Sem nome'),
             value: totalHours,
             minutes: totalMinutes,
-            color: subjectColorMap.get(subject.id) || '#6366f1'
+            color: subjectColorMap.get(subject.id) || '#f97316'
           };
         }).filter(d => d.value > 0);
       } else {
@@ -578,7 +578,7 @@ const PerformanceCharts = React.memo(({ subjects, topics, sessions, flashcards, 
           return {
             name: String(subject.name || 'Sem nome'),
             accuracy,
-            color: subjectColorMap.get(subject.id) || '#6366f1',
+            color: subjectColorMap.get(subject.id) || '#f97316',
             total: totalQuestions,
             hits: correctQuestions
           };
@@ -636,14 +636,14 @@ const PerformanceCharts = React.memo(({ subjects, topics, sessions, flashcards, 
             name: String(subject.name || 'Sem nome'),
             count: Number(subjectFlashcards.length),
             reviewed: Number(reviewedCount),
-            color: String(subject.color || '#6366f1')
+            color: String(subject.color || '#f97316')
           };
         }).filter(d => d.count > 0);
       } else {
         const validTopics = (filteredTopics || []).filter(t => t && t.subjectId === selectedSubjectId);
         const validFlashcards = (filteredFlashcards || []).filter(f => f && f.topicId);
         const subject = (subjects || []).find(s => s.id === selectedSubjectId);
-        const baseColor = subject?.color || '#6366f1';
+        const baseColor = subject?.color || '#f97316';
         
         return validTopics.map(topic => {
           const topicFlashcards = validFlashcards.filter(f => f.topicId === topic.id);
@@ -910,7 +910,7 @@ const PerformanceCharts = React.memo(({ subjects, topics, sessions, flashcards, 
   // Return null or loading if not mounted to avoid Recharts measuring issues during concurrent render
   if (!isMounted) return (
     <div className="flex-1 flex items-center justify-center p-8 min-h-[400px]">
-      <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+      <div className="w-10 h-10 border-4 border-orange-600 border-t-transparent rounded-full animate-spin"></div>
     </div>
   );
 
@@ -924,9 +924,9 @@ const PerformanceCharts = React.memo(({ subjects, topics, sessions, flashcards, 
         {!isElite && (
           <button
             onClick={() => navigate('/pricing')}
-            className="flex items-center gap-2 px-5 py-2.5 bg-indigo-50 text-indigo-700 border-2 border-b-4 border-indigo-200 rounded-2xl text-xs font-black uppercase tracking-wider hover:bg-indigo-100 active:translate-y-[2px] active:border-b-2 transition-all cursor-pointer"
+            className="flex items-center gap-2 px-5 py-2.5 bg-orange-50 text-orange-700 border-2 border-b-4 border-orange-200 rounded-2xl text-xs font-black uppercase tracking-wider hover:bg-orange-100 active:translate-y-[2px] active:border-b-2 transition-all cursor-pointer"
           >
-            <Star size={16} className="text-indigo-500" fill="currentColor" />
+            <Star size={16} className="text-orange-500" fill="currentColor" />
             Liberar Estatísticas Elite
           </button>
         )}
@@ -935,7 +935,7 @@ const PerformanceCharts = React.memo(({ subjects, topics, sessions, flashcards, 
       {/* Filter Selector */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 bg-white border border-slate-200 rounded-3xl">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 bg-indigo-50 text-indigo-600 rounded-2xl">
+          <div className="p-2.5 bg-orange-50 text-orange-600 rounded-2xl">
             <BarChart3 size={20} />
           </div>
           <div>
@@ -949,7 +949,7 @@ const PerformanceCharts = React.memo(({ subjects, topics, sessions, flashcards, 
             <select
               value={selectedSubjectId}
               onChange={(e) => setSelectedSubjectId(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer hover:bg-slate-100 transition-all"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer hover:bg-slate-100 transition-all"
             >
               <option value="all">📚 Todas as Matérias</option>
               {subjects.map((sub) => (
@@ -964,7 +964,7 @@ const PerformanceCharts = React.memo(({ subjects, topics, sessions, flashcards, 
             <select
               value={selectedPosition}
               onChange={(e) => setSelectedPosition(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer hover:bg-slate-100 transition-all"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer hover:bg-slate-100 transition-all"
             >
               <option value="all">💼 Todos os Cargos</option>
               {availablePositions.map((pos) => (
@@ -999,9 +999,9 @@ const PerformanceCharts = React.memo(({ subjects, topics, sessions, flashcards, 
               </span>
             </div>
             
-            <div className="p-3 bg-indigo-50/50 rounded-2xl border border-indigo-100 text-center">
-              <span className="text-[10px] font-black text-indigo-600/80 uppercase tracking-wider block">Horas</span>
-              <span className="text-xl sm:text-2xl font-black text-indigo-600 mt-1 block">
+            <div className="p-3 bg-orange-50/50 rounded-2xl border border-orange-100 text-center">
+              <span className="text-[10px] font-black text-orange-600/80 uppercase tracking-wider block">Horas</span>
+              <span className="text-xl sm:text-2xl font-black text-orange-600 mt-1 block">
                 {kpis.totalHours.toFixed(1)}h
               </span>
             </div>
@@ -1016,7 +1016,7 @@ const PerformanceCharts = React.memo(({ subjects, topics, sessions, flashcards, 
 
           <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-bold">
             <span>Média por Sessão:</span>
-            <span className="text-indigo-600 font-extrabold">
+            <span className="text-orange-600 font-extrabold">
               {kpis.totalSessions > 0 ? Math.round(kpis.totalMinutes / kpis.totalSessions) : 0} min
             </span>
           </div>
@@ -1062,7 +1062,7 @@ const PerformanceCharts = React.memo(({ subjects, topics, sessions, flashcards, 
             <div className="bg-slate-50/90 p-2.5 rounded-2xl border border-slate-100 text-[11px] space-y-1">
               <div className="flex items-center justify-between text-slate-600 font-bold">
                 <span className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-indigo-500 inline-block shrink-0"></span>
+                  <span className="w-2 h-2 rounded-full bg-orange-500 inline-block shrink-0"></span>
                   Histórico (Sessões):
                 </span>
                 <span className="font-extrabold text-slate-800">
@@ -1126,7 +1126,7 @@ const PerformanceCharts = React.memo(({ subjects, topics, sessions, flashcards, 
 
           <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-bold">
             <span>Progresso de Revisão:</span>
-            <span className="text-indigo-600 font-extrabold">
+            <span className="text-orange-600 font-extrabold">
               {filteredFlashcards.length > 0 ? Math.round((filteredFlashcards.filter(f => (Number(f.repetition) || 0) > 0 || f.lastReviewedAt !== undefined).length / filteredFlashcards.length) * 100) : 0}%
             </span>
           </div>
@@ -1137,7 +1137,7 @@ const PerformanceCharts = React.memo(({ subjects, topics, sessions, flashcards, 
       <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200">
         <div className="flex items-center justify-between border-b-2 border-slate-100 pb-4 mb-6">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-indigo-50 text-indigo-500 rounded-xl">
+            <div className="p-2 bg-orange-50 text-orange-500 rounded-xl">
               <Trophy size={20} />
             </div>
             <h3 className="text-base sm:text-lg font-black text-slate-800 uppercase tracking-tight">
@@ -1170,7 +1170,7 @@ const PerformanceCharts = React.memo(({ subjects, topics, sessions, flashcards, 
               </div>
               <div className="p-3 bg-white rounded-xl border-2 border-slate-100 text-center">
                 <span className="text-[10px] font-bold text-slate-400 block uppercase">Domínio</span>
-                <span className="text-lg font-black text-indigo-600 mt-1 block">
+                <span className="text-lg font-black text-orange-600 mt-1 block">
                   {Math.round(Math.min(100, kpis.overallAccuracy * 0.9 + kpis.topicsPerHour * 10))}%
                 </span>
               </div>
@@ -1233,7 +1233,7 @@ const PerformanceCharts = React.memo(({ subjects, topics, sessions, flashcards, 
       <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200">
         <div className="flex items-center justify-between border-b-2 border-slate-100 pb-4 mb-6">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-indigo-50 text-indigo-500 rounded-xl">
+            <div className="p-2 bg-orange-50 text-orange-500 rounded-xl">
               <Brain size={20} />
             </div>
             <h3 className="text-base sm:text-lg font-black text-slate-800 uppercase tracking-tight">
@@ -1282,7 +1282,7 @@ const PerformanceCharts = React.memo(({ subjects, topics, sessions, flashcards, 
                         </ResponsiveContainer>
                         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none">
                           <span className="text-xs font-black text-slate-400 uppercase tracking-wider">Total</span>
-                          <span className="text-base font-black text-indigo-600 mt-0.5">{sortedData.reduce((acc, d) => acc + d.minutes, 0)} min</span>
+                          <span className="text-base font-black text-orange-600 mt-0.5">{sortedData.reduce((acc, d) => acc + d.minutes, 0)} min</span>
                           <span className="text-[10px] font-bold text-slate-400">({totalSum.toFixed(1)}h)</span>
                         </div>
                       </div>
@@ -1493,7 +1493,7 @@ const PerformanceCharts = React.memo(({ subjects, topics, sessions, flashcards, 
       <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200">
         <div className="flex items-center justify-between border-b-2 border-slate-100 pb-4 mb-6">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-indigo-50 text-indigo-500 rounded-xl">
+            <div className="p-2 bg-orange-50 text-orange-500 rounded-xl">
               <TrendingUp size={20} />
             </div>
             <h3 className="text-base sm:text-lg font-black text-slate-800 uppercase tracking-tight">

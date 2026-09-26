@@ -116,7 +116,7 @@ export default function Pricing({ subscription, userId, onUpgrade }: PricingProp
         <p className="text-base text-slate-500 max-w-2xl mx-auto">
           O controle de estudos é gratuito para todos. Escolha um plano para destravar o poder total dos flashcards e do banco de questões.
           <br />
-          <span className="text-sm font-bold text-indigo-600 mt-1 block">Atendimento personalizado via WhatsApp</span>
+          <span className="text-sm font-bold text-orange-600 mt-1 block">Atendimento personalizado via WhatsApp</span>
         </p>
       </div>
 
@@ -132,7 +132,7 @@ export default function Pricing({ subscription, userId, onUpgrade }: PricingProp
               className={cn(
                 "relative flex flex-col p-8 rounded-3xl border transition-all duration-300 hover:scale-105",
                 plan.highlight 
-                  ? "bg-indigo-600 text-white border-indigo-600 shadow-2xl shadow-indigo-200" 
+                  ? "bg-orange-600 text-white border-orange-600 shadow-2xl shadow-orange-100" 
                   : "bg-white text-slate-900 border-slate-200 shadow-sm"
               )}
             >
@@ -145,14 +145,14 @@ export default function Pricing({ subscription, userId, onUpgrade }: PricingProp
               <div className="mb-8">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-2xl font-bold">{plan.name}</h3>
-                  {Icon && <Icon size={24} className={plan.highlight ? "text-indigo-200" : "text-indigo-600"} />}
+                  {Icon && <Icon size={24} className={plan.highlight ? "text-orange-200" : "text-orange-600"} />}
                 </div>
                 <div className="flex items-baseline gap-1">
                   <span className="text-sm font-medium opacity-70">R$</span>
                   <span className="text-5xl font-black tracking-tight">{plan.price}</span>
                   <span className="text-base font-bold opacity-80">/{period}</span>
                 </div>
-                <p className={cn("mt-4 text-sm leading-relaxed", plan.highlight ? "text-indigo-100" : "text-slate-500")}>
+                <p className={cn("mt-4 text-sm leading-relaxed", plan.highlight ? "text-orange-100" : "text-slate-500")}>
                   {plan.description}
                 </p>
               </div>
@@ -160,7 +160,7 @@ export default function Pricing({ subscription, userId, onUpgrade }: PricingProp
               <div className="flex-1 space-y-4 mb-8">
                 {plan.features.map((feature) => (
                   <div key={feature} className="flex items-start gap-3">
-                    <div className={cn("p-0.5 rounded-full mt-0.5", plan.highlight ? "bg-indigo-400 text-white" : "bg-emerald-100 text-emerald-600")}>
+                    <div className={cn("p-0.5 rounded-full mt-0.5", plan.highlight ? "bg-orange-400 text-white" : "bg-emerald-100 text-emerald-600")}>
                       <Check size={14} />
                     </div>
                     <span className="text-sm font-medium">{feature}</span>
@@ -180,12 +180,12 @@ export default function Pricing({ subscription, userId, onUpgrade }: PricingProp
                 onClick={() => !isCurrent && handleUpgrade(plan.id, plan.name, plan.price, period)}
                 disabled={isCurrent}
                 className={cn(
-                  "w-full py-4 rounded-2xl font-bold transition-all text-lg",
+                  "w-full py-4 rounded-2xl font-bold transition-all text-lg cursor-pointer",
                   isCurrent
                     ? "bg-white/20 text-white cursor-default"
                     : plan.highlight
-                      ? "bg-white text-indigo-600 hover:bg-indigo-50"
-                      : "bg-indigo-600 text-white hover:bg-indigo-700"
+                      ? "bg-white text-orange-600 hover:bg-orange-50 font-black"
+                      : "bg-orange-500 text-white hover:bg-orange-600 font-bold"
                 )}
               >
                 {isCurrent ? "Plano Atual" : plan.buttonText}
@@ -196,7 +196,7 @@ export default function Pricing({ subscription, userId, onUpgrade }: PricingProp
       </div>
 
       <div className="max-w-3xl mx-auto bg-slate-50 rounded-3xl p-8 border border-slate-100 flex flex-col md:flex-row items-center gap-6">
-        <div className="p-4 bg-white rounded-2xl shadow-sm text-indigo-600">
+        <div className="p-4 bg-white rounded-2xl shadow-sm text-orange-600">
           <ShieldCheck size={40} />
         </div>
         <div className="flex-1 text-center md:text-left">

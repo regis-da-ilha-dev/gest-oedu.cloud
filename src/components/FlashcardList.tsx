@@ -1097,7 +1097,7 @@ export default function FlashcardList({
               <div 
                 className={cn(
                   "h-full transition-all duration-500",
-                  (subscription?.flashcardsCount || 0) >= 45 ? "bg-red-500" : "bg-indigo-600"
+                  (subscription?.flashcardsCount || 0) >= 45 ? "bg-red-500" : "bg-orange-600"
                 )}
                 style={{ width: `${Math.min(100, ((subscription?.flashcardsCount || 0) / 50) * 100)}%` }}
               />
@@ -1106,7 +1106,7 @@ export default function FlashcardList({
 
           <button
             onClick={() => navigate('/pricing')}
-            className="px-4 py-2 bg-indigo-600 text-white text-xs font-bold rounded-lg hover:bg-indigo-700 transition-all shadow-sm whitespace-nowrap"
+            className="px-4 py-2 bg-orange-600 text-white text-xs font-bold rounded-lg hover:bg-orange-700 transition-all shadow-sm whitespace-nowrap"
           >
             Fazer Upgrade
           </button>
@@ -1128,7 +1128,7 @@ export default function FlashcardList({
               className={cn(
                 "px-6 py-2 rounded-lg text-sm font-bold transition-all duration-200",
                 activeSource === 'mine' 
-                  ? "bg-white text-indigo-600 shadow-sm ring-1 ring-slate-200" 
+                  ? "bg-white text-orange-600 shadow-sm ring-1 ring-slate-200" 
                   : "text-slate-500 hover:text-slate-700"
               )}
             >
@@ -1148,7 +1148,7 @@ export default function FlashcardList({
               className={cn(
                 "px-6 py-2 rounded-lg text-sm font-bold transition-all duration-200 flex items-center gap-2",
                 activeSource === 'bank' 
-                  ? "bg-white text-indigo-600 shadow-sm ring-1 ring-slate-200" 
+                  ? "bg-white text-orange-600 shadow-sm ring-1 ring-slate-200" 
                   : "text-slate-500 hover:text-slate-700"
               )}
             >
@@ -1180,7 +1180,7 @@ export default function FlashcardList({
                     <button
                       onClick={() => setIsBulkEditing(true)}
                       disabled={selectedCards.length === 0}
-                      className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-bold text-sm hover:bg-indigo-700 transition-all disabled:opacity-50"
+                      className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg font-bold text-sm hover:bg-orange-700 transition-all disabled:opacity-50"
                     >
                       <Edit2 size={16} />
                       Editar Selecionados
@@ -1216,7 +1216,7 @@ export default function FlashcardList({
                   <button
                     onClick={handleBulkBankImport}
                     disabled={selectedCards.length === 0}
-                    className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-bold text-sm hover:bg-indigo-700 transition-all disabled:opacity-50"
+                    className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg font-bold text-sm hover:bg-orange-700 transition-all disabled:opacity-50"
                   >
                     <PlusCircle size={16} />
                     Importar Selecionados
@@ -1272,7 +1272,7 @@ export default function FlashcardList({
                       </button>
                       <button
                         onClick={() => setShowImportInfo(!showImportInfo)}
-                        className="absolute -top-2 -right-2 p-1 bg-white border border-slate-200 rounded-full text-slate-400 hover:text-indigo-600 shadow-sm transition-colors"
+                        className="absolute -top-2 -right-2 p-1 bg-white border border-slate-200 rounded-full text-slate-400 hover:text-orange-600 shadow-sm transition-colors"
                         title="Formato do CSV"
                       >
                         <AlertCircle size={12} />
@@ -1291,19 +1291,19 @@ export default function FlashcardList({
                           </p>
                           <ul className="space-y-1.5">
                             <li className="text-[11px] flex items-center gap-2 text-slate-700">
-                              <div className="w-1 h-1 rounded-full bg-indigo-500" />
+                              <div className="w-1 h-1 rounded-full bg-orange-500" />
                               <span className="font-bold">frente</span>: Pergunta/Conceito
                             </li>
                             <li className="text-[11px] flex items-center gap-2 text-slate-700">
-                              <div className="w-1 h-1 rounded-full bg-indigo-500" />
+                              <div className="w-1 h-1 rounded-full bg-orange-500" />
                               <span className="font-bold">verso</span>: Resposta/Definição
                             </li>
                             <li className="text-[11px] flex items-center gap-2 text-slate-700">
-                              <div className="w-1 h-1 rounded-full bg-indigo-500" />
+                              <div className="w-1 h-1 rounded-full bg-orange-500" />
                               <span className="font-bold">materia</span>: Nome da Matéria
                             </li>
                             <li className="text-[11px] flex items-center gap-2 text-slate-700">
-                              <div className="w-1 h-1 rounded-full bg-indigo-500" />
+                              <div className="w-1 h-1 rounded-full bg-orange-500" />
                               <span className="font-bold">topico</span>: Nome do Tópico (opcional)
                             </li>
                           </ul>
@@ -1350,7 +1350,7 @@ export default function FlashcardList({
                         }
                         setIsAdding(true);
                       }}
-                      className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg font-medium hover:bg-orange-700 transition-colors"
                     >
                       <Plus size={20} />
                       Novo Card
@@ -1370,7 +1370,7 @@ export default function FlashcardList({
               <div className="flex items-center gap-4 mb-8">
                 <div className={cn(
                   "p-3 rounded-2xl",
-                  importSummary ? (importSummary.success > 0 ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600") : "bg-indigo-100 text-indigo-600"
+                  importSummary ? (importSummary.success > 0 ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600") : "bg-orange-100 text-orange-600"
                 )}>
                   {importSummary ? (
                     importSummary.success > 0 ? <CheckCircle2 size={24} /> : <XCircle size={24} />
@@ -1394,7 +1394,7 @@ export default function FlashcardList({
                 <div className="space-y-4">
                   <div className="h-4 bg-slate-100 rounded-full overflow-hidden">
                     <div 
-                      className="h-full bg-indigo-600 transition-all duration-300 ease-out"
+                      className="h-full bg-orange-600 transition-all duration-300 ease-out"
                       style={{ width: `${importProgress.total > 0 ? (importProgress.current / importProgress.total) * 100 : 0}%` }}
                     />
                   </div>
@@ -1472,19 +1472,19 @@ export default function FlashcardList({
 
       {/* Review Banner */}
       {activeSource === 'mine' && dueCards.length > 0 && (
-        <div className="bg-gradient-to-r from-indigo-600 to-violet-600 rounded-2xl p-6 text-white shadow-lg flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="bg-gradient-to-r from-orange-600 to-violet-600 rounded-2xl p-6 text-white shadow-lg flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-4 text-center md:text-left">
             <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
               <Layers size={32} />
             </div>
             <div>
               <h3 className="text-xl font-bold">Sessão de Revisão Disponível</h3>
-              <p className="text-indigo-100">Você tem {dueCards.length} cards prontos para revisar hoje.</p>
+              <p className="text-orange-100">Você tem {dueCards.length} cards prontos para revisar hoje.</p>
             </div>
           </div>
           <button
             onClick={() => setIsReviewing(true)}
-            className="w-full md:w-auto flex items-center justify-center gap-2 px-8 py-3 bg-white text-indigo-600 rounded-xl font-bold hover:bg-indigo-50 transition-all shadow-sm hover:scale-105 active:scale-95"
+            className="w-full md:w-auto flex items-center justify-center gap-2 px-8 py-3 bg-white text-orange-600 rounded-xl font-bold hover:bg-orange-50 transition-all shadow-sm hover:scale-105 active:scale-95"
           >
             <Play size={20} fill="currentColor" />
             Começar Agora
@@ -1501,7 +1501,7 @@ export default function FlashcardList({
             placeholder="Buscar..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-8 pr-3 py-1.5 md:py-2.5 rounded-lg sm:rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-xs md:text-sm bg-white"
+            className="w-full pl-8 pr-3 py-1.5 md:py-2.5 rounded-lg sm:rounded-xl border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none text-xs md:text-sm bg-white"
           />
         </div>
 
@@ -1526,7 +1526,7 @@ export default function FlashcardList({
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
-            className="w-full pl-8 pr-8 py-1.5 md:py-2.5 rounded-lg sm:rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white appearance-none text-xs md:text-sm font-medium"
+            className="w-full pl-8 pr-8 py-1.5 md:py-2.5 rounded-lg sm:rounded-xl border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none bg-white appearance-none text-xs md:text-sm font-medium"
           >
             <option value="createdAt">Data Criação</option>
             <option value="nextReviewDate">Próxima Revisão</option>
@@ -1536,7 +1536,7 @@ export default function FlashcardList({
           </select>
           <button
             onClick={() => setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
-            className="absolute right-1.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-indigo-600 transition-colors"
+            className="absolute right-1.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-orange-600 transition-colors"
           >
             {sortOrder === 'asc' ? <ArrowUp size={14} className="md:w-4 md:h-4" /> : <ArrowDown size={14} className="md:w-4 md:h-4" />}
           </button>
@@ -1570,7 +1570,7 @@ export default function FlashcardList({
                 <select
                   value={newCard.subjectId}
                   onChange={(e) => setNewCard({ ...newCard, subjectId: e.target.value, topicId: '' })}
-                  className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white"
+                  className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none bg-white"
                   required
                 >
                   {subjects.map(s => (
@@ -1583,7 +1583,7 @@ export default function FlashcardList({
                 <select
                   value={newCard.topicId}
                   onChange={(e) => setNewCard({ ...newCard, topicId: e.target.value })}
-                  className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white"
+                  className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none bg-white"
                 >
                   <option value="">Nenhum tópico</option>
                   {topics.filter(t => t.subjectId === newCard.subjectId).map(t => (
@@ -1609,7 +1609,7 @@ export default function FlashcardList({
                         type="url"
                         value={newCard.imageUrl}
                         onChange={(e) => setNewCard({ ...newCard, imageUrl: e.target.value })}
-                        className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                        className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
                         placeholder="https://exemplo.com/imagem.jpg"
                       />
                     </div>
@@ -1642,7 +1642,7 @@ export default function FlashcardList({
                       </button>
                     </div>
                   )}
-                  {isUploading && <p className="text-[10px] text-indigo-600 mt-1 animate-pulse">Fazendo upload...</p>}
+                  {isUploading && <p className="text-[10px] text-orange-600 mt-1 animate-pulse">Fazendo upload...</p>}
                   {uploadError && <p className="text-[10px] text-red-600 mt-1">{uploadError}</p>}
                 </div>
               </div>
@@ -1652,7 +1652,7 @@ export default function FlashcardList({
                   type="text"
                   value={newCard.caption}
                   onChange={(e) => setNewCard({ ...newCard, caption: e.target.value })}
-                  className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                  className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
                   placeholder="Ex: Esquema de Direito Penal"
                 />
               </div>
@@ -1667,7 +1667,7 @@ export default function FlashcardList({
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700"
+                className="px-4 py-2 bg-orange-600 text-white font-medium rounded-lg hover:bg-orange-700"
               >
                 Salvar Card
               </button>
@@ -1722,7 +1722,7 @@ export default function FlashcardList({
                 <div className="flex items-center justify-between border-b border-slate-200/80 pb-4">
                   <div>
                     <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                      <ShoppingBag size={20} className="text-indigo-600" />
+                      <ShoppingBag size={20} className="text-orange-600" />
                       Matérias no Banco de Cards
                     </h3>
                     <p className="text-xs text-slate-500 mt-1">
@@ -1730,7 +1730,7 @@ export default function FlashcardList({
                     </p>
                   </div>
                   {bankSubjectCardsSummary.length > 0 && (
-                    <span className="text-xs font-bold text-indigo-700 bg-indigo-50 border border-indigo-100 px-3 py-1 rounded-full">
+                    <span className="text-xs font-bold text-orange-700 bg-orange-50 border border-orange-100 px-3 py-1 rounded-full">
                       {bankSubjectCardsSummary.length} {bankSubjectCardsSummary.length === 1 ? 'matéria disponível' : 'matérias disponíveis'}
                     </span>
                   )}
@@ -1761,7 +1761,7 @@ export default function FlashcardList({
                                   <BookOpen size={20} />
                                 </div>
                                 <div>
-                                  <h4 className="font-bold text-base text-slate-900 group-hover:text-indigo-600 transition-colors">
+                                  <h4 className="font-bold text-base text-slate-900 group-hover:text-orange-600 transition-colors">
                                     {subjectName}
                                   </h4>
                                   <span className="text-xs text-slate-500 font-medium">
@@ -1777,8 +1777,8 @@ export default function FlashcardList({
                                   className={cn(
                                     "px-3 py-1.5 rounded-xl font-bold text-xs transition-all flex items-center gap-1.5 shrink-0",
                                     isSubjectSelected
-                                      ? "bg-indigo-600 text-white shadow-sm"
-                                      : "bg-slate-100 text-slate-600 hover:bg-indigo-50 hover:text-indigo-600"
+                                      ? "bg-orange-600 text-white shadow-sm"
+                                      : "bg-slate-100 text-slate-600 hover:bg-orange-50 hover:text-orange-600"
                                   )}
                                   title={isSubjectSelected ? "Desmarcar matéria" : "Selecionar todos desta matéria"}
                                 >
@@ -1796,7 +1796,7 @@ export default function FlashcardList({
                                 </span>
                               ) : (
                                 <>
-                                  <span className="text-xs font-semibold text-indigo-700 bg-indigo-50 border border-indigo-100 px-2.5 py-0.5 rounded-full">
+                                  <span className="text-xs font-semibold text-orange-700 bg-orange-50 border border-orange-100 px-2.5 py-0.5 rounded-full">
                                     {item.unimportedCards.length} novos para importar
                                   </span>
                                   {item.importedCount > 0 && (
@@ -1812,7 +1812,7 @@ export default function FlashcardList({
                           <div className="pt-6 mt-4 border-t border-slate-100 flex items-center justify-between">
                             <button
                               onClick={() => setOpenBankSubjectId(item.subjectId)}
-                              className="w-full py-2.5 px-4 bg-slate-50 hover:bg-indigo-50 text-slate-700 hover:text-indigo-600 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-2 border border-slate-200/60 hover:border-indigo-200"
+                              className="w-full py-2.5 px-4 bg-slate-50 hover:bg-orange-50 text-slate-700 hover:text-orange-600 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-2 border border-slate-200/60 hover:border-orange-200"
                             >
                               <FolderOpen size={15} />
                               Abrir Matéria ({item.totalCards.length} cards)
@@ -1872,7 +1872,7 @@ export default function FlashcardList({
                           "px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 shrink-0 self-start sm:self-auto",
                           allSelected
                             ? "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                            : "bg-indigo-600 text-white hover:bg-indigo-700 shadow-md shadow-indigo-100"
+                            : "bg-orange-600 text-white hover:bg-orange-700 shadow-md shadow-orange-100"
                         )}
                       >
                         <CheckCircle2 size={16} />
@@ -1896,7 +1896,7 @@ export default function FlashcardList({
                                   e.stopPropagation();
                                   setEditingCard(card);
                                 }}
-                                className="w-7 h-7 rounded-lg bg-white/95 backdrop-blur border border-slate-200/75 shadow-sm flex items-center justify-center text-slate-500 hover:text-indigo-600 hover:bg-white transition-colors"
+                                className="w-7 h-7 rounded-lg bg-white/95 backdrop-blur border border-slate-200/75 shadow-sm flex items-center justify-center text-slate-500 hover:text-orange-600 hover:bg-white transition-colors"
                                 title="Editar Card"
                               >
                                 <Edit2 size={12} />
@@ -1919,13 +1919,13 @@ export default function FlashcardList({
                                 className={cn(
                                   "absolute inset-0 backface-hidden bg-white rounded-[2rem] border border-slate-200/80 shadow-md flex flex-col p-6 sm:p-8 justify-between transition-all duration-300 hover:shadow-lg",
                                   !isFlipped ? "z-10 opacity-100 pointer-events-auto" : "z-0 opacity-0 pointer-events-none",
-                                  isSelected ? "ring-4 ring-indigo-500/20 border-indigo-500 bg-indigo-50/5" : "",
+                                  isSelected ? "ring-4 ring-orange-500/20 border-orange-500 bg-orange-50/5" : "",
                                   alreadyImported ? "opacity-65 bg-slate-50 border-slate-200" : ""
                                 )}
                               >
                                 <div className="flex items-center justify-between w-full mb-3 select-none">
                                   <div>
-                                    <span className="text-[9px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2.5 py-1 rounded-full uppercase tracking-wider">
+                                    <span className="text-[9px] font-bold text-orange-600 bg-orange-50 border border-orange-100 px-2.5 py-1 rounded-full uppercase tracking-wider">
                                       {openedSubject?.name || 'Matéria'}
                                     </span>
                                   </div>
@@ -1935,7 +1935,7 @@ export default function FlashcardList({
                                       <div className={cn(
                                         "w-5 h-5 rounded-md border flex items-center justify-center transition-all",
                                         isSelected 
-                                          ? "bg-indigo-600 border-indigo-600 text-white" 
+                                          ? "bg-orange-600 border-orange-600 text-white" 
                                           : "bg-white border-slate-300 hover:border-slate-400"
                                       )}>
                                         {isSelected && <CheckCircle2 size={13} className="stroke-[3]" />}
@@ -1970,7 +1970,7 @@ export default function FlashcardList({
                                       e.stopPropagation();
                                       setFlippedCards(prev => ({ ...prev, [card.id]: !prev[card.id] }));
                                     }}
-                                    className="text-indigo-600 hover:underline flex items-center gap-1 text-[10px]"
+                                    className="text-orange-600 hover:underline flex items-center gap-1 text-[10px]"
                                   >
                                     Ver Resposta <ChevronRight size={10} />
                                   </button>
@@ -1982,7 +1982,7 @@ export default function FlashcardList({
                                         e.stopPropagation();
                                         handleBankImport(card);
                                       }}
-                                      className="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white rounded-lg font-bold text-[10px] transition-all"
+                                      className="px-2.5 py-1 bg-orange-50 hover:bg-orange-600 text-orange-600 hover:text-white rounded-lg font-bold text-[10px] transition-all"
                                     >
                                       Importar
                                     </button>
@@ -2080,7 +2080,7 @@ export default function FlashcardList({
                             "text-[10px] font-bold px-3 py-1.5 rounded-lg transition-all",
                             cards.every(c => selectedCards.includes(c.id))
                               ? "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                              : "bg-indigo-50 text-indigo-600 hover:bg-indigo-100"
+                              : "bg-orange-50 text-orange-600 hover:bg-orange-100"
                           )}
                         >
                           {cards.every(c => selectedCards.includes(c.id)) ? "Remover Matéria" : "Selecionar Matéria"}
@@ -2103,7 +2103,7 @@ export default function FlashcardList({
                                     e.stopPropagation();
                                     setEditingCard(card);
                                   }}
-                                  className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-white/95 backdrop-blur border border-slate-200/75 shadow-sm flex items-center justify-center text-slate-500 hover:text-indigo-600 hover:bg-white transition-colors"
+                                  className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-white/95 backdrop-blur border border-slate-200/75 shadow-sm flex items-center justify-center text-slate-500 hover:text-orange-600 hover:bg-white transition-colors"
                                   title="Editar"
                                 >
                                   <Edit2 size={12} />
@@ -2139,7 +2139,7 @@ export default function FlashcardList({
                                 className={cn(
                                   "absolute inset-0 backface-hidden bg-white rounded-[2rem] border border-slate-200/80 shadow-md flex flex-col p-6 sm:p-8 justify-between transition-all duration-300 hover:shadow-lg",
                                   !isFlipped ? "z-10 opacity-100 pointer-events-auto" : "z-0 opacity-0 pointer-events-none",
-                                  isSelected ? "ring-4 ring-indigo-500/20 border-indigo-500 bg-indigo-50/5" : ""
+                                  isSelected ? "ring-4 ring-orange-500/20 border-orange-500 bg-orange-50/5" : ""
                                 )}
                               >
                                 <div className="flex items-center justify-between w-full mb-3 select-none">
@@ -2174,7 +2174,7 @@ export default function FlashcardList({
                                       <div className={cn(
                                         "w-5 h-5 rounded-md border flex items-center justify-center transition-all",
                                         isSelected 
-                                          ? "bg-indigo-600 border-indigo-600 text-white" 
+                                          ? "bg-orange-600 border-orange-600 text-white" 
                                           : "bg-white border-slate-300 hover:border-slate-400"
                                       )}>
                                         {isSelected && <CheckCircle2 size={13} className="stroke-[3]" />}
@@ -2251,7 +2251,7 @@ export default function FlashcardList({
                       <div className="flex justify-center pt-4">
                         <button
                           onClick={() => handleShowMoreCards(subjectId, cards.length)}
-                          className="px-6 py-3 bg-white hover:bg-slate-50 border border-slate-200 text-indigo-600 font-bold rounded-2xl transition-all shadow-sm text-xs flex items-center gap-2"
+                          className="px-6 py-3 bg-white hover:bg-slate-50 border border-slate-200 text-orange-600 font-bold rounded-2xl transition-all shadow-sm text-xs flex items-center gap-2"
                         >
                           <span>Mostrar mais (+{cards.length - getSubjectCardLimit(subjectId)} cards nesta matéria)</span>
                           <ChevronDown size={14} />
@@ -2267,7 +2267,7 @@ export default function FlashcardList({
               <p>Nenhum flashcard encontrado.</p>
               <button 
                 onClick={() => setIsAdding(true)}
-                className="mt-4 text-indigo-600 font-medium hover:underline"
+                className="mt-4 text-orange-600 font-medium hover:underline"
               >
                 Crie seu primeiro card agora
               </button>
@@ -2281,7 +2281,7 @@ export default function FlashcardList({
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 border border-slate-700/80 animate-in slide-in-from-bottom-5 duration-300 max-w-xl w-11/12">
           <div className="flex-1 min-w-0">
             <p className="font-bold text-sm text-white flex items-center gap-2">
-              <CheckCircle2 size={16} className="text-indigo-400" />
+              <CheckCircle2 size={16} className="text-orange-400" />
               {selectedCards.length} {selectedCards.length === 1 ? 'card selecionado' : 'cards selecionados'}
             </p>
             <p className="text-xs text-slate-400 truncate">
@@ -2298,7 +2298,7 @@ export default function FlashcardList({
             <button
               onClick={handleBulkBankImport}
               disabled={isImporting}
-              className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold text-sm shadow-lg shadow-indigo-600/30 transition-all flex items-center gap-2 disabled:opacity-50"
+              className="px-5 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-xl font-bold text-sm shadow-lg shadow-orange-600/30 transition-all flex items-center gap-2 disabled:opacity-50"
             >
               <PlusCircle size={16} />
               {isImporting ? 'Importando...' : 'Importar Cards'}
@@ -2327,7 +2327,7 @@ export default function FlashcardList({
                   <select
                     value={editingCard.subjectId}
                     onChange={(e) => setEditingCard({ ...editingCard, subjectId: e.target.value, topicId: '' })}
-                    className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-indigo-500 transition-all font-medium"
+                    className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-orange-500 transition-all font-medium"
                     required
                   >
                     {(activeSource === 'bank' ? allSubjects : subjects).map(s => (
@@ -2340,7 +2340,7 @@ export default function FlashcardList({
                   <select
                     value={editingCard.topicId}
                     onChange={(e) => setEditingCard({ ...editingCard, topicId: e.target.value })}
-                    className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-indigo-500 transition-all font-medium"
+                    className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-orange-500 transition-all font-medium"
                   >
                     <option value="">Sem Tópico</option>
                     {(activeSource === 'bank' ? allTopics : topics).filter(t => t.subjectId === editingCard.subjectId).map(t => (
@@ -2387,7 +2387,7 @@ export default function FlashcardList({
                 </button>
                 <button
                   type="submit"
-                  className="flex-2 py-4 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100"
+                  className="flex-2 py-4 bg-orange-600 text-white rounded-2xl font-bold hover:bg-orange-700 transition-all shadow-xl shadow-orange-100"
                 >
                   Salvar Alterações
                 </button>
@@ -2403,7 +2403,7 @@ export default function FlashcardList({
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden animate-in zoom-in duration-300">
             <div className="p-6 border-b border-slate-100 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-indigo-100 text-indigo-600 rounded-lg">
+                <div className="p-2 bg-orange-100 text-orange-600 rounded-lg">
                   <Edit2 size={20} />
                 </div>
                 <h3 className="text-xl font-bold text-slate-900">Edição em Massa</h3>
@@ -2426,7 +2426,7 @@ export default function FlashcardList({
                   <label className="text-sm font-bold text-slate-700">Mudar Matéria para:</label>
                   <select
                     onChange={(e) => setBulkUpdates({ ...bulkUpdates, subjectId: e.target.value, topicId: '' })}
-                    className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-indigo-500 transition-all font-medium"
+                    className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-orange-500 transition-all font-medium"
                   >
                     <option value="">Não alterar</option>
                     {subjects.map(s => (
@@ -2440,7 +2440,7 @@ export default function FlashcardList({
                   <select
                     disabled={!bulkUpdates.subjectId}
                     onChange={(e) => setBulkUpdates({ ...bulkUpdates, topicId: e.target.value })}
-                    className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-indigo-500 transition-all font-medium disabled:opacity-50"
+                    className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-orange-500 transition-all font-medium disabled:opacity-50"
                   >
                     <option value="">Não alterar</option>
                     <option value="">Sem Tópico</option>
@@ -2464,7 +2464,7 @@ export default function FlashcardList({
                 <button
                   onClick={handleBulkUpdate}
                   disabled={Object.keys(bulkUpdates).length === 0}
-                  className="flex-2 py-4 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 disabled:opacity-50 disabled:shadow-none"
+                  className="flex-2 py-4 bg-orange-600 text-white rounded-2xl font-bold hover:bg-orange-700 transition-all shadow-xl shadow-orange-100 disabled:opacity-50 disabled:shadow-none"
                 >
                   Aplicar Alterações
                 </button>

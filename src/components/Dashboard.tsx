@@ -723,7 +723,7 @@ export default function Dashboard({
                 <div 
                   className={cn(
                     "h-full transition-all duration-1000 ease-out",
-                    flashcardsUsed >= 45 ? "bg-red-500" : "bg-indigo-600"
+                    flashcardsUsed >= 45 ? "bg-red-500" : "bg-orange-500"
                   )}
                   style={{ width: `${usagePercent}%` }}
                 />
@@ -731,7 +731,7 @@ export default function Dashboard({
             </div>
             <button
               onClick={() => navigate('/pricing')}
-              className="w-full sm:w-auto px-6 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 whitespace-nowrap"
+              className="w-full sm:w-auto px-6 py-3 bg-orange-500 text-white font-bold rounded-xl hover:bg-orange-600 transition-all shadow-lg shadow-orange-100 whitespace-nowrap cursor-pointer"
             >
               Fazer Upgrade
             </button>
@@ -790,8 +790,8 @@ export default function Dashboard({
           value={totalQuestions > 0 ? `${accuracyRate}%` : "—"} 
           subtitle={totalQuestions > 0 ? (accuracyRate >= 80 ? "Sua retenção está excelente!" : accuracyRate >= 65 ? "Bom progresso! Continue treinando." : "Foco na revisão dos erros!") : "Responda questões para calibrar"}
           icon={TrendingUp}
-          color="text-indigo-600"
-          bgColor="bg-indigo-50"
+          color="text-orange-600"
+          bgColor="bg-orange-50"
         />
         <StatCard 
           title="Flashcards Memorizados" 
@@ -820,7 +820,7 @@ export default function Dashboard({
             <div>
               <div className="flex items-center justify-between mb-4">
                 <h4 className="text-base font-bold text-slate-800 flex items-center gap-2">
-                  <span className="w-1.5 h-4 bg-indigo-600 rounded-full" />
+                  <span className="w-1.5 h-4 bg-orange-500 rounded-full" />
                   Minhas Atividades
                 </h4>
                 <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">
@@ -842,7 +842,7 @@ export default function Dashboard({
                       className={cn(
                         "flex-1 min-w-[64px] py-2 text-xs font-black rounded-xl transition-all text-center relative cursor-pointer",
                         isActive 
-                          ? "bg-white text-indigo-600 shadow-sm border border-slate-100" 
+                          ? "bg-white text-orange-600 shadow-sm border border-slate-100" 
                           : "text-slate-500 hover:text-slate-800 hover:bg-slate-100/50"
                       )}
                     >
@@ -850,7 +850,7 @@ export default function Dashboard({
                       {totalCount > 0 && (
                         <span className={cn(
                           "absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-bold text-white shadow-xs",
-                          completedCount === totalCount ? "bg-emerald-500" : "bg-indigo-500"
+                          completedCount === totalCount ? "bg-emerald-500" : "bg-orange-500"
                         )}>
                           {completedCount}/{totalCount}
                         </span>
@@ -880,7 +880,7 @@ export default function Dashboard({
                           type="checkbox"
                           checked={item.completed}
                           onChange={() => handleToggleItem(activeDay, item.id)}
-                          className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500 cursor-pointer"
+                          className="w-4 h-4 text-orange-600 border-slate-300 rounded focus:ring-orange-500 cursor-pointer"
                         />
                         <span className={cn(
                           "text-sm font-semibold text-slate-700 truncate",
@@ -921,7 +921,7 @@ export default function Dashboard({
                         }
                       }
                     }}
-                    className="w-full text-xs font-semibold bg-slate-50 border border-slate-200 text-slate-700 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all cursor-pointer"
+                    className="w-full text-xs font-semibold bg-slate-50 border border-slate-200 text-slate-700 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-orange-500/10 focus:border-orange-500 outline-none transition-all cursor-pointer"
                   >
                     <option value="">-- Selecionar de minhas matérias cadastradas --</option>
                     {subjects.map((sub) => (
@@ -938,7 +938,7 @@ export default function Dashboard({
                     value={newSubjectName}
                     onChange={(e) => setNewSubjectName(e.target.value)}
                     placeholder="Ou digite o nome de outra matéria..."
-                    className="flex-1 text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all placeholder:text-slate-400 text-slate-700"
+                    className="flex-1 text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-orange-500/10 focus:border-orange-500 outline-none transition-all placeholder:text-slate-400 text-slate-700"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
                         const sub = subjects.find(s => s.id === selectedSubjectForAdd);
@@ -955,7 +955,7 @@ export default function Dashboard({
                       setNewSubjectName('');
                       setSelectedSubjectForAdd('');
                     }}
-                    className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xs rounded-xl flex items-center gap-1 transition-all cursor-pointer shadow-sm shadow-indigo-100"
+                    className="px-4 py-2.5 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white font-bold text-xs rounded-xl flex items-center gap-1 transition-all cursor-pointer shadow-sm shadow-orange-100"
                   >
                     <Plus size={14} /> Adicionar
                   </button>
@@ -979,7 +979,7 @@ export default function Dashboard({
                     "px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-sm",
                     isTimerActive 
                       ? "bg-amber-500 hover:bg-amber-600 text-white" 
-                      : "bg-indigo-600 hover:bg-indigo-700 text-white"
+                      : "bg-orange-500 hover:bg-orange-600 text-white"
                   )}
                 >
                   {isTimerActive ? (
@@ -1069,7 +1069,7 @@ export default function Dashboard({
                 className={cn(
                   "px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer border",
                   activeFilter === f.id
-                    ? "bg-indigo-600 text-white border-indigo-600 shadow-sm"
+                    ? "bg-orange-500 text-white border-orange-500 shadow-sm"
                     : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
                 )}
               >
@@ -1097,7 +1097,7 @@ export default function Dashboard({
                   key={source.id} 
                   onClick={() => !loadingCards && handleStartReview(source)}
                   className={cn(
-                    "bg-white p-5 rounded-2xl border border-slate-200 flex flex-col justify-between hover:shadow-md hover:border-indigo-200 hover:-translate-y-0.5 transition-all text-left group cursor-pointer relative overflow-hidden select-none min-h-[210px] h-auto w-full",
+                    "bg-white p-5 rounded-2xl border border-slate-200 flex flex-col justify-between hover:shadow-md hover:border-orange-200 hover:-translate-y-0.5 transition-all text-left group cursor-pointer relative overflow-hidden select-none min-h-[210px] h-auto w-full",
                     loadingCards && "opacity-50 cursor-not-allowed"
                   )}
                 >
@@ -1139,7 +1139,7 @@ export default function Dashboard({
                       >
                         <Trash2 size={14} />
                       </button>
-                      <div className="text-indigo-600 bg-indigo-50 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all">
+                      <div className="text-orange-600 bg-orange-50 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all">
                         <Play size={12} fill="currentColor" />
                       </div>
                     </div>
@@ -1225,14 +1225,14 @@ export default function Dashboard({
                       className={cn(
                         "rounded-2xl border text-left transition-all relative overflow-hidden group flex flex-row sm:flex-col items-center sm:items-start justify-between p-3.5 sm:p-4 h-auto sm:h-[120px] w-full",
                         reviewMode === 'due' 
-                          ? "border-indigo-600 bg-indigo-50/40 shadow-sm" 
+                          ? "border-orange-500 bg-orange-50/40 shadow-sm" 
                           : "border-slate-200 bg-white hover:border-slate-300"
                       )}
                     >
                       <div className="flex items-center justify-between sm:w-full shrink-0">
                         <div className={cn(
                           "p-1.5 rounded-lg shrink-0",
-                          reviewMode === 'due' ? "bg-indigo-100 text-indigo-600" : "bg-slate-100 text-slate-500"
+                          reviewMode === 'due' ? "bg-orange-100 text-orange-600" : "bg-slate-100 text-slate-500"
                         )}>
                           <Clock size={16} />
                         </div>
@@ -1241,7 +1241,7 @@ export default function Dashboard({
                         <div className="flex items-center justify-between gap-1">
                           <p className="text-xs font-black text-slate-800">Modo Inteligente</p>
                           {dueCards.length > 0 && (
-                            <span className="text-[9px] sm:text-[10px] font-black bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded-full uppercase shrink-0">
+                            <span className="text-[9px] sm:text-[10px] font-black bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded-full uppercase shrink-0">
                               {dueCards.length} hoje
                             </span>
                           )}
@@ -1256,14 +1256,14 @@ export default function Dashboard({
                       className={cn(
                         "rounded-2xl border text-left transition-all relative overflow-hidden group flex flex-row sm:flex-col items-center sm:items-start justify-between p-3.5 sm:p-4 h-auto sm:h-[120px] w-full",
                         reviewMode === 'all' 
-                          ? "border-indigo-600 bg-indigo-50/40 shadow-sm" 
+                          ? "border-orange-500 bg-orange-50/40 shadow-sm" 
                           : "border-slate-200 bg-white hover:border-slate-300"
                       )}
                     >
                       <div className="flex items-center justify-between sm:w-full shrink-0">
                         <div className={cn(
                           "p-1.5 rounded-lg shrink-0",
-                          reviewMode === 'all' ? "bg-indigo-100 text-indigo-600" : "bg-slate-100 text-slate-500"
+                          reviewMode === 'all' ? "bg-orange-100 text-orange-600" : "bg-slate-100 text-slate-500"
                         )}>
                           <Layers size={16} />
                         </div>
@@ -1285,14 +1285,14 @@ export default function Dashboard({
                       className={cn(
                         "rounded-2xl border text-left transition-all relative overflow-hidden group flex flex-row sm:flex-col items-center sm:items-start justify-between p-3.5 sm:p-4 h-auto sm:h-[120px] w-full",
                         reviewMode === 'custom' 
-                          ? "border-indigo-600 bg-indigo-50/40 shadow-sm" 
+                          ? "border-orange-500 bg-orange-50/40 shadow-sm" 
                           : "border-slate-200 bg-white hover:border-slate-300"
                       )}
                     >
                       <div className="flex items-center justify-between sm:w-full shrink-0">
                         <div className={cn(
                           "p-1.5 rounded-lg shrink-0",
-                          reviewMode === 'custom' ? "bg-indigo-100 text-indigo-600" : "bg-slate-100 text-slate-500"
+                          reviewMode === 'custom' ? "bg-orange-100 text-orange-600" : "bg-slate-100 text-slate-500"
                         )}>
                           <CheckSquare size={16} />
                         </div>
@@ -1324,13 +1324,13 @@ export default function Dashboard({
                 )}
 
                 {reviewMode === 'all' && (
-                  <div className="bg-indigo-50/40 border border-indigo-100 p-4 rounded-2xl flex items-start gap-3">
-                    <div className="p-2 bg-indigo-100 text-indigo-600 rounded-xl shrink-0 mt-0.5">
+                  <div className="bg-orange-50/40 border border-orange-100 p-4 rounded-2xl flex items-start gap-3">
+                    <div className="p-2 bg-orange-100 text-orange-600 rounded-xl shrink-0 mt-0.5">
                       <Layers size={16} />
                     </div>
                     <div>
-                      <h4 className="text-xs font-black text-indigo-900 uppercase tracking-wide">Treino Livre Completo</h4>
-                      <p className="text-[12px] text-indigo-800 leading-snug mt-1">
+                      <h4 className="text-xs font-black text-orange-950 uppercase tracking-wide">Treino Livre Completo</h4>
+                      <p className="text-[12px] text-orange-900 leading-snug mt-1">
                         Você revisará todos os {subjectCards.length} cards cadastrados nesta matéria. Perfeito para autoavaliação ou preparo para uma prova iminente!
                       </p>
                     </div>
@@ -1349,7 +1349,7 @@ export default function Dashboard({
                             subjectCards.forEach(c => { newSelection[c.id] = true; });
                             setSelectedCardIds(newSelection);
                           }}
-                          className="text-[11px] font-bold text-indigo-600 hover:underline"
+                          className="text-[11px] font-bold text-orange-600 hover:underline"
                         >
                           Marcar todos
                         </button>
@@ -1373,7 +1373,7 @@ export default function Dashboard({
                         placeholder="Pesquisar por termo ou conceito..."
                         value={searchCardQuery}
                         onChange={(e) => setSearchCardQuery(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50 hover:bg-slate-100/50 focus:bg-white border border-slate-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 rounded-xl text-sm transition-all outline-none"
+                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50 hover:bg-slate-100/50 focus:bg-white border border-slate-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-100 rounded-xl text-sm transition-all outline-none"
                       />
                     </div>
 
@@ -1394,13 +1394,13 @@ export default function Dashboard({
                               }}
                               className={cn(
                                 "flex items-center justify-between p-3 cursor-pointer transition-all hover:bg-white select-none",
-                                isSelected ? "bg-indigo-50/10" : ""
+                                isSelected ? "bg-orange-50/20" : ""
                               )}
                             >
                               <div className="flex items-start gap-3 min-w-0 pr-2">
-                                <div className="mt-0.5 text-indigo-600 shrink-0">
+                                <div className="mt-0.5 text-orange-600 shrink-0">
                                   {isSelected ? (
-                                    <CheckSquare size={18} className="fill-indigo-50" />
+                                    <CheckSquare size={18} className="fill-orange-50" />
                                   ) : (
                                     <Square size={18} className="text-slate-300" />
                                   )}
@@ -1513,7 +1513,7 @@ export default function Dashboard({
             {/* Ambient Top Background Decoration Color Bar */}
             <div className="absolute top-0 inset-x-0 h-2" style={{ backgroundColor: firedAlert.subjectColor }} />
             
-            <div className="mx-auto w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 mb-6 animate-bounce">
+            <div className="mx-auto w-16 h-16 rounded-2xl bg-orange-50 flex items-center justify-center text-orange-600 mb-6 animate-bounce">
               <BellRing size={32} />
             </div>
             
@@ -1522,7 +1522,7 @@ export default function Dashboard({
             </span>
             
             <h3 className="text-xl font-extrabold text-slate-900 mb-2">Hora de Revisar!</h3>
-            <p className="text-lg font-bold text-indigo-600 mb-1">{firedAlert.topicName}</p>
+            <p className="text-lg font-bold text-orange-600 mb-1">{firedAlert.topicName}</p>
             {firedAlert.notes && (
               <p className="text-sm text-slate-500 italic mb-6">"{firedAlert.notes}"</p>
             )}
@@ -1575,25 +1575,25 @@ export default function Dashboard({
 
       {/* Motivational Quote Footer */}
       <footer className="mt-12 pt-8 border-t border-slate-200">
-        <div className="bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-2xl p-8 text-white shadow-lg relative overflow-hidden group">
+        <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-orange-950 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden group border border-slate-800">
           <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
             <Quote size={120} />
           </div>
           <div className="relative z-10 max-w-2xl mx-auto text-center space-y-4">
-            <p className="text-xl md:text-2xl font-medium italic leading-relaxed">
+            <p className="text-xl md:text-2xl font-medium italic leading-relaxed text-slate-100">
               "{dailyQuote.text}"
             </p>
             <div className="flex items-center justify-center gap-2">
-              <div className="h-px w-8 bg-indigo-300" />
-              <span className="text-indigo-100 font-semibold tracking-wide uppercase text-sm">
+              <div className="h-px w-8 bg-orange-400/50" />
+              <span className="text-orange-400 font-bold tracking-wide uppercase text-sm">
                 {dailyQuote.author}
               </span>
-              <div className="h-px w-8 bg-indigo-300" />
+              <div className="h-px w-8 bg-orange-400/50" />
             </div>
           </div>
         </div>
         <p className="text-center text-slate-400 text-xs mt-6">
-          © {new Date().getFullYear()} GestãoEdu • Transformando esforço em conhecimento.
+          © {new Date().getFullYear()} GestãoEdu • Transformando esforço em aprovação.
         </p>
       </footer>
     </div>

@@ -831,11 +831,11 @@ export default function TopicList({
   return (
     <div className="space-y-6">
       {/* 📊 Global Progress Dashboard Header */}
-      <div className="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-lg border border-indigo-950/40">
+      <div className="bg-gradient-to-br from-slate-900 via-orange-950 to-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-lg border border-orange-950/40">
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/20 rounded-full border border-indigo-400/20 text-indigo-200">
-              <Sparkles size={14} className="text-indigo-400 animate-pulse" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-orange-500/20 rounded-full border border-orange-400/20 text-orange-200">
+              <Sparkles size={14} className="text-orange-400 animate-pulse" />
               <span className="text-xs font-semibold uppercase tracking-wider">
                 {selectedPosition !== 'all' 
                   ? `Cargo: ${selectedPosition}` 
@@ -854,7 +854,7 @@ export default function TopicList({
           
           <div className="flex items-center gap-6 bg-white/5 backdrop-blur-md rounded-2xl p-5 border border-white/10 w-full lg:w-auto justify-around lg:justify-start">
             <div className="text-center space-y-1">
-              <span className="text-xs text-indigo-200 block uppercase font-bold tracking-wider">
+              <span className="text-xs text-orange-200 block uppercase font-bold tracking-wider">
                 {selectedPosition !== 'all' ? 'Progresso do Cargo' : 'Edital Completo'}
               </span>
               <span className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-200">
@@ -863,14 +863,14 @@ export default function TopicList({
             </div>
             <div className="h-10 w-[1px] bg-white/10" />
             <div className="text-center space-y-1">
-              <span className="text-xs text-indigo-200 block uppercase font-bold tracking-wider">Média de Acertos</span>
-              <span className="text-3xl sm:text-4xl font-extrabold text-indigo-300">
+              <span className="text-xs text-orange-200 block uppercase font-bold tracking-wider">Média de Acertos</span>
+              <span className="text-3xl sm:text-4xl font-extrabold text-orange-300">
                 {globalStats.hitRate}%
               </span>
             </div>
             <div className="h-10 w-[1px] bg-white/10" />
             <div className="text-center space-y-1">
-              <span className="text-xs text-indigo-200 block uppercase font-bold tracking-wider">Tópicos Ativos</span>
+              <span className="text-xs text-orange-200 block uppercase font-bold tracking-wider">Tópicos Ativos</span>
               <span className="text-3xl sm:text-4xl font-extrabold text-white">
                 {globalStats.totalTopics}
               </span>
@@ -932,7 +932,7 @@ export default function TopicList({
                 : "text-slate-600 hover:text-slate-900"
             )}
           >
-            <BarChart2 size={14} className="text-indigo-600" />
+            <BarChart2 size={14} className="text-orange-600" />
             Edital Verticalizado
           </button>
           <button
@@ -944,7 +944,7 @@ export default function TopicList({
                 : "text-slate-600 hover:text-slate-900"
             )}
           >
-            <BookOpen size={14} className="text-indigo-600" />
+            <BookOpen size={14} className="text-orange-600" />
             Lista de Tópicos (Planilha)
           </button>
           <button
@@ -981,7 +981,7 @@ export default function TopicList({
                 }
                 setIsBulkAdding(true);
               }}
-              className="flex items-center justify-center gap-2 px-3.5 py-1.5 border border-indigo-200 text-indigo-600 bg-indigo-50 hover:bg-indigo-100 font-bold text-xs rounded-xl transition-all"
+              className="flex items-center justify-center gap-2 px-3.5 py-1.5 border border-orange-200 text-orange-600 bg-orange-50 hover:bg-orange-100 font-bold text-xs rounded-xl transition-all"
             >
               <RotateCcw size={15} className="rotate-90" />
               Importar em Lote
@@ -994,7 +994,7 @@ export default function TopicList({
               }
               setIsAdding(true);
             }}
-            className="flex items-center justify-center gap-2 px-4 py-1.5 bg-indigo-600 text-white font-bold text-xs rounded-xl hover:bg-indigo-700 transition-all shadow-sm shadow-indigo-600/10"
+            className="flex items-center justify-center gap-2 px-4 py-1.5 bg-orange-600 text-white font-bold text-xs rounded-xl hover:bg-orange-700 transition-all shadow-sm shadow-orange-600/10"
           >
             <Plus size={16} />
             Novo Tópico
@@ -1011,7 +1011,7 @@ export default function TopicList({
             placeholder="Buscar tópicos por nome..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 text-sm rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all placeholder:text-slate-400"
+            className="w-full pl-10 pr-4 py-2 text-sm rounded-xl border border-slate-200 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 outline-none transition-all placeholder:text-slate-400"
           />
         </div>
         
@@ -1022,7 +1022,7 @@ export default function TopicList({
               <select
                 value={selectedPosition}
                 onChange={(e) => setSelectedPosition(e.target.value)}
-                className="pl-9 pr-8 py-2 text-sm rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none appearance-none bg-white w-full sm:min-w-[180px] transition-all font-bold text-slate-700"
+                className="pl-9 pr-8 py-2 text-sm rounded-xl border border-slate-200 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 outline-none appearance-none bg-white w-full sm:min-w-[180px] transition-all font-bold text-slate-700"
               >
                 <option value="all">Filtro: Todos os Cargos</option>
                 {uniquePositions.map(pos => (
@@ -1034,7 +1034,7 @@ export default function TopicList({
             <button
               type="button"
               onClick={() => setIsManagingCargos(true)}
-              className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-slate-700 hover:text-indigo-600 bg-white border border-slate-200 hover:border-indigo-200 rounded-xl transition-all shadow-sm"
+              className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-slate-700 hover:text-orange-600 bg-white border border-slate-200 hover:border-orange-200 rounded-xl transition-all shadow-sm"
               title="Gerenciar e renomear cargos cadastrados"
             >
               <Briefcase size={14} className="text-slate-400" />
@@ -1049,7 +1049,7 @@ export default function TopicList({
             <select
               value={selectedSubject}
               onChange={(e) => setSelectedSubject(e.target.value)}
-              className="pl-9 pr-8 py-2 text-sm rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none appearance-none bg-white w-full sm:min-w-[200px] transition-all font-medium text-slate-700"
+              className="pl-9 pr-8 py-2 text-sm rounded-xl border border-slate-200 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 outline-none appearance-none bg-white w-full sm:min-w-[200px] transition-all font-medium text-slate-700"
             >
               <option value="all">Filtro: Todas as Matérias</option>
               {subjects.map(s => (
@@ -1063,14 +1063,14 @@ export default function TopicList({
               <button
                 type="button"
                 onClick={expandAll}
-                className="px-3 py-2 text-xs font-semibold text-slate-600 hover:text-indigo-600 border border-slate-200 hover:border-indigo-200 rounded-xl bg-white transition-all whitespace-nowrap"
+                className="px-3 py-2 text-xs font-semibold text-slate-600 hover:text-orange-600 border border-slate-200 hover:border-orange-200 rounded-xl bg-white transition-all whitespace-nowrap"
               >
                 Expandir Todas
               </button>
               <button
                 type="button"
                 onClick={collapseAll}
-                className="px-3 py-2 text-xs font-semibold text-slate-600 hover:text-indigo-600 border border-slate-200 hover:border-indigo-200 rounded-xl bg-white transition-all whitespace-nowrap"
+                className="px-3 py-2 text-xs font-semibold text-slate-600 hover:text-orange-600 border border-slate-200 hover:border-orange-200 rounded-xl bg-white transition-all whitespace-nowrap"
               >
                 Recolher Todas
               </button>
@@ -1083,9 +1083,9 @@ export default function TopicList({
       {isBulkAdding && (
         <div className="fixed inset-0 bg-slate-950/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl shadow-xl max-w-xl w-full p-6 sm:p-8 border border-slate-100 animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex items-center gap-3.5 text-indigo-600 mb-4">
-              <div className="p-3 bg-indigo-50 rounded-2xl">
-                <RotateCcw size={22} className="rotate-90 text-indigo-600" />
+            <div className="flex items-center gap-3.5 text-orange-600 mb-4">
+              <div className="p-3 bg-orange-50 rounded-2xl">
+                <RotateCcw size={22} className="rotate-90 text-orange-600" />
               </div>
               <div>
                 <h3 className="text-lg font-bold text-slate-900">Importação Verticalizada em Lote</h3>
@@ -1099,7 +1099,7 @@ export default function TopicList({
                   <select
                     value={bulkSubjectId}
                     onChange={(e) => setBulkSubjectId(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none bg-white text-sm"
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 outline-none bg-white text-sm"
                     required
                   >
                     <option value="">-- Escolha uma matéria cadastrada --</option>
@@ -1116,7 +1116,7 @@ export default function TopicList({
                   value={bulkText}
                   onChange={(e) => setBulkText(e.target.value)}
                   placeholder={`Exemplo:&#10;Teoria Geral do Estado e dos Direitos&#10;Organização dos Poderes Constituídos&#10;Controle de Constitucionalidade no Brasil&#10;Garantias Processuais e Remédios`}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none font-sans text-sm placeholder:text-slate-400"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 outline-none font-sans text-sm placeholder:text-slate-400"
                   required
                 />
                 <p className="text-[11px] text-slate-400 leading-relaxed">
@@ -1134,7 +1134,7 @@ export default function TopicList({
                 <button
                   type="submit"
                   disabled={!bulkSubjectId || !bulkText.trim()}
-                  className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold rounded-xl transition-all disabled:opacity-50"
+                  className="px-5 py-2.5 bg-orange-600 hover:bg-orange-700 text-white text-xs font-extrabold rounded-xl transition-all disabled:opacity-50"
                 >
                   Importar Conteúdo verticalizado
                 </button>
@@ -1156,7 +1156,7 @@ export default function TopicList({
                   value={newTopic.name}
                   onChange={(e) => setNewTopic({ ...newTopic, name: e.target.value })}
                   placeholder="Ex: Teoria Geral dos Direitos Fundamentais"
-                  className="w-full px-4 py-2 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none text-sm"
+                  className="w-full px-4 py-2 rounded-xl border border-slate-200 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 outline-none text-sm"
                   autoFocus
                   required
                 />
@@ -1166,7 +1166,7 @@ export default function TopicList({
                 <select
                   value={newTopic.subjectId}
                   onChange={(e) => setNewTopic({ ...newTopic, subjectId: e.target.value })}
-                  className="w-full px-4 py-2 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none bg-white text-sm"
+                  className="w-full px-4 py-2 rounded-xl border border-slate-200 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 outline-none bg-white text-sm"
                   required
                 >
                   {subjects.map(s => (
@@ -1185,7 +1185,7 @@ export default function TopicList({
               </button>
               <button
                 type="submit"
-                className="px-5 py-2 bg-indigo-600 text-white font-bold text-xs rounded-xl hover:bg-indigo-700 transition-all shadow-sm"
+                className="px-5 py-2 bg-orange-600 text-white font-bold text-xs rounded-xl hover:bg-orange-700 transition-all shadow-sm"
               >
                 Salvar Tópico
               </button>
@@ -1232,7 +1232,7 @@ export default function TopicList({
                       {sub.name.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <h3 className="font-extrabold text-slate-900 group-hover:text-indigo-600 flex items-center gap-2">
+                      <h3 className="font-extrabold text-slate-900 group-hover:text-orange-600 flex items-center gap-2">
                         {sub.name}
                       </h3>
                       <div className="flex flex-wrap items-center gap-2.5 mt-1 text-xs text-slate-500">
@@ -1254,7 +1254,7 @@ export default function TopicList({
                     <div className="flex-1 md:flex-none text-right space-y-1.5 md:min-w-[160px]">
                       <div className="flex justify-between items-center text-xs">
                         <span className="font-bold text-slate-800">Progresso</span>
-                        <span className="font-extrabold text-indigo-600">{stats.progressPercent}%</span>
+                        <span className="font-extrabold text-orange-600">{stats.progressPercent}%</span>
                       </div>
                       <div className="h-2 bg-slate-100 rounded-full overflow-hidden w-full">
                         <div 
@@ -1283,7 +1283,7 @@ export default function TopicList({
                               <th className="px-4 py-3 w-10 text-center">
                                 <input 
                                   type="checkbox" 
-                                  className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 h-3.5 w-3.5 cursor-pointer"
+                                  className="rounded border-slate-300 text-orange-600 focus:ring-orange-500 h-3.5 w-3.5 cursor-pointer"
                                   checked={subTopics.length > 0 && subTopics.every(t => selectedTopicIds.includes(t.id))}
                                   onChange={() => toggleSelectAll(subTopics)}
                                 />
@@ -1303,12 +1303,12 @@ export default function TopicList({
                                 : 0;
 
                               return (
-                                <tr key={topic.id} className="hover:bg-indigo-50/10 transition-colors group">
+                                <tr key={topic.id} className="hover:bg-orange-50/10 transition-colors group">
                                   {/* Checkbox col */}
                                   <td className="px-4 py-3.5 text-center">
                                     <input 
                                       type="checkbox" 
-                                      className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 h-3.5 w-3.5 cursor-pointer"
+                                      className="rounded border-slate-300 text-orange-600 focus:ring-orange-500 h-3.5 w-3.5 cursor-pointer"
                                       checked={selectedTopicIds.includes(topic.id)}
                                       onChange={() => toggleSelectTopic(topic.id)}
                                     />
@@ -1324,7 +1324,7 @@ export default function TopicList({
                                               type="text"
                                               value={tempName}
                                               onChange={(e) => setTempName(e.target.value)}
-                                              className="px-2.5 py-1.5 text-xs border border-slate-200 bg-white rounded-lg focus:ring-2 focus:ring-indigo-500/20 outline-none w-full font-bold"
+                                              className="px-2.5 py-1.5 text-xs border border-slate-200 bg-white rounded-lg focus:ring-2 focus:ring-orange-500/20 outline-none w-full font-bold"
                                               autoFocus
                                             />
                                           </div>
@@ -1336,7 +1336,7 @@ export default function TopicList({
                                                 value={tempInstitution}
                                                 onChange={(e) => setTempInstitution(e.target.value)}
                                                 placeholder="Ex: INSS"
-                                                className="px-2 py-1 text-xs border border-slate-200 bg-white rounded-lg focus:ring-2 focus:ring-indigo-500/20 outline-none w-full"
+                                                className="px-2 py-1 text-xs border border-slate-200 bg-white rounded-lg focus:ring-2 focus:ring-orange-500/20 outline-none w-full"
                                               />
                                             </div>
                                             <div className="space-y-0.5">
@@ -1346,7 +1346,7 @@ export default function TopicList({
                                                 value={tempPosition}
                                                 onChange={(e) => setTempPosition(e.target.value)}
                                                 placeholder="Ex: Técnico"
-                                                className="px-2 py-1 text-xs border border-slate-200 bg-white rounded-lg focus:ring-2 focus:ring-indigo-500/20 outline-none w-full"
+                                                className="px-2 py-1 text-xs border border-slate-200 bg-white rounded-lg focus:ring-2 focus:ring-orange-500/20 outline-none w-full"
                                               />
                                             </div>
                                           </div>
@@ -1361,7 +1361,7 @@ export default function TopicList({
                                             <button 
                                               type="button"
                                               onClick={() => saveNameEdit(topic.id)}
-                                              className="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-[10px] font-extrabold"
+                                              className="px-2.5 py-1 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-[10px] font-extrabold"
                                             >
                                               Salvar
                                             </button>
@@ -1450,14 +1450,14 @@ export default function TopicList({
                                   {/* Questions Hit Ratio Column with Instant Inline Textbox */}
                                   <td className="px-4 py-3.5 text-center">
                                     {editingQuestionsId === topic.id ? (
-                                      <div className="flex items-center justify-center gap-1 bg-indigo-50/50 p-1 rounded-xl border border-indigo-200 w-36 mx-auto">
+                                      <div className="flex items-center justify-center gap-1 bg-orange-50/50 p-1 rounded-xl border border-orange-200 w-36 mx-auto">
                                         <input
                                           type="number"
                                           min="0"
                                           placeholder="Acertos"
                                           value={tempQuestionsCorrect}
                                           onChange={(e) => setTempQuestionsCorrect(Math.max(0, parseInt(e.target.value) || 0))}
-                                          className="w-11 py-0.5 text-xs text-center font-bold text-indigo-900 border border-indigo-200 rounded-lg outline-none bg-white"
+                                          className="w-11 py-0.5 text-xs text-center font-bold text-orange-900 border border-orange-200 rounded-lg outline-none bg-white"
                                           title="Acertos"
                                           autoFocus
                                         />
@@ -1468,7 +1468,7 @@ export default function TopicList({
                                           placeholder="Total"
                                           value={tempQuestionsTotal}
                                           onChange={(e) => setTempQuestionsTotal(Math.max(0, parseInt(e.target.value) || 0))}
-                                          className="w-11 py-0.5 text-xs text-center font-bold text-indigo-900 border border-indigo-200 rounded-lg outline-none bg-white"
+                                          className="w-11 py-0.5 text-xs text-center font-bold text-orange-900 border border-orange-200 rounded-lg outline-none bg-white"
                                           title="Total respondido"
                                           onKeyDown={(e) => {
                                             if (e.key === 'Enter') saveQuestionsEdit(topic.id);
@@ -1476,7 +1476,7 @@ export default function TopicList({
                                         />
                                         <button
                                           onClick={() => saveQuestionsEdit(topic.id)}
-                                          className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold p-1 rounded-md"
+                                          className="bg-orange-600 hover:bg-orange-700 text-white font-bold p-1 rounded-md"
                                           type="button"
                                         >
                                           OK
@@ -1485,7 +1485,7 @@ export default function TopicList({
                                     ) : (
                                       <div 
                                         onClick={() => handleStartQuestionsEdit(topic)}
-                                        className="inline-flex flex-col items-center cursor-pointer hover:bg-indigo-100/40 px-3 py-1.5 rounded-xl border border-transparent hover:border-indigo-150 transition-all min-w-[80px]"
+                                        className="inline-flex flex-col items-center cursor-pointer hover:bg-orange-100/40 px-3 py-1.5 rounded-xl border border-transparent hover:border-orange-200 transition-all min-w-[80px]"
                                         title="Clique para lançar questões resolvidas"
                                       >
                                         <span className="text-xs font-extrabold text-slate-800 flex items-center gap-1">
@@ -1506,14 +1506,14 @@ export default function TopicList({
                                     <div className="flex items-center justify-end gap-2.5 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
                                       <button 
                                         onClick={() => onStudy(topic.id)}
-                                        className="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                                        className="p-1.5 text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
                                         title="Registrar Estudo Avançado"
                                       >
                                         <BookOpen size={14} />
                                       </button>
                                       <button 
                                         onClick={() => setTopicToReset(topic)}
-                                        className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                                        className="p-1.5 text-slate-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
                                         title="Resetar Tópico / Novo Ciclo de Estudo"
                                       >
                                         <RotateCcw size={14} />
@@ -1563,7 +1563,7 @@ export default function TopicList({
                   <th className="px-4 py-4 w-12 text-center">
                     <input 
                       type="checkbox" 
-                      className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer"
+                      className="rounded border-slate-300 text-orange-600 focus:ring-orange-500 h-4 w-4 cursor-pointer"
                       checked={filteredTopics.length > 0 && filteredTopics.every(t => selectedTopicIds.includes(t.id))}
                       onChange={() => toggleSelectAll(filteredTopics)}
                     />
@@ -1590,7 +1590,7 @@ export default function TopicList({
                       <td className="px-4 py-4 text-center">
                         <input 
                           type="checkbox" 
-                          className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer"
+                          className="rounded border-slate-300 text-orange-600 focus:ring-orange-500 h-4 w-4 cursor-pointer"
                           checked={selectedTopicIds.includes(topic.id)}
                           onChange={() => toggleSelectTopic(topic.id)}
                         />
@@ -1606,7 +1606,7 @@ export default function TopicList({
                                   type="text"
                                   value={tempName}
                                   onChange={(e) => setTempName(e.target.value)}
-                                  className="px-2.5 py-1.5 text-xs border border-slate-200 bg-white rounded-lg focus:ring-2 focus:ring-indigo-500/20 outline-none w-full font-bold"
+                                  className="px-2.5 py-1.5 text-xs border border-slate-200 bg-white rounded-lg focus:ring-2 focus:ring-orange-500/20 outline-none w-full font-bold"
                                   autoFocus
                                 />
                               </div>
@@ -1622,7 +1622,7 @@ export default function TopicList({
                                 <button 
                                   type="button"
                                   onClick={() => saveNameEdit(topic.id)}
-                                  className="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-[10px] font-extrabold"
+                                  className="px-2.5 py-1 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-[10px] font-extrabold"
                                 >
                                   Salvar
                                 </button>
@@ -1689,14 +1689,14 @@ export default function TopicList({
                       {/* Inline questions count */}
                       <td className="px-4 py-4 text-center">
                         {editingQuestionsId === topic.id ? (
-                          <div className="flex items-center justify-center gap-1 bg-indigo-50/50 p-1.5 rounded-xl border border-indigo-200 w-36 mx-auto">
+                          <div className="flex items-center justify-center gap-1 bg-orange-50/50 p-1.5 rounded-xl border border-orange-200 w-36 mx-auto">
                             <input
                               type="number"
                               min="0"
                               placeholder="Acertos"
                               value={tempQuestionsCorrect}
                               onChange={(e) => setTempQuestionsCorrect(Math.max(0, parseInt(e.target.value) || 0))}
-                              className="w-11 py-0.5 text-xs text-center font-bold text-indigo-900 border border-indigo-250 rounded-lg outline-none bg-white"
+                              className="w-11 py-0.5 text-xs text-center font-bold text-orange-900 border border-orange-200 rounded-lg outline-none bg-white"
                               title="Acertos"
                               autoFocus
                             />
@@ -1707,7 +1707,7 @@ export default function TopicList({
                               placeholder="Total"
                               value={tempQuestionsTotal}
                               onChange={(e) => setTempQuestionsTotal(Math.max(0, parseInt(e.target.value) || 0))}
-                              className="w-11 py-0.5 text-xs text-center font-bold text-indigo-900 border border-indigo-250 rounded-lg outline-none bg-white"
+                              className="w-11 py-0.5 text-xs text-center font-bold text-orange-900 border border-orange-200 rounded-lg outline-none bg-white"
                               title="Total respondido"
                               onKeyDown={(e) => {
                                 if (e.key === 'Enter') saveQuestionsEdit(topic.id);
@@ -1715,7 +1715,7 @@ export default function TopicList({
                             />
                             <button
                               onClick={() => saveQuestionsEdit(topic.id)}
-                              className="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold p-1 rounded-md"
+                              className="bg-orange-600 hover:bg-orange-700 text-white font-extrabold p-1 rounded-md"
                               type="button"
                             >
                               OK
@@ -1724,7 +1724,7 @@ export default function TopicList({
                         ) : (
                           <div 
                             onClick={() => handleStartQuestionsEdit(topic)}
-                            className="inline-flex flex-col items-center cursor-pointer hover:bg-indigo-100/40 px-3 py-1.5 rounded-xl border border-transparent hover:border-indigo-150 transition-all min-w-[80px]"
+                            className="inline-flex flex-col items-center cursor-pointer hover:bg-orange-100/40 px-3 py-1.5 rounded-xl border border-transparent hover:border-orange-200 transition-all min-w-[80px]"
                             title="Clique para lançar questões resolvidas"
                           >
                             <span className="text-xs font-extrabold text-slate-800 flex items-center gap-1">
@@ -1745,21 +1745,21 @@ export default function TopicList({
                         <div className="flex items-center justify-end gap-1.5 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
                           <button 
                             onClick={() => onStudy(topic.id)}
-                            className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                            className="p-2 text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
                             title="Registrar Estudo Avançado"
                           >
                             <BookOpen size={15} />
                           </button>
                           <button 
                             onClick={() => setTopicToReset(topic)}
-                            className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                            className="p-2 text-slate-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
                             title="Reiniciar Ciclo"
                           >
                             <RotateCcw size={15} />
                           </button>
                           <button 
                             onClick={() => handleEditName(topic)}
-                            className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                            className="p-2 text-slate-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
                             title="Editar Nome"
                           >
                             <Edit2 size={14} />
@@ -1798,7 +1798,7 @@ export default function TopicList({
                 Biblioteca de Editais Verticalizados
               </h2>
               <p className="text-slate-350 text-xs sm:text-sm leading-relaxed font-medium">
-                Escolha o edital de concurso desejado para carregar a estrutura de disciplinas. <strong className="text-white font-extrabold text-indigo-400">Agora você pode alterar, adicionar ou remover matérias e tópicos livremente antes de importar!</strong> Mapeie cada conteúdo em sua conta ou use matérias novas criadas automaticamente.
+                Escolha o edital de concurso desejado para carregar a estrutura de disciplinas. <strong className="text-white font-extrabold text-orange-400">Agora você pode alterar, adicionar ou remover matérias e tópicos livremente antes de importar!</strong> Mapeie cada conteúdo em sua conta ou use matérias novas criadas automaticamente.
               </p>
             </div>
             <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none translate-x-8 translate-y-8 select-none">
@@ -1814,7 +1814,7 @@ export default function TopicList({
                 <button
                   type="button"
                   onClick={handleCreateNewPreset}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-indigo-600 hover:text-indigo-700 bg-white hover:bg-indigo-50 rounded-xl transition-all border border-indigo-200 hover:border-indigo-300 shadow-sm/5 shrink-0"
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-orange-600 hover:text-orange-700 bg-white hover:bg-orange-50 rounded-xl transition-all border border-orange-200 hover:border-orange-300 shadow-sm/5 shrink-0"
                 >
                   <Plus size={13} />
                   Criar Edital
@@ -1836,7 +1836,7 @@ export default function TopicList({
                       className={cn(
                         "p-4 rounded-2xl border transition-all duration-300 cursor-pointer flex flex-col justify-between text-left relative select-none",
                         isSelected
-                          ? "bg-white border-indigo-500 shadow-md ring-2 ring-indigo-500/10"
+                          ? "bg-white border-orange-500 shadow-md ring-2 ring-orange-500/10"
                           : "bg-white border-slate-200 hover:bg-slate-50/50 hover:border-slate-300 shadow-sm"
                       )}
                     >
@@ -1846,7 +1846,7 @@ export default function TopicList({
                             <span className={cn(
                               "px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wide border",
                               preset.difficulty === 'Superior' 
-                                ? "bg-indigo-50 text-indigo-700 border-indigo-120"
+                                ? "bg-orange-50 text-orange-700 border-orange-100"
                                 : "bg-sky-50 text-sky-700 border-sky-120"
                             )}>
                               {preset.difficulty}
@@ -1864,7 +1864,7 @@ export default function TopicList({
                           </div>
                           <span className="text-[11px] font-bold text-slate-400">Banca: {preset.banca}</span>
                         </div>
-                        <h4 className="font-extrabold text-slate-800 text-sm sm:text-base leading-tight mb-1 group-hover:text-indigo-600">
+                        <h4 className="font-extrabold text-slate-800 text-sm sm:text-base leading-tight mb-1 group-hover:text-orange-600">
                           {preset.title}
                         </h4>
                         <span className="text-xs font-black text-slate-500 tracking-wider uppercase mb-2 block">{preset.institution}</span>
@@ -1883,7 +1883,7 @@ export default function TopicList({
                             <button
                               type="button"
                               onClick={() => handleRestorePresetToDefault(preset.id)}
-                              className="p-1 text-slate-400 hover:text-indigo-600 hover:bg-slate-100 border border-transparent hover:border-slate-200 rounded-lg transition-colors"
+                              className="p-1 text-slate-400 hover:text-orange-600 hover:bg-slate-100 border border-transparent hover:border-slate-200 rounded-lg transition-colors"
                               title="Restaurar padrão do sistema para este edital"
                             >
                               <RefreshCw size={12} />
@@ -1901,7 +1901,7 @@ export default function TopicList({
                           )}
                           <div className={cn(
                             "w-6 h-6 rounded-full flex items-center justify-center transition-transform",
-                            isSelected ? "bg-indigo-600 text-white translate-x-0.5" : "bg-slate-100 text-slate-500"
+                            isSelected ? "bg-orange-600 text-white translate-x-0.5" : "bg-slate-100 text-slate-500"
                           )}>
                             <ArrowRight size={12} />
                           </div>
@@ -1935,7 +1935,7 @@ export default function TopicList({
                         <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
                           <div>
                             <h4 className="font-extrabold text-slate-900 text-sm flex items-center gap-2">
-                              <CheckSquare size={16} className="text-indigo-600" />
+                              <CheckSquare size={16} className="text-orange-600" />
                               Edição & Visualização do Edital
                             </h4>
                             <p className="text-[11px] text-slate-500 font-medium mt-0.5">
@@ -1946,7 +1946,7 @@ export default function TopicList({
                             <button
                               type="button"
                               onClick={() => handleOpenPresetMetaEdit(preset)}
-                              className="px-2.5 py-1.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 font-extrabold text-[11px] rounded-lg border border-indigo-150 flex items-center gap-1 transition-all"
+                              className="px-2.5 py-1.5 bg-orange-50 text-orange-700 hover:bg-orange-100 font-extrabold text-[11px] rounded-lg border border-orange-200 flex items-center gap-1 transition-all"
                             >
                               <Edit2 size={11} />
                               Dados do Concurso
@@ -1969,7 +1969,7 @@ export default function TopicList({
                                     type="text"
                                     value={editingPresetSubjectName.name}
                                     onChange={(e) => setEditingPresetSubjectName({ ...editingPresetSubjectName, name: e.target.value })}
-                                    className="px-2 py-1 text-xs border border-indigo-400 rounded-lg outline-none bg-white w-full font-bold focus:ring-2 focus:ring-indigo-500/20"
+                                    className="px-2 py-1 text-xs border border-orange-400 rounded-lg outline-none bg-white w-full font-bold focus:ring-2 focus:ring-orange-500/20"
                                     onKeyDown={(e) => {
                                       if (e.key === 'Enter') {
                                         handleEditPresetSubjectName(pSubIdx, editingPresetSubjectName.name);
@@ -2014,7 +2014,7 @@ export default function TopicList({
                                     <button
                                       type="button"
                                       onClick={() => setEditingPresetSubjectName({ subjectIndex: pSubIdx, name: pSub.name })}
-                                      className="p-1 text-slate-400 hover:text-indigo-600 hover:bg-slate-100 border border-transparent hover:border-slate-200 rounded transition-all"
+                                      className="p-1 text-slate-400 hover:text-orange-600 hover:bg-slate-100 border border-transparent hover:border-slate-200 rounded transition-all"
                                       title="Renomear disciplina"
                                     >
                                       <Edit2 size={11} />
@@ -2045,7 +2045,7 @@ export default function TopicList({
                                           type="text"
                                           value={editingPresetTopicName.name}
                                           onChange={(e) => setEditingPresetTopicName({ ...editingPresetTopicName, name: e.target.value })}
-                                          className="px-2 py-1 text-xs border border-indigo-400 rounded bg-white outline-none w-full"
+                                          className="px-2 py-1 text-xs border border-orange-400 rounded bg-white outline-none w-full"
                                           autoFocus
                                           onKeyDown={(e) => {
                                             if (e.key === 'Enter') {
@@ -2085,7 +2085,7 @@ export default function TopicList({
                                           <button
                                             type="button"
                                             onClick={() => setEditingPresetTopicName({ subjectIndex: pSubIdx, topicIndex: idx, name: pTopic })}
-                                            className="p-0.5 text-slate-400 hover:text-indigo-600 rounded transition"
+                                            className="p-0.5 text-slate-400 hover:text-orange-600 rounded transition"
                                             title="Editar tópico"
                                           >
                                             <Edit2 size={10} />
@@ -2112,7 +2112,7 @@ export default function TopicList({
                                   placeholder="Digite um tópico para adicionar..."
                                   value={newPresetTopicName[pSubIdx] || ''}
                                   onChange={(e) => setNewPresetTopicName({ ...newPresetTopicName, [pSubIdx]: e.target.value })}
-                                  className="px-2.5 py-1 text-[11px] border border-slate-200 bg-slate-50/50 rounded-lg outline-none focus:bg-white focus:ring-1 focus:ring-indigo-400 w-full"
+                                  className="px-2.5 py-1 text-[11px] border border-slate-200 bg-slate-50/50 rounded-lg outline-none focus:bg-white focus:ring-1 focus:ring-orange-400 w-full"
                                   onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
                                       e.preventDefault();
@@ -2127,7 +2127,7 @@ export default function TopicList({
                                     handleAddPresetTopic(pSubIdx, newPresetTopicName[pSubIdx] || '');
                                     setNewPresetTopicName({ ...newPresetTopicName, [pSubIdx]: '' });
                                   }}
-                                  className="px-3 py-1 bg-slate-100 text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-200 border border-slate-200 rounded-lg text-[10px] font-black shrink-0 transition-all flex items-center gap-0.5"
+                                  className="px-3 py-1 bg-slate-100 text-slate-700 hover:bg-orange-50 hover:text-orange-700 hover:border-orange-200 border border-slate-200 rounded-lg text-[10px] font-black shrink-0 transition-all flex items-center gap-0.5"
                                 >
                                   <Plus size={11} />
                                   Add
@@ -2147,7 +2147,7 @@ export default function TopicList({
                               placeholder="Digite o nome da nova matéria (Ex: Direito Constitucional)..."
                               value={newPresetSubjectName}
                               onChange={(e) => setNewPresetSubjectName(e.target.value)}
-                              className="px-3 py-2 text-xs border border-slate-205 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500/20 w-full font-bold text-slate-800"
+                              className="px-3 py-2 text-xs border border-slate-205 rounded-xl outline-none focus:ring-2 focus:ring-orange-500/20 w-full font-bold text-slate-800"
                               onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
                                   e.preventDefault();
@@ -2184,7 +2184,7 @@ export default function TopicList({
                                     setIsAddingPresetSubject(false);
                                   }
                                 }}
-                                className="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-[10px] font-black transition-all"
+                                className="px-3 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-[10px] font-black transition-all"
                               >
                                 Salvar
                               </button>
@@ -2195,7 +2195,7 @@ export default function TopicList({
                             <button
                               type="button"
                               onClick={() => setIsAddingPresetSubject(true)}
-                              className="px-4 py-2.5 text-xs font-extrabold text-indigo-600 hover:text-indigo-700 bg-white hover:bg-slate-50 border border-indigo-200 hover:border-indigo-300 rounded-xl shadow-sm/5 transition-all flex items-center gap-2"
+                              className="px-4 py-2.5 text-xs font-extrabold text-orange-600 hover:text-orange-700 bg-white hover:bg-slate-50 border border-orange-200 hover:border-orange-300 rounded-xl shadow-sm/5 transition-all flex items-center gap-2"
                             >
                               <Plus size={14} />
                               Adicionar Nova Disciplina ao Edital
@@ -2209,7 +2209,7 @@ export default function TopicList({
                     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 space-y-5">
                       <div>
                         <h4 className="font-extrabold text-slate-900 text-sm flex items-center gap-2">
-                          <Layers size={16} className="text-indigo-600" />
+                          <Layers size={16} className="text-orange-600" />
                           Mapeamento Inteligente de Disciplinas
                         </h4>
                         <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
@@ -2239,7 +2239,7 @@ export default function TopicList({
                                   value={value}
                                   disabled={isImportingPreset}
                                   onChange={(e) => setMappingState({ ...mappingState, [pSub.name]: e.target.value })}
-                                  className="w-full px-3 py-2 rounded-xl border border-slate-205 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none bg-white text-xs font-bold"
+                                  className="w-full px-3 py-2 rounded-xl border border-slate-205 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 outline-none bg-white text-xs font-bold"
                                 >
                                   <option value="create">
                                     ➕ Criar Nova Matéria: "{pSub.name.length > 25 ? pSub.name.substring(0, 22) + '...' : pSub.name}"
@@ -2268,7 +2268,7 @@ export default function TopicList({
                           type="button"
                           onClick={handleImportPreset}
                           disabled={isImportingPreset || totalTopics === 0}
-                          className="px-6 py-3.5 bg-indigo-600 text-white hover:bg-indigo-700 font-extrabold text-xs sm:text-sm rounded-xl transition-all shadow-md focus:ring-4 focus:ring-indigo-120/50 flex items-center justify-center gap-2.5 shrink-0 disabled:opacity-75 min-w-[200px]"
+                          className="px-6 py-3.5 bg-orange-600 text-white hover:bg-orange-700 font-extrabold text-xs sm:text-sm rounded-xl transition-all shadow-md focus:ring-4 focus:ring-orange-100/50 flex items-center justify-center gap-2.5 shrink-0 disabled:opacity-75 min-w-[200px]"
                         >
                           {isImportingPreset ? (
                             <>
@@ -2296,8 +2296,8 @@ export default function TopicList({
       {isEditingPresetMeta && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full p-6 animate-in fade-in zoom-in duration-200" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center gap-4 text-indigo-600 mb-4">
-              <div className="p-3 bg-indigo-50 rounded-full">
+            <div className="flex items-center gap-4 text-orange-600 mb-4">
+              <div className="p-3 bg-orange-50 rounded-full">
                 <Edit2 size={24} />
               </div>
               <h3 className="text-lg font-bold">Editar Informações do Concurso</h3>
@@ -2311,7 +2311,7 @@ export default function TopicList({
                     type="text"
                     value={presetMetaForm.title}
                     onChange={(e) => setPresetMetaForm({ ...presetMetaForm, title: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none text-sm focus:ring-2 focus:ring-indigo-500/20"
+                    className="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none text-sm focus:ring-2 focus:ring-orange-500/20"
                   />
                 </div>
                 <div className="space-y-1">
@@ -2320,7 +2320,7 @@ export default function TopicList({
                     type="text"
                     value={presetMetaForm.institution}
                     onChange={(e) => setPresetMetaForm({ ...presetMetaForm, institution: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none text-sm focus:ring-2 focus:ring-indigo-500/20"
+                    className="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none text-sm focus:ring-2 focus:ring-orange-500/20"
                   />
                 </div>
               </div>
@@ -2332,7 +2332,7 @@ export default function TopicList({
                     type="text"
                     value={presetMetaForm.banca}
                     onChange={(e) => setPresetMetaForm({ ...presetMetaForm, banca: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none text-sm focus:ring-2 focus:ring-indigo-500/20"
+                    className="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none text-sm focus:ring-2 focus:ring-orange-500/20"
                   />
                 </div>
                 <div className="space-y-1">
@@ -2340,7 +2340,7 @@ export default function TopicList({
                   <select
                     value={presetMetaForm.difficulty}
                     onChange={(e) => setPresetMetaForm({ ...presetMetaForm, difficulty: e.target.value as 'Médio' | 'Superior' })}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-xl bg-white outline-none text-sm focus:ring-2 focus:ring-indigo-500/20"
+                    className="w-full px-3 py-2 border border-slate-200 rounded-xl bg-white outline-none text-sm focus:ring-2 focus:ring-orange-500/20"
                   >
                     <option value="Médio">Médio</option>
                     <option value="Superior">Superior</option>
@@ -2354,7 +2354,7 @@ export default function TopicList({
                   value={presetMetaForm.description}
                   rows={3}
                   onChange={(e) => setPresetMetaForm({ ...presetMetaForm, description: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none text-sm focus:ring-2 focus:ring-indigo-500/20 resize-none"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none text-sm focus:ring-2 focus:ring-orange-500/20 resize-none"
                   placeholder="Por que estudar para esta prova?"
                 />
               </div>
@@ -2371,7 +2371,7 @@ export default function TopicList({
               <button
                 type="button"
                 onClick={handleSavePresetMeta}
-                className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+                className="px-4 py-2 bg-orange-600 text-white font-medium rounded-lg hover:bg-orange-700 transition-colors"
               >
                 Salvar Alterações
               </button>
@@ -2384,8 +2384,8 @@ export default function TopicList({
       {topicToReset && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
-            <div className="flex items-center gap-4 text-indigo-600 mb-4">
-              <div className="p-3 bg-indigo-50 rounded-full">
+            <div className="flex items-center gap-4 text-orange-600 mb-4">
+              <div className="p-3 bg-orange-50 rounded-full">
                 <RotateCcw size={24} />
               </div>
               <h3 className="text-lg font-bold">Repetir Ciclo</h3>
@@ -2403,7 +2403,7 @@ export default function TopicList({
               </button>
               <button
                 onClick={() => handleResetCycle(topicToReset)}
-                className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+                className="px-4 py-2 bg-orange-600 text-white font-medium rounded-lg hover:bg-orange-700 transition-colors"
               >
                 Reiniciar Ciclo
               </button>
@@ -2455,7 +2455,7 @@ export default function TopicList({
       {selectedTopicIds.length > 0 && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white rounded-2xl px-6 py-4 shadow-2xl flex flex-col md:flex-row items-center gap-4 border border-slate-800 animate-in slide-in-from-bottom-4 duration-300 w-11/12 max-w-4xl">
           <div className="flex items-center gap-3 w-full md:w-auto">
-            <span className="bg-indigo-600 text-white text-xs font-black px-2.5 py-1 rounded-full">
+            <span className="bg-orange-600 text-white text-xs font-black px-2.5 py-1 rounded-full">
               {selectedTopicIds.length}
             </span>
             <span className="text-xs font-bold text-slate-300">
@@ -2489,7 +2489,7 @@ export default function TopicList({
               <button
                 onClick={handleBulkUpdateSubject}
                 disabled={!bulkActionSubjectId || isUpdatingBulk}
-                className="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 text-white text-[11px] font-extrabold rounded-lg transition-all"
+                className="px-3 py-1 bg-orange-600 hover:bg-orange-700 disabled:opacity-40 text-white text-[11px] font-extrabold rounded-lg transition-all"
               >
                 {isUpdatingBulk ? 'Movendo...' : 'Mover'}
               </button>
@@ -2553,7 +2553,7 @@ export default function TopicList({
           <div className="bg-white rounded-2xl shadow-xl max-w-xl w-full p-6 animate-in fade-in zoom-in duration-200 flex flex-col max-h-[85vh]">
             <div className="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-indigo-50 text-indigo-600 rounded-xl">
+                <div className="p-2.5 bg-orange-50 text-orange-600 rounded-xl">
                   <Briefcase size={20} />
                 </div>
                 <div>
@@ -2591,13 +2591,13 @@ export default function TopicList({
                             value={tempCargoEditName}
                             onChange={(e) => setTempCargoEditName(e.target.value)}
                             placeholder="Nome do cargo..."
-                            className="flex-1 px-3 py-1.5 text-sm bg-white border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500/20 font-bold text-slate-800"
+                            className="flex-1 px-3 py-1.5 text-sm bg-white border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-orange-500/20 font-bold text-slate-800"
                             autoFocus
                           />
                           <button
                             onClick={() => handleRenameCargoAction(pos, tempCargoEditName)}
                             disabled={isSavingCargoName || !tempCargoEditName.trim()}
-                            className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-45 text-white text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5"
+                            className="px-3.5 py-1.5 bg-orange-600 hover:bg-orange-700 disabled:opacity-45 text-white text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5"
                           >
                             {isSavingCargoName ? (
                               <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -2618,7 +2618,7 @@ export default function TopicList({
                         <>
                           <div className="space-y-1">
                             <span className="text-sm font-bold text-slate-800 flex items-center gap-1.5">
-                              <Briefcase size={14} className="text-indigo-600" />
+                              <Briefcase size={14} className="text-orange-600" />
                               {pos}
                             </span>
                             <span className="text-xs text-slate-500 block">
@@ -2631,7 +2631,7 @@ export default function TopicList({
                               setEditingCargoName(pos);
                               setTempCargoEditName(pos);
                             }}
-                            className="flex items-center gap-1 px-3 py-1.5 hover:bg-indigo-50 text-indigo-600 hover:text-indigo-700 text-xs font-bold rounded-lg transition-colors"
+                            className="flex items-center gap-1 px-3 py-1.5 hover:bg-orange-50 text-orange-600 hover:text-orange-700 text-xs font-bold rounded-lg transition-colors"
                           >
                             <Edit2 size={13} />
                             <span>Editar</span>

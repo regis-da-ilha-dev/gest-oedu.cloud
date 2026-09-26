@@ -126,7 +126,7 @@ export default function StudySessionList({
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsAdding(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg font-medium hover:bg-orange-700 transition-colors"
           >
             <Plus size={20} />
             Registrar Sessão
@@ -147,7 +147,7 @@ export default function StudySessionList({
                     const firstTopic = topics.find(t => t.subjectId === subId);
                     setNewSession({ ...newSession, subjectId: subId, topicId: firstTopic?.id || '' });
                   }}
-                  className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white"
+                  className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none bg-white"
                 >
                   {subjects.map(s => (
                     <option key={s.id} value={s.id}>{s.name}</option>
@@ -159,7 +159,7 @@ export default function StudySessionList({
                 <select
                   value={newSession.topicId}
                   onChange={(e) => setNewSession({ ...newSession, topicId: e.target.value })}
-                  className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white"
+                  className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none bg-white"
                 >
                   <option value="">Selecione um tópico</option>
                   {filteredTopics.map(t => (
@@ -173,7 +173,7 @@ export default function StudySessionList({
                   type="number"
                   value={newSession.durationMinutes}
                   onChange={(e) => setNewSession({ ...newSession, durationMinutes: parseInt(e.target.value) || 0 })}
-                  className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                  className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
                 />
               </div>
               <div className="space-y-2">
@@ -182,7 +182,7 @@ export default function StudySessionList({
                   type="number"
                   value={newSession.questionsTotal}
                   onChange={(e) => setNewSession({ ...newSession, questionsTotal: parseInt(e.target.value) || 0 })}
-                  className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                  className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
                 />
               </div>
               <div className="space-y-2">
@@ -191,7 +191,7 @@ export default function StudySessionList({
                   type="number"
                   value={newSession.questionsCorrect}
                   onChange={(e) => setNewSession({ ...newSession, questionsCorrect: parseInt(e.target.value) || 0 })}
-                  className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                  className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
                 />
               </div>
               <div className="space-y-2 lg:col-span-3">
@@ -209,7 +209,7 @@ export default function StudySessionList({
                   onChange={(e) => setNewSession({ ...newSession, notes: e.target.value.slice(0, 2000) })}
                   placeholder="O que você aprendeu hoje? (Principais pontos, dúvidas, etc.)"
                   maxLength={2000}
-                  className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none min-h-[120px] text-sm"
+                  className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none min-h-[120px] text-sm"
                 />
               </div>
             </div>
@@ -223,7 +223,7 @@ export default function StudySessionList({
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700"
+                className="px-4 py-2 bg-orange-600 text-white font-medium rounded-lg hover:bg-orange-700"
               >
                 Registrar Sessão
               </button>
@@ -266,7 +266,7 @@ export default function StudySessionList({
                   <p className="text-lg font-bold text-slate-900">
                     {session.durationMinutes} min
                   </p>
-                  <p className="text-[10px] font-bold text-indigo-600">
+                  <p className="text-[10px] font-bold text-orange-600">
                     {(session.durationMinutes / 60).toFixed(1)}h
                   </p>
                 </div>
@@ -285,7 +285,7 @@ export default function StudySessionList({
                 <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all">
                   <button 
                     onClick={() => handleRepeatSession(session)}
-                    className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                    className="p-2 text-slate-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all"
                     title="Repetir esta sessão"
                   >
                     <RotateCcw size={20} />

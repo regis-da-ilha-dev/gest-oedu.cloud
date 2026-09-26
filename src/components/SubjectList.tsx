@@ -125,10 +125,10 @@ export default function SubjectList({ subjects, onAdd, onDelete, onEdit, onSelec
           onClick={() => {
             setEditingSubject(null);
             setNewName('');
-            setNewColor('#6366f1');
+            setNewColor('#f97316');
             setIsAdding(true);
           }}
-          className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors"
+          className="flex items-center gap-2 px-5 py-2.5 bg-orange-500 text-white rounded-xl font-bold hover:bg-orange-600 transition-all shadow-md shadow-orange-100 cursor-pointer active:scale-95"
         >
           <Plus size={20} />
           Nova Matéria
@@ -178,7 +178,7 @@ export default function SubjectList({ subjects, onAdd, onDelete, onEdit, onSelec
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
                   placeholder="Ex: Direito Constitucional"
-                  className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 outline-none font-medium"
                   autoFocus
                 />
               </div>
@@ -207,7 +207,7 @@ export default function SubjectList({ subjects, onAdd, onDelete, onEdit, onSelec
                       type="button"
                       onClick={() => setNewIcon(name)}
                       className={`p-2 rounded-lg transition-all flex items-center justify-center ${
-                        newIcon === name ? 'bg-indigo-600 text-white scale-110 shadow-md' : 'text-slate-400 hover:bg-slate-50'
+                        newIcon === name ? 'bg-orange-500 text-white scale-110 shadow-md' : 'text-slate-400 hover:bg-slate-50'
                       }`}
                       title={name}
                     >
@@ -221,13 +221,13 @@ export default function SubjectList({ subjects, onAdd, onDelete, onEdit, onSelec
               <button
                 type="button"
                 onClick={cancelForm}
-                className="px-4 py-2 text-slate-600 font-medium hover:bg-slate-50 rounded-lg"
+                className="px-4 py-2 text-slate-600 font-medium hover:bg-slate-50 rounded-xl cursor-pointer"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700"
+                className="px-5 py-2.5 bg-orange-500 text-white font-bold rounded-xl hover:bg-orange-600 transition-all shadow-md shadow-orange-100 cursor-pointer"
               >
                 {editingSubject ? 'Salvar Alterações' : 'Salvar Matéria'}
               </button>
@@ -241,14 +241,14 @@ export default function SubjectList({ subjects, onAdd, onDelete, onEdit, onSelec
           <div 
             key={subject.id} 
             onClick={() => onSelect?.(subject.id)}
-            className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all group cursor-pointer relative overflow-hidden"
+            className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-orange-200 transition-all group cursor-pointer relative overflow-hidden"
           >
             <div 
               className="absolute top-0 left-0 w-full h-1" 
               style={{ backgroundColor: subject.color }}
             />
             <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center text-white" style={{ backgroundColor: subject.color }}>
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-sm" style={{ backgroundColor: subject.color }}>
                 <SubjectIcon name={subject.icon || 'BookOpen'} size={24} />
               </div>
               <div className="flex gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
@@ -257,7 +257,7 @@ export default function SubjectList({ subjects, onAdd, onDelete, onEdit, onSelec
                     e.stopPropagation();
                     startEditing(subject);
                   }}
-                  className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                  className="p-2 text-slate-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
                   title="Editar"
                 >
                   <Edit2 size={18} />
@@ -278,7 +278,7 @@ export default function SubjectList({ subjects, onAdd, onDelete, onEdit, onSelec
               <h3 className="text-lg font-bold text-slate-900">{subject.name}</h3>
             </div>
             <p className="text-sm text-slate-500">Criada em {new Date(subject.createdAt).toLocaleDateString()}</p>
-            <div className="mt-4 flex items-center gap-2 text-xs font-bold text-indigo-600 uppercase tracking-wider">
+            <div className="mt-4 flex items-center gap-2 text-xs font-bold text-orange-600 uppercase tracking-wider">
               Ver Flashcards
               <Plus size={12} className="rotate-45" />
             </div>

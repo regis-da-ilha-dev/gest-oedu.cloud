@@ -128,8 +128,8 @@ export default function PomodoroTimer() {
                 className={cn(
                   "px-4 py-3 rounded-xl text-sm font-bold transition-all border",
                   workTime === time && mode === 'work'
-                    ? "bg-indigo-600 text-white border-indigo-600 shadow-md"
-                    : "bg-white text-slate-600 border-slate-200 hover:border-indigo-300"
+                    ? "bg-orange-600 text-white border-orange-600 shadow-md"
+                    : "bg-white text-slate-600 border-slate-200 hover:border-orange-300"
                 )}
               >
                 {time} min
@@ -154,13 +154,13 @@ export default function PomodoroTimer() {
       <div className={cn(
         "relative aspect-square rounded-full border-8 flex flex-col items-center justify-center transition-all duration-500 shadow-2xl",
         mode === 'work' 
-          ? "bg-white border-indigo-600 shadow-indigo-100" 
+          ? "bg-white border-orange-600 shadow-orange-100" 
           : "bg-white border-emerald-500 shadow-emerald-100"
       )}>
         <div className="text-center space-y-2">
           <div className={cn(
             "flex items-center justify-center gap-2 font-semibold uppercase tracking-widest text-sm",
-            mode === 'work' ? "text-indigo-600" : "text-emerald-600"
+            mode === 'work' ? "text-orange-600" : "text-emerald-600"
           )}>
             {mode === 'work' ? <Timer size={18} /> : <Coffee size={18} />}
             {mode === 'work' ? 'Foco' : 'Descanso'}
@@ -188,7 +188,7 @@ export default function PomodoroTimer() {
             "p-6 rounded-3xl text-white shadow-lg transition-all transform hover:scale-105 active:scale-95",
             isActive 
               ? "bg-slate-800 shadow-slate-200" 
-              : mode === 'work' ? "bg-indigo-600 shadow-indigo-200" : "bg-emerald-600 shadow-emerald-200"
+              : mode === 'work' ? "bg-orange-600 shadow-orange-200" : "bg-emerald-600 shadow-emerald-200"
           )}
         >
           {isActive ? <Pause size={32} fill="currentColor" /> : <Play size={32} fill="currentColor" className="ml-1" />}
@@ -207,7 +207,7 @@ export default function PomodoroTimer() {
           onClick={() => setShowSettings(!showSettings)}
           className={cn(
             "p-4 rounded-2xl transition-colors",
-            showSettings ? "bg-indigo-50 text-indigo-600" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            showSettings ? "bg-orange-50 text-orange-600" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
           )}
           title="Configurações"
         >
@@ -217,7 +217,7 @@ export default function PomodoroTimer() {
 
       <div className="bg-white p-4 rounded-2xl border border-slate-200 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
+          <div className="w-10 h-10 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center">
             <Target size={20} />
           </div>
           <div>
@@ -231,7 +231,7 @@ export default function PomodoroTimer() {
               key={i} 
               className={cn(
                 "w-3 h-3 rounded-full transition-colors",
-                i <= sessionsCompleted ? "bg-indigo-600" : "bg-slate-100"
+                i <= sessionsCompleted ? "bg-orange-600" : "bg-slate-100"
               )} 
             />
           ))}

@@ -84,7 +84,7 @@ export default function Store({ userProfile }: StoreProps) {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <ShoppingBag className="text-indigo-600" />
+            <ShoppingBag className="text-orange-600" />
             Loja
           </h2>
           <p className="text-slate-500">Materiais e ferramentas recomendadas para sua aprovação.</p>
@@ -93,7 +93,7 @@ export default function Store({ userProfile }: StoreProps) {
         {isAdmin && (
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 hover:scale-105 active:scale-95"
+            className="flex items-center gap-2 px-6 py-3 bg-orange-600 text-white rounded-xl font-bold hover:bg-orange-700 transition-all shadow-lg shadow-orange-100 hover:scale-105 active:scale-95"
           >
             <Plus size={20} />
             Novo Produto
@@ -209,7 +209,7 @@ export default function Store({ userProfile }: StoreProps) {
                         e.stopPropagation();
                         setSelectedProduct(product);
                       }}
-                      className="flex-1 px-2 py-2.5 bg-white border border-slate-200 text-slate-600 font-bold rounded-lg hover:border-indigo-100 hover:bg-slate-50 transition-all text-xs text-center"
+                      className="flex-1 px-2 py-2.5 bg-white border border-slate-200 text-slate-600 font-bold rounded-lg hover:border-orange-100 hover:bg-slate-50 transition-all text-xs text-center"
                     >
                       Mostrar detalhes
                     </button>
@@ -268,7 +268,7 @@ export default function Store({ userProfile }: StoreProps) {
                       value={newProduct.title}
                       onChange={e => setNewProduct(prev => ({ ...prev, title: e.target.value }))}
                       placeholder="Ex: Livro de Colorir Lendas do Brasil"
-                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none"
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-orange-500 outline-none"
                     />
                   </div>
 
@@ -280,7 +280,7 @@ export default function Store({ userProfile }: StoreProps) {
                       value={newProduct.category}
                       onChange={e => setNewProduct(prev => ({ ...prev, category: e.target.value }))}
                       placeholder="Ex: E-Books e documentos"
-                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none"
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-orange-500 outline-none"
                     />
                   </div>
 
@@ -291,7 +291,7 @@ export default function Store({ userProfile }: StoreProps) {
                       value={newProduct.description}
                       onChange={e => setNewProduct(prev => ({ ...prev, description: e.target.value }))}
                       placeholder="Descreva os benefícios do produto..."
-                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none min-h-[100px] resize-none"
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-orange-500 outline-none min-h-[100px] resize-none"
                     />
                   </div>
 
@@ -303,7 +303,7 @@ export default function Store({ userProfile }: StoreProps) {
                       value={newProduct.imageUrl}
                       onChange={e => setNewProduct(prev => ({ ...prev, imageUrl: e.target.value }))}
                       placeholder="https://exemplo.com/imagem.png"
-                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none"
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-orange-500 outline-none"
                     />
                   </div>
 
@@ -315,7 +315,7 @@ export default function Store({ userProfile }: StoreProps) {
                       value={newProduct.link}
                       onChange={e => setNewProduct(prev => ({ ...prev, link: e.target.value }))}
                       placeholder="https://exemplo.com/produto"
-                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none"
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-orange-500 outline-none"
                     />
                   </div>
 
@@ -330,7 +330,7 @@ export default function Store({ userProfile }: StoreProps) {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="flex-[2] py-4 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 disabled:opacity-50 flex items-center justify-center gap-2"
+                      className="flex-[2] py-4 bg-orange-600 text-white font-bold rounded-2xl hover:bg-orange-700 transition-all shadow-lg shadow-orange-100 disabled:opacity-50 flex items-center justify-center gap-2"
                     >
                       {isSubmitting ? (
                         <Loader2 className="w-5 h-5 animate-spin" />
@@ -379,7 +379,7 @@ export default function Store({ userProfile }: StoreProps) {
                 </button>
               </div>
               <div className="p-8 max-h-[60vh] overflow-y-auto custom-scrollbar">
-                <span className="text-indigo-600 text-[10px] font-black uppercase tracking-[0.2em] mb-2 block">{selectedProduct.category}</span>
+                <span className="text-orange-600 text-[10px] font-black uppercase tracking-[0.2em] mb-2 block">{selectedProduct.category}</span>
                 <h3 className="text-2xl font-black text-slate-900 mb-6 leading-tight">{selectedProduct.title}</h3>
                 <div className="prose prose-slate max-w-none">
                   <p className="text-slate-600 leading-relaxed whitespace-pre-wrap text-sm">{selectedProduct.description}</p>
