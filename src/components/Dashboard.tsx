@@ -48,7 +48,17 @@ import {
   ShieldCheck,
   FileText,
   Flame,
-  Pause
+  Pause,
+  ArrowRight,
+  Save,
+  RotateCcw,
+  Edit3,
+  Sliders,
+  Sun,
+  Moon,
+  Zap,
+  Award,
+  HelpCircle
 } from 'lucide-react';
 
 const ICON_MAP: Record<string, any> = {
@@ -245,12 +255,48 @@ export default function Dashboard({
   };
   const [timeSeconds, setTimeSeconds] = useState(0);
   const [isTimerActive, setIsTimerActive] = useState(false);
+  const [timerPreset, setTimerPreset] = useState<'free' | 'pomodoro' | 'deep'>('free');
+  const [timerSubjectId, setTimerSubjectId] = useState<string>('');
+  const [isSavingSession, setIsSavingSession] = useState(false);
+  const [saveSuccessMsg, setSaveSuccessMsg] = useState(false);
+  const [subjectFilterSearch, setSubjectFilterSearch] = useState('');
+  
+  // Daily Goal state
+  const [dailyGoalMinutes, setDailyGoalMinutes] = useState<number>(() => {
+    try {
+      const saved = safeStorage.getItem('gestaoedu_daily_goal');
+      return saved ? parseInt(saved, 10) : 60;
+    } catch {
+      return 60;
+    }
+  });
+  const [isEditingGoal, setIsEditingGoal] = useState(false);
+  const [tempGoalMinutes, setTempGoalMinutes] = useState(dailyGoalMinutes);
+
+  const handleSaveGoal = (mins: number) => {
+    const val = Math.max(15, Math.min(720, mins));
+    setDailyGoalMinutes(val);
+    try {
+      safeStorage.setItem('gestaoedu_daily_goal', val.toString());
+    } catch {
+      // safe fallback
+    }
+    setIsEditingGoal(false);
+  };
+
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   React.useEffect(() => {
     if (isTimerActive) {
       timerIntervalRef.current = setInterval(() => {
-        setTimeSeconds(prev => prev + 1);
+        setTimeSeconds(prev => {
+          if (timerPreset !== 'free' && prev <= 1) {
+            playAlertSound();
+            setIsTimerActive(false);
+            return 0;
+          }
+          return timerPreset === 'free' ? prev + 1 : prev - 1;
+        });
       }, 1000);
     } else {
       if (timerIntervalRef.current) {
@@ -262,14 +308,65 @@ export default function Dashboard({
         clearInterval(timerIntervalRef.current);
       }
     };
-  }, [isTimerActive]);
+  }, [isTimerActive, timerPreset]);
+
+  const handleSetTimerPreset = (preset: 'free' | 'pomodoro' | 'deep') => {
+    setIsTimerActive(false);
+    setTimerPreset(preset);
+    if (preset === 'pomodoro') setTimeSeconds(25 * 60);
+    else if (preset === 'deep') setTimeSeconds(50 * 60);
+    else setTimeSeconds(0);
+  };
+
+  const handleSaveTimerSession = async () => {
+    let elapsedMinutes = 0;
+    if (timerPreset === 'free') {
+      elapsedMinutes = Math.round(timeSeconds / 60);
+    } else if (timerPreset === 'pomodoro') {
+      elapsedMinutes = Math.max(1, Math.round((25 * 60 - timeSeconds) / 60));
+    } else if (timerPreset === 'deep') {
+      elapsedMinutes = Math.max(1, Math.round((50 * 60 - timeSeconds) / 60));
+    }
+
+    if (elapsedMinutes < 1) {
+      alert("Estude por pelo menos 1 minuto para registrar como sessão de estudo.");
+      return;
+    }
+
+    setIsSavingSession(true);
+    try {
+      const subId = timerSubjectId || (subjects[0]?.id || '');
+      const subName = subjects.find(s => s.id === subId)?.name || 'Estudos';
+      await studyService.addSession(userId, {
+        subjectId: subId,
+        durationMinutes: elapsedMinutes,
+        date: Date.now(),
+        notes: `Sessão via Cronômetro de Foco (${subName})`
+      });
+      setIsTimerActive(false);
+      setTimeSeconds(timerPreset === 'pomodoro' ? 25 * 60 : timerPreset === 'deep' ? 50 * 60 : 0);
+      setSaveSuccessMsg(true);
+      setTimeout(() => setSaveSuccessMsg(false), 4000);
+    } catch (e) {
+      console.error("Error saving timer session:", e);
+      alert("Erro ao salvar sessão de estudo.");
+    } finally {
+      setIsSavingSession(false);
+    }
+  };
 
   const formatTime = (totalSeconds: number) => {
     const hrs = Math.floor(totalSeconds / 3600);
     const mins = Math.floor((totalSeconds % 3600) / 60);
     const secs = totalSeconds % 60;
+    if (hrs > 0) {
+      return [
+        hrs.toString().padStart(2, '0'),
+        mins.toString().padStart(2, '0'),
+        secs.toString().padStart(2, '0')
+      ].join(':');
+    }
     return [
-      hrs.toString().padStart(2, '0'),
       mins.toString().padStart(2, '0'),
       secs.toString().padStart(2, '0')
     ].join(':');
@@ -488,11 +585,15 @@ export default function Dashboard({
   }, [topics]);
 
   const { totalQuestions, correctQuestions, accuracyRate } = useMemo(() => {
-    const total = (topics || []).reduce((acc, t) => acc + (Number(t.questionsTotal) || 0), 0);
-    const correct = (topics || []).reduce((acc, t) => acc + (Number(t.questionsCorrect) || 0), 0);
+    const topicsTotal = (topics || []).reduce((acc, t) => acc + (Number(t.questionsTotal) || 0), 0);
+    const topicsCorrect = (topics || []).reduce((acc, t) => acc + (Number(t.questionsCorrect) || 0), 0);
+    const bankTotal = (answers || []).length;
+    const bankCorrect = (answers || []).filter(a => a.isCorrect).length;
+    const total = topicsTotal + bankTotal;
+    const correct = topicsCorrect + bankCorrect;
     const rate = total > 0 ? Math.round((correct / total) * 100) : 0;
     return { totalQuestions: total, correctQuestions: correct, accuracyRate: rate };
-  }, [topics]);
+  }, [topics, answers]);
 
   const reviewedFlashcards = useMemo(() => (flashcards || []).filter(f => (f.repetition || 0) > 0 || f.lastReviewedAt !== undefined).length, [flashcards]);
   const nowForDue = useMemo(() => {
@@ -506,6 +607,152 @@ export default function Dashboard({
   }, [flashcards, nowForDue]);
 
   const totalStudyTime = useMemo(() => (sessions || []).reduce((acc, s) => acc + (Number(s.durationMinutes) || 0), 0), [sessions]);
+
+  // Today's specific performance metrics (Daily Goal & Streak)
+  const todayStats = useMemo(() => {
+    const startOfToday = new Date(now);
+    startOfToday.setHours(0, 0, 0, 0);
+    const todayMs = startOfToday.getTime();
+
+    const todaySessions = (sessions || []).filter(s => {
+      try {
+        const d = new Date(s.date);
+        d.setHours(0, 0, 0, 0);
+        return d.getTime() === todayMs;
+      } catch {
+        return false;
+      }
+    });
+    const minutesToday = todaySessions.reduce((acc, s) => acc + (Number(s.durationMinutes) || 0), 0);
+
+    const todayAnswers = (answers || []).filter(a => {
+      try {
+        const d = new Date(a.answeredAt);
+        d.setHours(0, 0, 0, 0);
+        return d.getTime() === todayMs;
+      } catch {
+        return false;
+      }
+    });
+    const questionsToday = todayAnswers.length;
+    const correctQuestionsToday = todayAnswers.filter(a => a.isCorrect).length;
+
+    return {
+      minutes: minutesToday,
+      questions: questionsToday,
+      correctQuestions: correctQuestionsToday,
+      sessionsCount: todaySessions.length,
+      goalPercent: Math.min(100, Math.round((minutesToday / dailyGoalMinutes) * 100))
+    };
+  }, [sessions, answers, now, dailyGoalMinutes]);
+
+  // 7-day consistency activity heatmap
+  const last7DaysData = useMemo(() => {
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(now);
+      d.setDate(d.getDate() - i);
+      d.setHours(0, 0, 0, 0);
+      const dTime = d.getTime();
+
+      const daySessions = (sessions || []).filter(s => {
+        try {
+          const sd = new Date(s.date);
+          sd.setHours(0, 0, 0, 0);
+          return sd.getTime() === dTime;
+        } catch { return false; }
+      });
+      const dayAnswers = (answers || []).filter(a => {
+        try {
+          const ad = new Date(a.answeredAt);
+          ad.setHours(0, 0, 0, 0);
+          return ad.getTime() === dTime;
+        } catch { return false; }
+      });
+
+      const mins = daySessions.reduce((acc, s) => acc + (Number(s.durationMinutes) || 0), 0);
+      const qCount = dayAnswers.length;
+
+      days.push({
+        date: d,
+        dayName: format(d, 'EEE', { locale: ptBR }),
+        dayNumber: d.getDate(),
+        minutes: mins,
+        questionsCount: qCount,
+        hasActivity: mins > 0 || qCount > 0,
+        isToday: i === 0
+      });
+    }
+    return days;
+  }, [sessions, answers, now]);
+
+  // Dynamic study streak calculation
+  const currentStreak = useMemo(() => {
+    let streak = 0;
+    const today = new Date(now);
+    today.setHours(0, 0, 0, 0);
+
+    for (let i = 0; i < 45; i++) {
+      const checkDate = new Date(today);
+      checkDate.setDate(checkDate.getDate() - i);
+      const checkMs = checkDate.getTime();
+
+      const hasSession = (sessions || []).some(s => {
+        try {
+          const d = new Date(s.date);
+          d.setHours(0, 0, 0, 0);
+          return d.getTime() === checkMs;
+        } catch { return false; }
+      });
+
+      const hasAnswer = (answers || []).some(a => {
+        try {
+          const d = new Date(a.answeredAt);
+          d.setHours(0, 0, 0, 0);
+          return d.getTime() === checkMs;
+        } catch { return false; }
+      });
+
+      if (hasSession || hasAnswer) {
+        streak++;
+      } else {
+        if (i === 0) continue; // If no session yet today, keep previous streak
+        break;
+      }
+    }
+    return Math.max(streak, 1);
+  }, [sessions, answers, now]);
+
+  // Strategic Insights
+  const strategicInsights = useMemo(() => {
+    // Identify subject needing highest attention
+    const subjectMap: Record<string, { total: number; correct: number; name: string; color: string }> = {};
+    (subjects || []).forEach(s => {
+      subjectMap[s.id] = { total: 0, correct: 0, name: s.name, color: s.color || '#f97316' };
+    });
+    (topics || []).forEach(t => {
+      if (t.subjectId && subjectMap[t.subjectId]) {
+        subjectMap[t.subjectId].total += (Number(t.questionsTotal) || 0);
+        subjectMap[t.subjectId].correct += (Number(t.questionsCorrect) || 0);
+      }
+    });
+
+    const evaluated = Object.entries(subjectMap)
+      .map(([id, info]) => ({
+        id,
+        name: info.name,
+        color: info.color,
+        total: info.total,
+        accuracy: info.total > 0 ? Math.round((info.correct / info.total) * 100) : 0
+      }))
+      .filter(item => item.total >= 3)
+      .sort((a, b) => a.accuracy - b.accuracy);
+
+    return {
+      weakest: evaluated.length > 0 && evaluated[0].accuracy < 70 ? evaluated[0] : null,
+      topPriorityTopic: pendingReviewTopics.length > 0 ? pendingReviewTopics[0] : null
+    };
+  }, [subjects, topics, pendingReviewTopics]);
   
   // Weekly progress
   const weeklyStats = useMemo(() => {
@@ -554,7 +801,7 @@ export default function Dashboard({
         return {
           id: s.id,
           name: s.name || 'Sem nome',
-          color: s.color || '#6366f1',
+          color: s.color || '#f97316',
           icon: s.icon,
           count: totalCount,
           reviewedCount,
@@ -570,6 +817,10 @@ export default function Dashboard({
 
   const filteredAndSortedSources = useMemo(() => {
     let list = [...flashcardSources];
+    if (subjectFilterSearch.trim()) {
+      const q = subjectFilterSearch.toLowerCase();
+      list = list.filter(s => s.name.toLowerCase().includes(q));
+    }
     if (activeFilter === 'urgentes') {
       list.sort((a, b) => (b.dueCount || 0) - (a.dueCount || 0));
     } else if (activeFilter === 'menor') {
@@ -582,7 +833,7 @@ export default function Dashboard({
       // Keep all, natural count order
     }
     return list;
-  }, [flashcardSources, activeFilter]);
+  }, [flashcardSources, activeFilter, subjectFilterSearch]);
 
   const recommendedAction = useMemo(() => {
     const firstWithCards = flashcardSources.find(s => s.count > 0);
@@ -741,39 +992,289 @@ export default function Dashboard({
 
       <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-black text-slate-900 tracking-tight">Painel de Estudos</h2>
-          <p className="text-slate-500 text-sm">Organize seu aprendizado e conquiste seus objetivos passo a passo.</p>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-50 border border-orange-200 text-orange-700 text-xs font-bold uppercase tracking-wider">
+              <span className="w-2 h-2 rounded-full bg-orange-500 animate-ping"></span>
+              Plano de Estudos Ativo
+            </span>
+            <span className="text-xs font-semibold text-slate-400 capitalize">
+              {format(now, "EEEE, dd 'de' MMMM", { locale: ptBR })}
+            </span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+            {now.getHours() < 12 ? 'Bom dia' : now.getHours() < 18 ? 'Boa tarde' : 'Boa noite'}, Concurseiro! 🎯
+          </h2>
+          <p className="text-slate-500 text-sm">Organize seu aprendizado, mantenha a constância e conquiste sua aprovação.</p>
+        </div>
+
+        {/* Quick Goal Adjust Button */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setIsEditingGoal(true)}
+            className="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 hover:border-orange-300 text-slate-700 text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer hover:bg-orange-50/30"
+          >
+            <Target size={15} className="text-orange-500" />
+            Meta Diária: {dailyGoalMinutes} min
+            <Edit3 size={12} className="text-slate-400" />
+          </button>
         </div>
       </header>
 
-      {/* Recommended Next Action Banner */}
-      <div className={cn(
-        "p-4 sm:p-5 rounded-2xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-all shadow-sm bg-gradient-to-br",
-        recommendedAction.colorClass
-      )}>
-        <div className="flex items-start gap-4">
-          <div className="p-2 sm:p-3 bg-white/80 rounded-xl sm:rounded-2xl shadow-sm shrink-0">
-            <recommendedAction.icon size={22} className="text-slate-800" />
+      {/* Daily Goal & Streak Card */}
+      <div className="bg-white rounded-3xl border border-slate-200 p-5 sm:p-6 shadow-sm">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
+          {/* Daily Goal Progress */}
+          <div className="lg:col-span-2 space-y-3 border-b lg:border-b-0 lg:border-r border-slate-100 pb-5 lg:pb-0 lg:pr-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center">
+                  <Target size={18} />
+                </div>
+                <div>
+                  <h4 className="text-sm font-black text-slate-800">Meta de Estudo Diária</h4>
+                  <p className="text-xs text-slate-400">Progresso de tempo dedicado hoje</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <span className="text-lg font-black text-orange-600">{todayStats.minutes} min</span>
+                <span className="text-xs text-slate-400 font-bold"> / {dailyGoalMinutes} min</span>
+              </div>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="space-y-1.5">
+              <div className="h-3 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-100">
+                <div 
+                  className={cn(
+                    "h-full rounded-full transition-all duration-700 ease-out",
+                    todayStats.goalPercent >= 100 
+                      ? "bg-gradient-to-r from-emerald-500 to-teal-500" 
+                      : "bg-gradient-to-r from-orange-500 to-amber-500"
+                  )}
+                  style={{ width: `${todayStats.goalPercent}%` }}
+                />
+              </div>
+              <div className="flex items-center justify-between text-[11px] font-bold">
+                <span className={cn(
+                  todayStats.goalPercent >= 100 ? "text-emerald-600 font-black" : "text-slate-500"
+                )}>
+                  {todayStats.goalPercent >= 100 ? "🎉 Meta diária conquistada! Parabéns!" : `${todayStats.goalPercent}% da meta concluída`}
+                </span>
+                <span className="text-slate-400">
+                  {todayStats.goalPercent < 100 
+                    ? `Faltam ${Math.max(0, dailyGoalMinutes - todayStats.minutes)} min` 
+                    : `${todayStats.minutes - dailyGoalMinutes} min extras!`}
+                </span>
+              </div>
+            </div>
           </div>
-          <div className="space-y-0.5">
-            <div className="flex items-center gap-2">
-              <span className={cn("px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider", recommendedAction.badgeColor)}>
-                {recommendedAction.badge}
+
+          {/* Today Activity & Streak Counter */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-100 text-center flex flex-col justify-between">
+              <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">Questões Hoje</span>
+              <div className="my-1">
+                <span className="text-2xl font-black text-slate-800">{todayStats.questions}</span>
+                {todayStats.questions > 0 && (
+                  <span className="text-[11px] font-bold text-emerald-600 block">
+                    {todayStats.correctQuestions} acertos ({Math.round((todayStats.correctQuestions / todayStats.questions) * 100)}%)
+                  </span>
+                )}
+              </div>
+              <span className="text-[10px] font-bold text-slate-400">
+                {todayStats.questions > 0 ? "🔥 Ritmo ativo" : "Nenhuma hoje"}
               </span>
             </div>
-            <h3 className="text-sm sm:text-base font-bold text-slate-950">{recommendedAction.title}</h3>
-            <p className="text-xs text-slate-700 max-w-2xl leading-normal">
-              {recommendedAction.description}
-            </p>
+
+            <div className="p-3.5 bg-orange-50/60 rounded-2xl border border-orange-100 text-center flex flex-col justify-between">
+              <span className="text-[10px] font-black uppercase tracking-wider text-orange-600 block">Ofensiva Atual</span>
+              <div className="flex items-center justify-center gap-1.5 my-1">
+                <Flame size={26} className="text-orange-500 fill-orange-500 animate-pulse" />
+                <span className="text-2xl font-black text-slate-800">{currentStreak}</span>
+              </div>
+              <span className="text-[10px] font-bold text-orange-700">
+                {currentStreak === 1 ? '1 dia de foco' : `${currentStreak} dias seguidos`}
+              </span>
+            </div>
           </div>
         </div>
+      </div>
+
+      {/* Goal Edit Modal */}
+      {isEditingGoal && (
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-slate-100 space-y-4 animate-in fade-in zoom-in duration-150">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h3 className="text-base font-black text-slate-800 flex items-center gap-2">
+                <Target size={18} className="text-orange-500" />
+                Configurar Meta Diária
+              </h3>
+              <button onClick={() => setIsEditingGoal(false)} className="text-slate-400 hover:text-slate-600 p-1">
+                <XCircle size={18} />
+              </button>
+            </div>
+            <p className="text-xs text-slate-500">Defina quantos minutos por dia você deseja dedicar aos seus estudos:</p>
+            
+            <div className="grid grid-cols-3 gap-2">
+              {[30, 45, 60, 90, 120, 180].map(mins => (
+                <button
+                  key={mins}
+                  onClick={() => setTempGoalMinutes(mins)}
+                  className={cn(
+                    "py-2 px-3 rounded-xl text-xs font-black border transition-all cursor-pointer",
+                    tempGoalMinutes === mins
+                      ? "bg-orange-500 text-white border-orange-500 shadow-sm"
+                      : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                  )}
+                >
+                  {mins} min
+                </button>
+              ))}
+            </div>
+
+            <div className="pt-2 flex items-center gap-2">
+              <input
+                type="number"
+                min="15"
+                max="720"
+                value={tempGoalMinutes}
+                onChange={e => setTempGoalMinutes(parseInt(e.target.value, 10) || 15)}
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
+              />
+              <span className="text-xs font-bold text-slate-400 shrink-0">minutos/dia</span>
+            </div>
+
+            <div className="flex gap-2 pt-2">
+              <button
+                onClick={() => setIsEditingGoal(false)}
+                className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-all cursor-pointer"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => handleSaveGoal(tempGoalMinutes)}
+                className="flex-1 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl text-xs shadow-md shadow-orange-100 transition-all cursor-pointer"
+              >
+                Salvar Meta
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Quick Action Hub (Atalhos Rápidos) */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <button
-          onClick={recommendedAction.action}
-          className="w-full sm:w-auto px-4 py-2.5 bg-slate-950 text-white hover:bg-slate-800 active:scale-95 font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer"
+          onClick={() => navigate('/questions')}
+          className="p-3.5 bg-white border border-slate-200 hover:border-orange-300 hover:bg-orange-50/20 rounded-2xl shadow-xs transition-all flex items-center gap-3 text-left group cursor-pointer"
         >
-          {recommendedAction.buttonText}
+          <div className="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            <CheckCircle2 size={20} />
+          </div>
+          <div className="min-w-0">
+            <h4 className="text-xs font-black text-slate-900 group-hover:text-orange-600 transition-colors truncate">Treinar Questões</h4>
+            <p className="text-[11px] text-slate-400 font-semibold truncate">Banco com gabarito</p>
+          </div>
+        </button>
+
+        <button
+          onClick={() => navigate('/flashcards')}
+          className="p-3.5 bg-white border border-slate-200 hover:border-amber-300 hover:bg-amber-50/20 rounded-2xl shadow-xs transition-all flex items-center gap-3 text-left group cursor-pointer"
+        >
+          <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            <Layers size={20} />
+          </div>
+          <div className="min-w-0">
+            <h4 className="text-xs font-black text-slate-900 group-hover:text-amber-600 transition-colors truncate">Flashcards</h4>
+            <p className="text-[11px] text-slate-400 font-semibold truncate">{dueFlashcards} para revisar</p>
+          </div>
+        </button>
+
+        <button
+          onClick={() => navigate('/pomodoro')}
+          className="p-3.5 bg-white border border-slate-200 hover:border-blue-300 hover:bg-blue-50/20 rounded-2xl shadow-xs transition-all flex items-center gap-3 text-left group cursor-pointer"
+        >
+          <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            <Clock size={20} />
+          </div>
+          <div className="min-w-0">
+            <h4 className="text-xs font-black text-slate-900 group-hover:text-blue-600 transition-colors truncate">Modo Foco</h4>
+            <p className="text-[11px] text-slate-400 font-semibold truncate">Pomodoro & Timer</p>
+          </div>
+        </button>
+
+        <button
+          onClick={() => navigate('/stats')}
+          className="p-3.5 bg-white border border-slate-200 hover:border-emerald-300 hover:bg-emerald-50/20 rounded-2xl shadow-xs transition-all flex items-center gap-3 text-left group cursor-pointer"
+        >
+          <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            <BarChart3 size={20} />
+          </div>
+          <div className="min-w-0">
+            <h4 className="text-xs font-black text-slate-900 group-hover:text-emerald-600 transition-colors truncate">Estatísticas</h4>
+            <p className="text-[11px] text-slate-400 font-semibold truncate">Análise completa</p>
+          </div>
         </button>
       </div>
+
+      {/* Strategic Insights & Priority Recommendation */}
+      {strategicInsights.weakest ? (
+        <div className="p-4 sm:p-5 rounded-2xl border border-orange-200 bg-gradient-to-r from-orange-50 via-amber-50 to-orange-50/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
+          <div className="flex items-start gap-3.5">
+            <div className="p-2.5 bg-orange-500 text-white rounded-xl shadow-xs shrink-0 mt-0.5">
+              <Zap size={20} />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-orange-200/80 text-orange-900">
+                  🎯 Ponto Estratégico de Reforço
+                </span>
+                <span className="text-[11px] font-bold text-orange-800">Precisão: {strategicInsights.weakest.accuracy}%</span>
+              </div>
+              <h3 className="text-sm sm:text-base font-black text-slate-900">
+                Fortaleça seu desempenho em <span className="text-orange-600 underline decoration-orange-300">{strategicInsights.weakest.name}</span>
+              </h3>
+              <p className="text-xs text-slate-600 max-w-2xl leading-relaxed mt-0.5">
+                Identificamos que esta matéria tem margem para acelerar sua pontuação. Resolver 5 a 10 questões agora elevará sua média com rapidez!
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => navigate('/questions')}
+            className="w-full sm:w-auto px-5 py-2.5 bg-orange-600 hover:bg-orange-700 active:scale-95 text-white font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md shadow-orange-200 flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer"
+          >
+            Treinar {strategicInsights.weakest.name} <ArrowRight size={14} />
+          </button>
+        </div>
+      ) : (
+        <div className={cn(
+          "p-4 sm:p-5 rounded-2xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-all shadow-sm bg-gradient-to-br",
+          recommendedAction.colorClass
+        )}>
+          <div className="flex items-start gap-4">
+            <div className="p-2 sm:p-3 bg-white/80 rounded-xl sm:rounded-2xl shadow-sm shrink-0">
+              <recommendedAction.icon size={22} className="text-slate-800" />
+            </div>
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-2">
+                <span className={cn("px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider", recommendedAction.badgeColor)}>
+                  {recommendedAction.badge}
+                </span>
+              </div>
+              <h3 className="text-sm sm:text-base font-bold text-slate-950">{recommendedAction.title}</h3>
+              <p className="text-xs text-slate-700 max-w-2xl leading-normal">
+                {recommendedAction.description}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={recommendedAction.action}
+            className="w-full sm:w-auto px-4 py-2.5 bg-slate-950 text-white hover:bg-slate-800 active:scale-95 font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer"
+          >
+            {recommendedAction.buttonText}
+          </button>
+        </div>
+      )}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
@@ -788,7 +1289,7 @@ export default function Dashboard({
         <StatCard 
           title="Precisão Geral" 
           value={totalQuestions > 0 ? `${accuracyRate}%` : "—"} 
-          subtitle={totalQuestions > 0 ? (accuracyRate >= 80 ? "Sua retenção está excelente!" : accuracyRate >= 65 ? "Bom progresso! Continue treinando." : "Foco na revisão dos erros!") : "Responda questões para calibrar"}
+          subtitle={totalQuestions > 0 ? `${correctQuestions} acertos de ${totalQuestions} questões` : "Responda questões para calibrar"}
           icon={TrendingUp}
           color="text-orange-600"
           bgColor="bg-orange-50"
@@ -811,9 +1312,62 @@ export default function Dashboard({
         />
       </div>
 
-      {/* 2. Nova Seção Central: "Foco Diário & Execução" */}
+      {/* 7-Day Consistency Heatmap / Habit Strip */}
+      <div className="bg-white rounded-3xl border border-slate-200 p-5 sm:p-6 shadow-sm space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-4 bg-orange-500 rounded-full" />
+            <h4 className="text-sm font-black text-slate-800">Constância dos Últimos 7 Dias</h4>
+          </div>
+          <span className="text-[11px] font-bold text-slate-400">
+            {last7DaysData.filter(d => d.hasActivity).length} de 7 dias com estudo registrado
+          </span>
+        </div>
+
+        <div className="grid grid-cols-7 gap-2 pt-1">
+          {last7DaysData.map((d, i) => (
+            <div
+              key={i}
+              className={cn(
+                "p-2.5 sm:p-3 rounded-2xl border text-center transition-all flex flex-col justify-between items-center min-h-[90px]",
+                d.isToday 
+                  ? "border-orange-500 bg-orange-50/40 ring-2 ring-orange-500/10 shadow-xs" 
+                  : d.hasActivity
+                    ? "border-emerald-200 bg-emerald-50/30"
+                    : "border-slate-100 bg-slate-50/50"
+              )}
+            >
+              <div className="flex flex-col items-center">
+                <span className={cn(
+                  "text-[10px] font-black uppercase tracking-wider",
+                  d.isToday ? "text-orange-600" : "text-slate-400"
+                )}>
+                  {d.dayName}
+                </span>
+                <span className="text-xs font-black text-slate-700 mt-0.5">
+                  {d.dayNumber}
+                </span>
+              </div>
+
+              <div className="my-1">
+                {d.hasActivity ? (
+                  <Flame size={18} className="text-orange-500 fill-orange-500" />
+                ) : (
+                  <span className="w-2 h-2 rounded-full bg-slate-200 inline-block" />
+                )}
+              </div>
+
+              <div className="text-[10px] font-extrabold text-slate-500">
+                {d.minutes > 0 ? `${d.minutes}m` : d.questionsCount > 0 ? `${d.questionsCount}q` : '—'}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 2. Seção Central: "Foco Diário & Execução" */}
       <div className="space-y-4">
-        <h3 className="text-lg font-black text-slate-800 tracking-tight">Cronograma de Estudos</h3>
+        <h3 className="text-lg font-black text-slate-800 tracking-tight">Cronograma de Estudos & Foco</h3>
         <div className="bg-white rounded-3xl border border-slate-200 p-4 sm:p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 shadow-sm">
           {/* Coluna Esquerda: Cronograma Semanal de Segunda a Domingo */}
           <div className="space-y-4 flex flex-col justify-between">
@@ -821,7 +1375,7 @@ export default function Dashboard({
               <div className="flex items-center justify-between mb-4">
                 <h4 className="text-base font-bold text-slate-800 flex items-center gap-2">
                   <span className="w-1.5 h-4 bg-orange-500 rounded-full" />
-                  Minhas Atividades
+                  Minhas Atividades do Ciclo
                 </h4>
                 <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">
                   Ciclo 1 ao 7
@@ -964,19 +1518,70 @@ export default function Dashboard({
             </div>
           </div>
 
-          {/* Coluna Direita: Cronômetro e Ciclo */}
-          <div className="flex flex-col justify-between space-y-6 md:space-y-0">
-            {/* Cronômetro */}
-            <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6 text-center space-y-4 flex flex-col justify-center items-center">
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Tempo de Foco</span>
+          {/* Coluna Direita: Cronômetro Inteligente com Salvar Sessão */}
+          <div className="flex flex-col justify-between space-y-4">
+            <div className="bg-slate-50 border border-slate-100 rounded-2xl p-5 text-center space-y-4 flex flex-col justify-center items-center">
+              <div className="flex items-center justify-between w-full">
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Cronômetro de Foco</span>
+                
+                {/* Presets */}
+                <div className="flex gap-1 p-0.5 bg-slate-200/60 rounded-xl">
+                  <button
+                    onClick={() => handleSetTimerPreset('free')}
+                    className={cn(
+                      "px-2 py-0.5 rounded-lg text-[10px] font-bold transition-all cursor-pointer",
+                      timerPreset === 'free' ? "bg-white text-slate-800 shadow-xs" : "text-slate-500"
+                    )}
+                  >
+                    Livre
+                  </button>
+                  <button
+                    onClick={() => handleSetTimerPreset('pomodoro')}
+                    className={cn(
+                      "px-2 py-0.5 rounded-lg text-[10px] font-bold transition-all cursor-pointer",
+                      timerPreset === 'pomodoro' ? "bg-white text-orange-600 shadow-xs" : "text-slate-500"
+                    )}
+                  >
+                    25m
+                  </button>
+                  <button
+                    onClick={() => handleSetTimerPreset('deep')}
+                    className={cn(
+                      "px-2 py-0.5 rounded-lg text-[10px] font-bold transition-all cursor-pointer",
+                      timerPreset === 'deep' ? "bg-white text-orange-600 shadow-xs" : "text-slate-500"
+                    )}
+                  >
+                    50m
+                  </button>
+                </div>
+              </div>
+
               <div className="text-4xl md:text-5xl font-mono font-black text-slate-800 tracking-wider">
                 {formatTime(timeSeconds)}
               </div>
-              <div className="flex items-center justify-center gap-3">
+
+              {/* Subject selector for session saving */}
+              {subjects.length > 0 && (
+                <div className="w-full">
+                  <select
+                    value={timerSubjectId}
+                    onChange={(e) => setTimerSubjectId(e.target.value)}
+                    className="w-full text-xs font-bold bg-white border border-slate-200 text-slate-700 rounded-xl px-3 py-2 outline-none focus:border-orange-500 cursor-pointer"
+                  >
+                    <option value="">Vincular a uma Matéria (Opcional)</option>
+                    {subjects.map(s => (
+                      <option key={s.id} value={s.id}>{s.name}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {/* Timer Buttons */}
+              <div className="flex flex-wrap items-center justify-center gap-2 w-full">
                 <button
                   onClick={() => setIsTimerActive(!isTimerActive)}
                   className={cn(
-                    "px-4 py-2 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-sm",
+                    "px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-sm",
                     isTimerActive 
                       ? "bg-amber-500 hover:bg-amber-600 text-white" 
                       : "bg-orange-500 hover:bg-orange-600 text-white"
@@ -988,28 +1593,47 @@ export default function Dashboard({
                     </>
                   ) : (
                     <>
-                      <Play size={14} fill="currentColor" /> Iniciar Sessão
+                      <Play size={14} fill="currentColor" /> {timeSeconds > 0 ? "Retomar" : "Iniciar Foco"}
                     </>
                   )}
                 </button>
+
+                {/* Save Study Session Button */}
+                {timeSeconds >= 60 && (
+                  <button
+                    onClick={handleSaveTimerSession}
+                    disabled={isSavingSession}
+                    className="px-3 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 shadow-sm transition-all cursor-pointer active:scale-95 disabled:opacity-50"
+                  >
+                    <Save size={14} />
+                    {isSavingSession ? 'Salvando...' : 'Salvar Sessão'}
+                  </button>
+                )}
+
                 <button
                   onClick={() => {
                     setIsTimerActive(false);
-                    setTimeSeconds(0);
+                    setTimeSeconds(timerPreset === 'pomodoro' ? 25 * 60 : timerPreset === 'deep' ? 50 * 60 : 0);
                   }}
-                  className="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-600 font-bold text-xs transition-all cursor-pointer active:scale-95"
+                  className="px-3 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-600 font-bold text-xs transition-all cursor-pointer active:scale-95"
                 >
-                  Zerar
+                  <RotateCcw size={14} />
                 </button>
               </div>
+
+              {saveSuccessMsg && (
+                <div className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200 animate-in fade-in">
+                  ✨ Sessão registrada com sucesso nas suas estatísticas!
+                </div>
+              )}
             </div>
 
             {/* Dificuldade do Dia e Streak */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               {/* Dificuldade */}
-              <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 flex flex-col justify-between">
-                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Dificuldade do Dia</span>
-                <div className="space-y-2 mt-2">
+              <div className="bg-slate-50 border border-slate-100 rounded-2xl p-3.5 flex flex-col justify-between">
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Dificuldade Hoje</span>
+                <div className="space-y-1.5 mt-2">
                   <div className="flex items-center gap-1">
                     {[1, 2, 3, 4, 5].map((level) => (
                       <button
@@ -1018,7 +1642,7 @@ export default function Dashboard({
                         className={cn(
                           "flex-1 h-3 rounded transition-all cursor-pointer",
                           level <= difficulty 
-                            ? "bg-amber-50 shadow-sm shadow-amber-200" 
+                            ? "bg-amber-400 shadow-sm" 
                             : "bg-slate-200 hover:bg-slate-300"
                         )}
                         title={`Nível ${level}`}
@@ -1032,11 +1656,11 @@ export default function Dashboard({
               </div>
 
               {/* Ofensiva (Streak) */}
-              <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 flex flex-col justify-between items-center text-center">
-                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Streak (Ofensiva)</span>
+              <div className="bg-slate-50 border border-slate-100 rounded-2xl p-3.5 flex flex-col justify-between items-center text-center">
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Ofensiva</span>
                 <div className="flex flex-col items-center justify-center mt-1">
-                  <Flame size={32} className="text-orange-500 fill-orange-500 animate-pulse" />
-                  <span className="text-base font-black text-slate-800 mt-1">3 dias seguidos</span>
+                  <Flame size={26} className="text-orange-500 fill-orange-500 animate-pulse" />
+                  <span className="text-xs font-black text-slate-800 mt-0.5">{currentStreak} dias seguidos</span>
                 </div>
               </div>
             </div>
@@ -1050,32 +1674,44 @@ export default function Dashboard({
           <div className="flex items-center gap-3">
             <h3 className="text-lg font-bold text-slate-800 tracking-tight">Flashcards por Matéria</h3>
             <span className="px-2 py-0.5 bg-slate-100 text-slate-500 rounded-full text-[10px] font-black uppercase tracking-wider">
-              61 MATÉRIAS
+              {flashcardSources.length} MATÉRIAS
             </span>
           </div>
 
-          {/* Botões de Filtro */}
-          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-            {[
-              { id: 'urgentes', label: 'Urgentes' },
-              { id: 'menor', label: 'Menor Nível' },
-              { id: 'edital', label: 'Por Edital' },
-              { id: 'alfabeto', label: 'Alfabeto' },
-              { id: 'todos', label: 'Todos os Flashcards' }
-            ].map((f) => (
-              <button
-                key={f.id}
-                onClick={() => setActiveFilter(f.id as any)}
-                className={cn(
-                  "px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer border",
-                  activeFilter === f.id
-                    ? "bg-orange-500 text-white border-orange-500 shadow-sm"
-                    : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
-                )}
-              >
-                {f.label}
-              </button>
-            ))}
+          {/* Search + Filter Buttons */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
+              <input
+                type="text"
+                value={subjectFilterSearch}
+                onChange={(e) => setSubjectFilterSearch(e.target.value)}
+                placeholder="Pesquisar matéria..."
+                className="pl-8 pr-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100 w-full sm:w-44"
+              />
+            </div>
+
+            <div className="flex flex-wrap items-center gap-1.5">
+              {[
+                { id: 'urgentes', label: 'Urgentes' },
+                { id: 'menor', label: 'Menor Nível' },
+                { id: 'edital', label: 'Por Edital' },
+                { id: 'todos', label: 'Todos' }
+              ].map((f) => (
+                <button
+                  key={f.id}
+                  onClick={() => setActiveFilter(f.id as any)}
+                  className={cn(
+                    "px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer border",
+                    activeFilter === f.id
+                      ? "bg-orange-500 text-white border-orange-500 shadow-sm"
+                      : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+                  )}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 

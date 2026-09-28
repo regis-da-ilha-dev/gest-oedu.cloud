@@ -94,8 +94,8 @@ export default function FeaturedConcursosShowcase({
       };
     }
     return {
-      bg: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-      dot: 'bg-indigo-500',
+      bg: 'bg-orange-50 text-orange-700 border-orange-200',
+      dot: 'bg-orange-500',
       text: status || 'Previsto'
     };
   };
@@ -271,7 +271,7 @@ export default function FeaturedConcursosShowcase({
                       {c.escolaridade && (
                         <div className="bg-slate-50 rounded-xl p-2.5 border border-slate-100 col-span-2 flex items-center justify-between">
                           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Escolaridade</span>
-                          <span className="text-xs font-bold text-indigo-700">{c.escolaridade}</span>
+                          <span className="text-xs font-bold text-orange-700">{c.escolaridade}</span>
                         </div>
                       )}
                     </div>

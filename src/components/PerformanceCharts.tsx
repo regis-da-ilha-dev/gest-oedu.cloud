@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LabelList, LineChart, Line, Legend, AreaChart, Area, ComposedChart, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 import { Subject, Topic, StudySession, Flashcard, UserSubscription, QuestionAnswer, Question } from '../types';
-import { Lock, Star, TrendingUp, Zap, CheckCircle2, XCircle, Target, Clock, BookOpen, Brain, Activity, Gauge, Flame, Trophy, BarChart3, Sparkles, List } from 'lucide-react';
+import { Lock, Star, TrendingUp, Zap, CheckCircle2, XCircle, Target, Clock, BookOpen, Brain, Activity, Gauge, Flame, Trophy, BarChart3, Sparkles, List, Printer, AlertTriangle, ArrowRight, ShieldCheck, Filter } from 'lucide-react';
 import { ptBR } from 'date-fns/locale';
 import { format, startOfDay, subDays, eachDayOfInterval, isSameDay, startOfMonth, eachMonthOfInterval, endOfMonth, isAfter, subMonths } from 'date-fns';
 import { cn } from '../lib/utils';
@@ -205,8 +205,15 @@ const PerformanceCharts = React.memo(({ subjects, topics, sessions, flashcards, 
   const [isMounted, setIsMounted] = useState(false);
   const [selectedSubjectId, setSelectedSubjectId] = useState<string>('all');
   const [selectedPosition, setSelectedPosition] = useState<string>('all');
+  const [selectedPeriod, setSelectedPeriod] = useState<'all' | '7d' | '30d' | '90d'>('all');
   const [accuracyViewMode, setAccuracyViewMode] = useState<'radar' | 'bars'>('bars');
   const [hoveredRadarItem, setHoveredRadarItem] = useState<any | null>(null);
+
+  const periodThresholdMs = useMemo(() => {
+    if (selectedPeriod === 'all') return 0;
+    const days = selectedPeriod === '7d' ? 7 : selectedPeriod === '30d' ? 30 : 90;
+    return Date.now() - days * 24 * 60 * 60 * 1000;
+  }, [selectedPeriod]);
   
   useEffect(() => {
     setIsMounted(true);
@@ -287,6 +294,15 @@ const PerformanceCharts = React.memo(({ subjects, topics, sessions, flashcards, 
   // Filtered lists based on chosen subject and position
   const filteredSessions = useMemo(() => {
     let list = sessions || [];
+    if (periodThresholdMs > 0) {
+      list = list.filter(s => {
+        try {
+          return new Date(s.date).getTime() >= periodThresholdMs;
+        } catch {
+          return true;
+        }
+      });
+    }
     if (selectedSubjectId !== 'all') {
       list = list.filter(s => s && s.subjectId === selectedSubjectId);
     }
@@ -294,10 +310,19 @@ const PerformanceCharts = React.memo(({ subjects, topics, sessions, flashcards, 
       list = list.filter(s => s && topicToPositionMap.get(s.topicId) === selectedPosition);
     }
     return list;
-  }, [sessions, selectedSubjectId, selectedPosition, topicToPositionMap]);
+  }, [sessions, selectedSubjectId, selectedPosition, topicToPositionMap, periodThresholdMs]);
 
   const filteredAnswers = useMemo(() => {
     let list = answers || [];
+    if (periodThresholdMs > 0) {
+      list = list.filter(a => {
+        try {
+          return new Date(a.answeredAt).getTime() >= periodThresholdMs;
+        } catch {
+          return true;
+        }
+      });
+    }
     if (selectedSubjectId !== 'all') {
       list = list.filter(a => a && questionToSubjectMap.get(a.questionId) === selectedSubjectId);
     }
@@ -305,7 +330,7 @@ const PerformanceCharts = React.memo(({ subjects, topics, sessions, flashcards, 
       list = list.filter(a => a && questionToPositionMap.get(a.questionId) === selectedPosition);
     }
     return list;
-  }, [answers, selectedSubjectId, selectedPosition, questionToSubjectMap, questionToPositionMap]);
+  }, [answers, selectedSubjectId, selectedPosition, questionToSubjectMap, questionToPositionMap, periodThresholdMs]);
 
   const filteredTopics = useMemo(() => {
     let list = topics || [];
@@ -907,6 +932,53 @@ const PerformanceCharts = React.memo(({ subjects, topics, sessions, flashcards, 
     }
   }, [filteredSessions, filteredAnswers, now]);
 
+  // Matriz Diagnóstica: Pontos Fortes vs Pontos de Atenção
+  const strengthWeaknessMatrix = useMemo(() => {
+    if (!radarData || radarData.length === 0) return { strengths: [], weaknesses: [] };
+    const sorted = [...radarData].sort((a, b) => b.accuracy - a.accuracy);
+    const strengths = sorted.filter(item => item.accuracy >= 70 && item.total >= 1);
+    const weaknesses = sorted.filter(item => item.accuracy < 70 && item.total >= 1);
+    return { strengths, weaknesses };
+  }, [radarData]);
+
+  // Simulador de Aprovação & Termômetro de Prontidão
+  const approvalReadiness = useMemo(() => {
+    const accuracy = questionSummaryStats.accuracy; // 0-100
+    const totalDone = questionSummaryStats.total;
+    const totalTopicsCount = (topics || []).length;
+    const completedTopicsCount = (topics || []).filter(t => t.status === 'completed').length;
+    const topicCoverageRate = totalTopicsCount > 0 ? (completedTopicsCount / totalTopicsCount) * 100 : 0;
+    const volumeFactor = Math.min(100, (totalDone / 50) * 100);
+    const score = Math.round((accuracy * 0.6) + (topicCoverageRate * 0.25) + (volumeFactor * 0.15));
+
+    let level = "Em Construção";
+    let badgeColor = "bg-amber-100 text-amber-800 border-amber-200";
+    let desc = "Construindo a base teórica. Intensifique a resolução de questões para elevar seu índice de aprovação.";
+
+    if (score >= 80) {
+      level = "Zona de Aprovação (Alta Competitividade)";
+      badgeColor = "bg-emerald-100 text-emerald-800 border-emerald-200";
+      desc = "Excelente! Seu índice está compatível com as notas de corte de candidatos aprovados.";
+    } else if (score >= 65) {
+      level = "Competitivo (Bom Nível)";
+      badgeColor = "bg-orange-100 text-orange-800 border-orange-200";
+      desc = "Muito bom progresso! Reforçando as matérias de maior peso, você estará na disputa direta pelas vagas.";
+    } else if (score >= 45) {
+      level = "Em Evolução";
+      badgeColor = "bg-amber-100 text-amber-800 border-amber-200";
+      desc = "Evoluindo bem! Mantenha a frequência semanal e foque em revisar os erros com flashcards.";
+    }
+
+    return { 
+      score, 
+      level, 
+      badgeColor, 
+      desc, 
+      topicCoverageRate: Math.round(topicCoverageRate),
+      volumeDone: totalDone
+    };
+  }, [questionSummaryStats, topics]);
+
   // Return null or loading if not mounted to avoid Recharts measuring issues during concurrent render
   if (!isMounted) return (
     <div className="flex-1 flex items-center justify-center p-8 min-h-[400px]">
@@ -921,35 +993,68 @@ const PerformanceCharts = React.memo(({ subjects, topics, sessions, flashcards, 
           <h2 className="text-3xl font-black text-slate-900 tracking-tight">Estatísticas de Desempenho</h2>
           <p className="text-slate-500">Analise seu progresso, eficácia e eficiência nos estudos.</p>
         </div>
-        {!isElite && (
+        <div className="flex items-center gap-2.5">
           <button
-            onClick={() => navigate('/pricing')}
-            className="flex items-center gap-2 px-5 py-2.5 bg-orange-50 text-orange-700 border-2 border-b-4 border-orange-200 rounded-2xl text-xs font-black uppercase tracking-wider hover:bg-orange-100 active:translate-y-[2px] active:border-b-2 transition-all cursor-pointer"
+            onClick={() => window.print()}
+            className="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 hover:border-slate-300 text-slate-700 rounded-2xl text-xs font-bold transition-all shadow-xs cursor-pointer hover:bg-slate-50"
+            title="Exportar ou Imprimir Relatório"
           >
-            <Star size={16} className="text-orange-500" fill="currentColor" />
-            Liberar Estatísticas Elite
+            <Printer size={15} className="text-slate-500" />
+            Imprimir Relatório
           </button>
-        )}
+          {!isElite && (
+            <button
+              onClick={() => navigate('/pricing')}
+              className="flex items-center gap-2 px-5 py-2.5 bg-orange-50 text-orange-700 border-2 border-b-4 border-orange-200 rounded-2xl text-xs font-black uppercase tracking-wider hover:bg-orange-100 active:translate-y-[2px] active:border-b-2 transition-all cursor-pointer"
+            >
+              <Star size={16} className="text-orange-500" fill="currentColor" />
+              Liberar Estatísticas Elite
+            </button>
+          )}
+        </div>
       </header>
 
-      {/* Filter Selector */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 bg-white border border-slate-200 rounded-3xl">
+      {/* Filter Selector & Period Controls */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-5 bg-white border border-slate-200 rounded-3xl shadow-xs">
         <div className="flex items-center gap-3">
           <div className="p-2.5 bg-orange-50 text-orange-600 rounded-2xl">
             <BarChart3 size={20} />
           </div>
           <div>
             <h4 className="font-bold text-slate-800 text-sm">Filtros de Análise</h4>
-            <p className="text-xs text-slate-400">Análise profunda por matéria, cargo ou visão consolidada</p>
+            <p className="text-xs text-slate-400">Análise profunda por período, matéria e cargo</p>
           </div>
         </div>
+
+        {/* Period Selector Pills */}
+        <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-2xl overflow-x-auto no-scrollbar">
+          {[
+            { id: 'all', label: 'Todo o Histórico' },
+            { id: '7d', label: '7 Dias' },
+            { id: '30d', label: '30 Dias' },
+            { id: '90d', label: '90 Dias' },
+          ].map(p => (
+            <button
+              key={p.id}
+              onClick={() => setSelectedPeriod(p.id as any)}
+              className={cn(
+                "px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer",
+                selectedPeriod === p.id 
+                  ? "bg-white text-orange-600 shadow-xs" 
+                  : "text-slate-500 hover:text-slate-800"
+              )}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
         
-        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-          <div className="w-full sm:w-64">
+        <div className="flex flex-col sm:flex-row gap-2.5 w-full lg:w-auto">
+          <div className="w-full sm:w-56">
             <select
               value={selectedSubjectId}
               onChange={(e) => setSelectedSubjectId(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer hover:bg-slate-100 transition-all"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer hover:bg-slate-100 transition-all"
             >
               <option value="all">📚 Todas as Matérias</option>
               {subjects.map((sub) => (
@@ -960,11 +1065,11 @@ const PerformanceCharts = React.memo(({ subjects, topics, sessions, flashcards, 
             </select>
           </div>
 
-          <div className="w-full sm:w-64">
+          <div className="w-full sm:w-56">
             <select
               value={selectedPosition}
               onChange={(e) => setSelectedPosition(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer hover:bg-slate-100 transition-all"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer hover:bg-slate-100 transition-all"
             >
               <option value="all">💼 Todos os Cargos</option>
               {availablePositions.map((pos) => (
@@ -1129,6 +1234,90 @@ const PerformanceCharts = React.memo(({ subjects, topics, sessions, flashcards, 
             <span className="text-orange-600 font-extrabold">
               {filteredFlashcards.length > 0 ? Math.round((filteredFlashcards.filter(f => (Number(f.repetition) || 0) > 0 || f.lastReviewedAt !== undefined).length / filteredFlashcards.length) * 100) : 0}%
             </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Simulador de Aprovação & Termômetro de Prontidão */}
+      <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4 mb-6">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 bg-orange-100 text-orange-600 rounded-2xl">
+              <Target size={22} />
+            </div>
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
+                <h3 className="text-base sm:text-lg font-black text-slate-800 tracking-tight">
+                  Índice de Prontidão para Aprovação
+                </h3>
+                <span className={cn("px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider border", approvalReadiness.badgeColor)}>
+                  {approvalReadiness.level}
+                </span>
+              </div>
+              <p className="text-xs text-slate-400">Score composto calibrado: Precisão (60%) + Cobertura do Edital (25%) + Volume (15%)</p>
+            </div>
+          </div>
+
+          <div className="text-left md:text-right">
+            <span className="text-xs font-bold text-slate-400 block">Nota de Corte Média Estimada</span>
+            <span className="text-sm font-black text-slate-700">75% — 82%</span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          {/* Big Score Display */}
+          <div className="lg:col-span-4 bg-gradient-to-br from-orange-50 to-amber-50/50 p-6 rounded-2xl border border-orange-100 text-center flex flex-col justify-center items-center">
+            <span className="text-[11px] font-black uppercase tracking-wider text-orange-700/80">Score do Candidato</span>
+            <div className="flex items-baseline justify-center gap-1 my-2">
+              <span className="text-5xl sm:text-6xl font-black text-slate-900 tracking-tight">{approvalReadiness.score}</span>
+              <span className="text-xl font-black text-slate-400">/100</span>
+            </div>
+            <p className="text-xs font-semibold text-slate-600 max-w-xs">{approvalReadiness.desc}</p>
+          </div>
+
+          {/* Sub-Metrics Breakdown */}
+          <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex flex-col justify-between">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-black uppercase text-slate-400">Precisão Geral</span>
+                <span className="text-xs font-black text-emerald-600">{questionSummaryStats.accuracy}%</span>
+              </div>
+              <div className="h-2 bg-slate-200 rounded-full overflow-hidden mb-2">
+                <div 
+                  className="h-full bg-emerald-500 rounded-full transition-all duration-700" 
+                  style={{ width: `${Math.min(100, questionSummaryStats.accuracy)}%` }} 
+                />
+              </div>
+              <span className="text-[11px] font-semibold text-slate-500">Peso 60% no cálculo</span>
+            </div>
+
+            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex flex-col justify-between">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-black uppercase text-slate-400">Edital Concluído</span>
+                <span className="text-xs font-black text-blue-600">{approvalReadiness.topicCoverageRate}%</span>
+              </div>
+              <div className="h-2 bg-slate-200 rounded-full overflow-hidden mb-2">
+                <div 
+                  className="h-full bg-blue-500 rounded-full transition-all duration-700" 
+                  style={{ width: `${Math.min(100, approvalReadiness.topicCoverageRate)}%` }} 
+                />
+              </div>
+              <span className="text-[11px] font-semibold text-slate-500">Tópicos dominados (25%)</span>
+            </div>
+
+            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex flex-col justify-between">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-black uppercase text-slate-400">Volume de Treino</span>
+                <span className="text-xs font-black text-orange-600">{questionSummaryStats.total} / 50</span>
+              </div>
+              <div className="h-2 bg-slate-200 rounded-full overflow-hidden mb-2">
+                <div 
+                  className="h-full bg-orange-500 rounded-full transition-all duration-700" 
+                  style={{ width: `${Math.min(100, (questionSummaryStats.total / 50) * 100)}%` }} 
+                />
+              </div>
+              <span className="text-[11px] font-semibold text-slate-500">Massa de questões (15%)</span>
+            </div>
           </div>
         </div>
       </div>
@@ -1485,6 +1674,107 @@ const PerformanceCharts = React.memo(({ subjects, topics, sessions, flashcards, 
             <div className="mt-4 text-center border-t border-slate-100/60 pt-2.5">
               <span className="text-xs text-slate-400 font-bold">Desempenho de acertos por área temática</span>
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* SECTION: MATRIZ DIAGNÓSTICA (FORÇAS & FRAQUEZAS) */}
+      <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-slate-100 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-orange-50 text-orange-500 rounded-xl">
+              <ShieldCheck size={20} />
+            </div>
+            <div>
+              <h3 className="text-base sm:text-lg font-black text-slate-800 uppercase tracking-tight">
+                Diagnóstico de Forças & Fraquezas
+              </h3>
+              <p className="text-xs text-slate-400">Classificação inteligente para direcionar suas próximas horas de estudo com máxima eficiência</p>
+            </div>
+          </div>
+          <button
+            onClick={() => navigate('/questions')}
+            className="flex items-center gap-1.5 text-xs font-bold text-orange-600 hover:text-orange-700 hover:underline cursor-pointer"
+          >
+            Treinar no Banco de Questões <ArrowRight size={14} />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Pontos Fortes */}
+          <div className="p-5 bg-emerald-50/40 rounded-2xl border border-emerald-100 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 size={18} className="text-emerald-600" />
+                <h4 className="text-sm font-black text-emerald-950">
+                  Disciplinas de Alto Domínio ({strengthWeaknessMatrix.strengths.length})
+                </h4>
+              </div>
+              <span className="text-[10px] font-black uppercase text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
+                Acerto ≥ 70%
+              </span>
+            </div>
+
+            {strengthWeaknessMatrix.strengths.length > 0 ? (
+              <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1">
+                {strengthWeaknessMatrix.strengths.map((item, idx) => (
+                  <div key={idx} className="bg-white p-3 rounded-xl border border-emerald-100 flex items-center justify-between shadow-xs">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
+                      <span className="text-xs font-bold text-slate-800 truncate" title={item.fullName}>{item.fullName}</span>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-[10px] text-slate-400 font-bold">{item.hits}/{item.total} acertos</span>
+                      <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-lg text-xs font-black">
+                        {item.accuracy}%
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-xs text-slate-500 italic py-4 text-center">
+                Resolva mais questões para consolidar seus pontos fortes acima de 70%.
+              </p>
+            )}
+          </div>
+
+          {/* Pontos de Atenção */}
+          <div className="p-5 bg-orange-50/40 rounded-2xl border border-orange-100 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <AlertTriangle size={18} className="text-orange-600" />
+                <h4 className="text-sm font-black text-orange-950">
+                  Disciplinas de Reforço Prioritário ({strengthWeaknessMatrix.weaknesses.length})
+                </h4>
+              </div>
+              <span className="text-[10px] font-black uppercase text-orange-700 bg-orange-100 px-2 py-0.5 rounded-full">
+                Acerto &lt; 70%
+              </span>
+            </div>
+
+            {strengthWeaknessMatrix.weaknesses.length > 0 ? (
+              <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1">
+                {strengthWeaknessMatrix.weaknesses.map((item, idx) => (
+                  <div key={idx} className="bg-white p-3 rounded-xl border border-orange-100 flex items-center justify-between shadow-xs">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
+                      <span className="text-xs font-bold text-slate-800 truncate" title={item.fullName}>{item.fullName}</span>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-[10px] text-slate-400 font-bold">{item.hits}/{item.total} acertos</span>
+                      <span className="px-2 py-0.5 bg-orange-100 text-orange-700 rounded-lg text-xs font-black">
+                        {item.accuracy}%
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-xs text-slate-500 italic py-4 text-center">
+                Nenhuma disciplina em estado crítico. Excelente equilíbrio de acertos!
+              </p>
+            )}
           </div>
         </div>
       </div>

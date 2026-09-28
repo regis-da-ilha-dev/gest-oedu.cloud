@@ -213,7 +213,7 @@ export default function LandingPage({
         'Estatísticas de acertos e histórico'
       ],
       icon: Zap,
-      color: 'bg-indigo-600 text-white',
+      color: 'bg-orange-500 text-white',
       highlight: true,
       btnText: 'Testar Pro por 10 Dias Grátis'
     },
@@ -529,7 +529,7 @@ export default function LandingPage({
 
           {/* Feature 4 */}
           <div className="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-orange-200 transition-all duration-300 space-y-4">
-            <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center shadow-sm">
+            <div className="w-12 h-12 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center shadow-sm">
               <Clock size={24} />
             </div>
             <h3 className="text-xl font-bold text-slate-900">Pomodoro Timer Integrado</h3>
@@ -708,7 +708,7 @@ export default function LandingPage({
               "A interface limpa sem distrações é perfeita. O banco de questões é super veloz e a ferramenta de eliminar alternativas me ajudou a treinar exatamente no modelo da FGV e Cebraspe."
             </p>
             <div className="pt-2 border-t border-slate-100 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-black text-sm">
+              <div className="w-10 h-10 rounded-full bg-orange-100 text-orange-700 flex items-center justify-center font-black text-sm">
                 MA
               </div>
               <div>

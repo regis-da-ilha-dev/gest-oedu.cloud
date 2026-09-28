@@ -82,7 +82,7 @@ export default function Support() {
           whileHover={{ y: -5 }}
           className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4"
         >
-          <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center">
+          <div className="w-12 h-12 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center">
             <Mail size={24} />
           </div>
           <div>
@@ -90,7 +90,7 @@ export default function Support() {
             <p className="text-sm text-slate-500 mb-4">Envie suas dúvidas, sugestões ou feedbacks.</p>
             <a 
               href={`mailto:${contactInfo.email}`}
-              className="inline-flex items-center gap-2 text-indigo-600 font-bold hover:underline"
+              className="inline-flex items-center gap-2 text-orange-600 font-bold hover:underline"
             >
               {contactInfo.email}
               <ExternalLink size={14} />
@@ -124,7 +124,7 @@ export default function Support() {
       {/* FAQ Section */}
       <div className="space-y-6">
         <div className="flex items-center gap-2">
-          <HelpCircle className="text-indigo-600" size={24} />
+          <HelpCircle className="text-orange-500" size={24} />
           <h3 className="text-xl font-bold text-slate-900">Perguntas Frequentes</h3>
         </div>
         <div className="space-y-4">
@@ -139,7 +139,7 @@ export default function Support() {
 
       {/* Support Footer */}
       <div className="text-center pt-8">
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-700 rounded-full text-sm font-medium">
+        <div className="inline-flex items-center gap-2 px-4 py-2 bg-orange-50 text-orange-700 border border-orange-200 rounded-full text-sm font-semibold">
           <Headset size={16} />
           GestãoEdu Support Team
         </div>

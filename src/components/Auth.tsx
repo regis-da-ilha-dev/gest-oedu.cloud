@@ -157,7 +157,7 @@ export default function Auth({ onLogin, onClearError, isLoading, error }: AuthPr
         'Gabarito comentado'
       ],
       icon: Zap,
-      color: 'bg-indigo-600 text-white',
+      color: 'bg-orange-500 text-white',
       highlight: true
     },
     {
@@ -182,7 +182,7 @@ export default function Auth({ onLogin, onClearError, isLoading, error }: AuthPr
         {/* Login Section */}
         <div className="bg-white rounded-3xl shadow-xl border border-slate-200 p-8 md:p-12 space-y-8 order-1 lg:order-1" id="auth-login-card">
           <div className="text-center space-y-4">
-            <div className="mx-auto w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-indigo-200">
+            <div className="mx-auto w-16 h-16 bg-orange-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-orange-100">
               <BookOpen size={32} />
             </div>
             <h1 className="text-3xl font-bold text-slate-900 tracking-tight">GestãoEdu</h1>
@@ -291,11 +291,11 @@ export default function Auth({ onLogin, onClearError, isLoading, error }: AuthPr
                 <button
                   onClick={onLogin}
                   disabled={isLoading || localLoading}
-                  className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-white border-2 border-slate-200 rounded-xl font-semibold text-slate-700 hover:bg-slate-50 hover:border-indigo-200 transition-all duration-200 group disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                  className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-white border-2 border-slate-200 rounded-xl font-semibold text-slate-700 hover:bg-slate-50 hover:border-orange-200 transition-all duration-200 group disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                   id="google-login-btn"
                 >
                   {isLoading ? (
-                    <Loader2 className="w-5 h-5 animate-spin text-indigo-600" />
+                    <Loader2 className="w-5 h-5 animate-spin text-orange-500" />
                   ) : (
                     <img src="https://www.google.com/favicon.ico" alt="Google" className="w-5 h-5" />
                   )}
@@ -322,7 +322,7 @@ export default function Auth({ onLogin, onClearError, isLoading, error }: AuthPr
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="nome@exemplo.com"
-                      className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:bg-white transition-all text-sm"
+                      className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white transition-all text-sm"
                       required
                       id="email-login-input"
                     />
@@ -335,7 +335,7 @@ export default function Auth({ onLogin, onClearError, isLoading, error }: AuthPr
                     <button 
                       type="button"
                       onClick={() => { resetLocalState(); setAuthMode('forgot_password'); }}
-                      className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 cursor-pointer"
+                      className="text-xs font-semibold text-orange-600 hover:text-orange-700 cursor-pointer"
                       id="forgot-password-toggle-btn"
                     >
                       Esqueceu a senha?
@@ -348,7 +348,7 @@ export default function Auth({ onLogin, onClearError, isLoading, error }: AuthPr
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:bg-white transition-all text-sm"
+                      className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white transition-all text-sm"
                       required
                       id="password-login-input"
                     />
@@ -358,7 +358,7 @@ export default function Auth({ onLogin, onClearError, isLoading, error }: AuthPr
                 <button
                   type="submit"
                   disabled={localLoading || isLoading}
-                  className="w-full py-4 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition-all shadow-md shadow-indigo-100 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  className="w-full py-4 bg-orange-500 text-white rounded-xl font-bold text-sm hover:bg-orange-600 transition-all shadow-md shadow-orange-100 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                   id="email-login-submit-btn"
                 >
                   {localLoading ? (
@@ -371,7 +371,7 @@ export default function Auth({ onLogin, onClearError, isLoading, error }: AuthPr
                   <button 
                     type="button"
                     onClick={() => { resetLocalState(); setAuthMode('register'); }}
-                    className="text-xs font-bold text-indigo-600 hover:text-indigo-700 cursor-pointer"
+                    className="text-xs font-bold text-orange-600 hover:text-orange-700 cursor-pointer"
                     id="register-toggle-btn"
                   >
                     Cadastre-se grátis
@@ -402,7 +402,7 @@ export default function Auth({ onLogin, onClearError, isLoading, error }: AuthPr
                       value={displayName}
                       onChange={(e) => setDisplayName(e.target.value)}
                       placeholder="Seu nome"
-                      className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:bg-white transition-all text-sm"
+                      className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white transition-all text-sm"
                       required
                       id="name-register-input"
                     />
@@ -418,7 +418,7 @@ export default function Auth({ onLogin, onClearError, isLoading, error }: AuthPr
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="nome@exemplo.com"
-                      className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:bg-white transition-all text-sm"
+                      className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white transition-all text-sm"
                       required
                       id="email-register-input"
                     />
@@ -434,7 +434,7 @@ export default function Auth({ onLogin, onClearError, isLoading, error }: AuthPr
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="Mínimo de 6 caracteres"
-                      className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:bg-white transition-all text-sm"
+                      className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white transition-all text-sm"
                       required
                       id="password-register-input"
                     />
@@ -444,7 +444,7 @@ export default function Auth({ onLogin, onClearError, isLoading, error }: AuthPr
                 <button
                   type="submit"
                   disabled={localLoading || isLoading}
-                  className="w-full py-4 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition-all shadow-md shadow-indigo-100 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  className="w-full py-4 bg-orange-500 text-white rounded-xl font-bold text-sm hover:bg-orange-600 transition-all shadow-md shadow-orange-100 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                   id="email-register-submit-btn"
                 >
                   {localLoading ? (
@@ -480,7 +480,7 @@ export default function Auth({ onLogin, onClearError, isLoading, error }: AuthPr
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="nome@exemplo.com"
-                      className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:bg-white transition-all text-sm"
+                      className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white transition-all text-sm"
                       required
                       id="email-forgot-password-input"
                     />
@@ -490,7 +490,7 @@ export default function Auth({ onLogin, onClearError, isLoading, error }: AuthPr
                 <button
                   type="submit"
                   disabled={localLoading || isLoading}
-                  className="w-full py-4 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition-all shadow-md shadow-indigo-100 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  className="w-full py-4 bg-orange-500 text-white rounded-xl font-bold text-sm hover:bg-orange-600 transition-all shadow-md shadow-orange-100 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                   id="email-forgot-password-submit-btn"
                 >
                   {localLoading ? (
@@ -511,7 +511,7 @@ export default function Auth({ onLogin, onClearError, isLoading, error }: AuthPr
                 href="https://www.instagram.com/sqconcursos_/" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-sm font-bold text-indigo-600 hover:text-indigo-700 transition-colors"
+                className="text-sm font-bold text-orange-600 hover:text-orange-700 transition-colors"
                 id="footer-instagram-link"
               >
                 @sqconcursos_
@@ -533,7 +533,7 @@ export default function Auth({ onLogin, onClearError, isLoading, error }: AuthPr
                 key={plan.name}
                 className={`p-6 rounded-2xl border transition-all duration-300 ${
                   plan.highlight 
-                    ? 'bg-white border-indigo-200 shadow-xl shadow-indigo-50 ring-2 ring-indigo-500 ring-opacity-10' 
+                    ? 'bg-white border-orange-200 shadow-xl shadow-orange-50 ring-2 ring-orange-500 ring-opacity-10' 
                     : 'bg-white border-slate-100 shadow-sm'
                 }`}
                 id={`plan-card-${plan.name.toLowerCase().replace(' ', '-')}`}
@@ -553,7 +553,7 @@ export default function Auth({ onLogin, onClearError, isLoading, error }: AuthPr
                     </div>
                   </div>
                   {plan.highlight && (
-                    <span className="bg-indigo-100 text-indigo-700 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">
+                    <span className="bg-orange-100 text-orange-700 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">
                       Recomendado
                     </span>
                   )}
@@ -572,13 +572,13 @@ export default function Auth({ onLogin, onClearError, isLoading, error }: AuthPr
             ))}
           </div>
 
-          <div className="bg-indigo-50 rounded-2xl p-6 border border-indigo-100 flex items-center gap-4" id="warranty-card">
-            <div className="p-3 bg-white rounded-xl shadow-sm text-indigo-600">
+          <div className="bg-orange-50 rounded-2xl p-6 border border-orange-100 flex items-center gap-4" id="warranty-card">
+            <div className="p-3 bg-white rounded-xl shadow-sm text-orange-600">
               <Zap size={24} />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-indigo-900">Garantia de 7 dias</h4>
-              <p className="text-xs text-indigo-700">Teste qualquer plano Pro e se não gostar, devolvemos seu dinheiro.</p>
+              <h4 className="text-sm font-bold text-orange-950">Garantia de 7 dias</h4>
+              <p className="text-xs text-orange-700">Teste qualquer plano Pro e se não gostar, devolvemos seu dinheiro.</p>
             </div>
           </div>
         </div>

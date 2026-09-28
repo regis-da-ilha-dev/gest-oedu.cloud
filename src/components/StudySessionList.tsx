@@ -122,11 +122,14 @@ export default function StudySessionList({
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-slate-900">Histórico de Estudos</h2>
+        <div>
+          <h2 className="text-2xl font-black text-slate-900 tracking-tight">Histórico de Estudos</h2>
+          <p className="text-slate-500 text-sm">Acompanhe todas as sessões e horas de dedicação aos seus estudos.</p>
+        </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsAdding(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg font-medium hover:bg-orange-700 transition-colors"
+            className="flex items-center gap-2 px-5 py-2.5 bg-orange-500 text-white rounded-xl font-bold hover:bg-orange-600 transition-all shadow-md shadow-orange-100 cursor-pointer active:scale-95"
           >
             <Plus size={20} />
             Registrar Sessão

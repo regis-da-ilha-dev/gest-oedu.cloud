@@ -60,7 +60,7 @@ const RichTextEditor = React.memo(({ value, onChange, placeholder, className, co
   if (!mounted) {
     return (
       <div className={cn(compact ? "h-[50px]" : "h-[150px]", "bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-center", className)}>
-        <div className="w-6 h-6 border-2 border-slate-200 border-t-indigo-400 rounded-full animate-spin" />
+        <div className="w-6 h-6 border-2 border-slate-200 border-t-orange-500 rounded-full animate-spin" />
       </div>
     );
   }

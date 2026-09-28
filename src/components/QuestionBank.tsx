@@ -983,7 +983,7 @@ export default function QuestionBank({
               <div 
                 className={cn(
                   "h-full transition-all duration-500",
-                  answeredTodayCount >= 10 ? "bg-red-500" : "bg-indigo-600"
+                  answeredTodayCount >= 10 ? "bg-red-500" : "bg-orange-500"
                 )}
                 style={{ width: `${Math.min(100, (answeredTodayCount / 10) * 100)}%` }}
               />
@@ -992,7 +992,7 @@ export default function QuestionBank({
 
           <button
             onClick={() => navigate('/pricing')}
-            className="px-4 py-2 bg-indigo-600 text-white text-xs font-bold rounded-lg hover:bg-indigo-700 transition-all shadow-sm whitespace-nowrap"
+            className="px-4 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition-all shadow-sm whitespace-nowrap cursor-pointer"
           >
             Ilimitado agora
           </button>
@@ -1030,7 +1030,7 @@ export default function QuestionBank({
                       disabled={isUploading}
                       className="w-full flex items-center justify-center gap-1 px-2 py-1.5 md:px-4 md:py-2 bg-white border border-slate-200 text-slate-700 rounded-lg md:rounded-xl text-[11px] md:text-sm font-semibold hover:bg-slate-50 transition-all shadow-sm disabled:opacity-50"
                     >
-                      <FileUp className="w-3.5 h-3.5 md:w-5 md:h-5 text-indigo-600 shrink-0" />
+                      <FileUp className="w-3.5 h-3.5 md:w-5 md:h-5 text-orange-500 shrink-0" />
                       <span className="whitespace-nowrap">{isUploading ? 'Enviando...' : 'Importar CSV'}</span>
                     </button>
                     
@@ -1039,7 +1039,7 @@ export default function QuestionBank({
                         e.stopPropagation();
                         setShowImportInfo(!showImportInfo);
                       }}
-                      className="absolute -top-1.5 -right-1.5 p-0.5 md:p-1 bg-white border border-slate-200 rounded-full text-slate-400 hover:text-indigo-600 shadow-sm transition-colors z-10 cursor-pointer"
+                      className="absolute -top-1.5 -right-1.5 p-0.5 md:p-1 bg-white border border-slate-200 rounded-full text-slate-400 hover:text-orange-600 shadow-sm transition-colors z-10 cursor-pointer"
                       title="Como preencher o CSV"
                     >
                       <HelpCircle size={10} className="md:hidden" />
@@ -1059,7 +1059,7 @@ export default function QuestionBank({
                         </p>
                         <div className="space-y-2 pr-2 custom-scrollbar">
                           <div className="flex flex-col gap-1">
-                            <span className="text-[10px] font-bold text-indigo-600 uppercase">Obrigatórios:</span>
+                            <span className="text-[10px] font-bold text-orange-600 uppercase">Obrigatórios:</span>
                             <ul className="space-y-1">
                               <li className="text-[10px] text-slate-700 flex items-center gap-2">
                                 <div className="w-1 h-1 rounded-full bg-slate-300" />
@@ -1138,7 +1138,7 @@ export default function QuestionBank({
               )}
               <button
                 onClick={() => setIsAdding(true)}
-                className="flex items-center justify-center gap-1 px-2.5 py-1.5 md:px-6 md:py-3 bg-indigo-600 text-white rounded-lg md:rounded-2xl text-[11px] md:text-sm font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 shrink-0 flex-1 sm:flex-initial text-center"
+                className="flex items-center justify-center gap-1 px-2.5 py-1.5 md:px-6 md:py-3 bg-orange-500 text-white rounded-lg md:rounded-2xl text-[11px] md:text-sm font-bold hover:bg-orange-600 transition-all shadow-md shadow-orange-100 shrink-0 flex-1 sm:flex-initial text-center cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5 md:w-5 md:h-5 shrink-0" />
                 <span className="whitespace-nowrap">Nova Questão</span>
@@ -1152,22 +1152,22 @@ export default function QuestionBank({
       {/* Filters */}
       <div className="bg-white p-4 md:p-6 rounded-3xl shadow-sm border border-slate-100 space-y-4 md:space-y-6">
         {isStaff && selectedQuestions.length > 0 && (
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-4 bg-indigo-50 rounded-2xl border border-indigo-100 animate-in fade-in slide-in-from-top-2">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-4 bg-orange-50 rounded-2xl border border-orange-200 animate-in fade-in slide-in-from-top-2">
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
                 <input 
                   type="checkbox"
                   checked={selectedQuestions.length === filteredQuestions.length}
                   onChange={toggleSelectAll}
-                  className="w-5 h-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                  className="w-5 h-5 rounded border-slate-300 text-orange-600 focus:ring-orange-500 cursor-pointer"
                 />
-                <span className="text-sm font-bold text-indigo-900">
+                <span className="text-sm font-bold text-orange-950">
                   {selectedQuestions.length} selecionadas
                 </span>
               </div>
               <button 
                 onClick={() => setSelectedQuestions([])}
-                className="text-xs text-indigo-600 hover:underline font-medium"
+                className="text-xs text-orange-600 hover:underline font-bold cursor-pointer"
               >
                 Desmarcar todas
               </button>
@@ -1176,14 +1176,14 @@ export default function QuestionBank({
             <div className="flex items-center gap-2">
               <button 
                 onClick={() => setIsBulkEditing(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-white text-indigo-600 border border-indigo-200 rounded-xl text-sm font-bold hover:bg-indigo-100 transition-all"
+                className="flex items-center gap-2 px-4 py-2 bg-white text-orange-600 border border-orange-200 rounded-xl text-sm font-bold hover:bg-orange-50 transition-all cursor-pointer"
               >
                 <Edit2 size={16} />
                 Editar em Lote
               </button>
               <button 
                 onClick={handleBulkDelete}
-                className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 border border-red-100 rounded-xl text-sm font-bold hover:bg-red-100 transition-all"
+                className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 border border-red-100 rounded-xl text-sm font-bold hover:bg-red-100 transition-all cursor-pointer"
               >
                 <Trash2 size={16} />
                 Excluir em Lote
@@ -1594,7 +1594,7 @@ export default function QuestionBank({
                       className={cn(
                         "p-1.5 rounded-lg border transition-all cursor-pointer",
                         activePanel === 'notes' || savedNotes[q.id]
-                          ? "bg-indigo-50 border-indigo-200 text-indigo-600"
+                          ? "bg-orange-50 border-orange-200 text-orange-600"
                           : "bg-white border-slate-200 text-slate-400 hover:text-slate-700"
                       )}
                       title="Minhas anotações pessoais"
@@ -1621,14 +1621,14 @@ export default function QuestionBank({
                       <div className="flex items-center gap-1 border-l border-slate-200 pl-1.5 ml-1">
                         <button 
                           onClick={(e) => { e.stopPropagation(); setEditingQuestion(q); }}
-                          className="p-1 text-slate-400 hover:text-indigo-600 transition-colors"
+                          className="p-1 text-slate-400 hover:text-orange-600 transition-colors cursor-pointer"
                           title="Editar Questão"
                         >
                           <Edit2 size={14} />
                         </button>
                         <button 
                           onClick={(e) => { e.stopPropagation(); onDeleteQuestion(q.id); }}
-                          className="p-1 text-slate-400 hover:text-red-600 transition-colors"
+                          className="p-1 text-slate-400 hover:text-red-600 transition-colors cursor-pointer"
                           title="Excluir Questão"
                         >
                           <Trash2 size={14} />
@@ -1890,7 +1890,7 @@ export default function QuestionBank({
                     <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200 mt-4 animate-in fade-in slide-in-from-top-2 text-left space-y-3">
                       <div className="flex items-center justify-between border-b border-slate-200 pb-2">
                         <div className="flex items-center gap-2">
-                          <FileText size={16} className="text-indigo-600" />
+                          <FileText size={16} className="text-orange-600" />
                           <span className="text-xs font-black text-slate-800 uppercase tracking-wider">
                             Meu Caderno de Anotações Pessoais
                           </span>
@@ -1903,7 +1903,7 @@ export default function QuestionBank({
                         placeholder="Escreva aqui seus mnemônicos, pegadinhas que você percebeu ou resumos sobre este item..."
                         value={noteDrafts[q.id] ?? (savedNotes[q.id] || '')}
                         onChange={(e) => setNoteDrafts(prev => ({ ...prev, [q.id]: e.target.value }))}
-                        className="w-full p-3 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-indigo-500"
+                        className="w-full p-3 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-orange-500"
                       />
 
                       <div className="flex items-center justify-end gap-2">
@@ -1914,7 +1914,7 @@ export default function QuestionBank({
                             setSavedNotes(prev => ({ ...prev, [q.id]: text }));
                             alert("Anotação salva com sucesso!");
                           }}
-                          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-sm"
+                          className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-sm shadow-orange-100"
                         >
                           Salvar Anotação
                         </button>
@@ -1959,7 +1959,7 @@ export default function QuestionBank({
               <div className="flex items-center gap-4 mb-8">
                 <div className={cn(
                   "p-3 rounded-2xl",
-                  importSummary ? (importSummary.success > 0 ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600") : "bg-indigo-100 text-indigo-600"
+                  importSummary ? (importSummary.success > 0 ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600") : "bg-orange-100 text-orange-600"
                 )}>
                   {importSummary ? (
                     importSummary.success > 0 ? <CheckCircle2 size={24} /> : <XCircle size={24} />
@@ -1983,7 +1983,7 @@ export default function QuestionBank({
                 <div className="space-y-4">
                   <div className="h-4 bg-slate-100 rounded-full overflow-hidden">
                     <div 
-                      className="h-full bg-indigo-600 transition-all duration-300 ease-out"
+                      className="h-full bg-orange-500 transition-all duration-300 ease-out"
                       style={{ width: `${importProgress.total > 0 ? (importProgress.current / importProgress.total) * 100 : 0}%` }}
                     />
                   </div>
@@ -2063,9 +2063,9 @@ export default function QuestionBank({
       {isAdding && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white w-full max-w-2xl max-h-[90vh] flex flex-col rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in duration-300">
-            <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-indigo-600 text-white shrink-0">
+            <div className="p-6 border-b border-orange-600 flex items-center justify-between bg-orange-500 text-white shrink-0">
               <h3 className="text-xl font-bold">Nova Questão</h3>
-              <button onClick={() => setIsAdding(false)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
+              <button onClick={() => setIsAdding(false)} className="p-2 hover:bg-white/10 rounded-full transition-colors cursor-pointer">
                 <XCircle size={24} />
               </button>
             </div>
@@ -2082,7 +2082,7 @@ export default function QuestionBank({
               {/* Opções de Imagem do Enunciado */}
               <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100/85 space-y-3">
                 <span className="text-xs font-bold uppercase tracking-wider text-slate-550 flex items-center gap-1.5 shadow-sm/10 bg-white px-2.5 py-1 w-max rounded-full border border-slate-100">
-                  <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-ping" />
+                  <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-ping" />
                   Imagem do Enunciado (Opcional)
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -2093,7 +2093,7 @@ export default function QuestionBank({
                       placeholder="https://exemplo.com/imagem.png"
                       value={newQuestion.imageUrl || ''}
                       onChange={(e) => setNewQuestion({ ...newQuestion, imageUrl: e.target.value })}
-                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500"
+                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-orange-500"
                     />
                   </div>
                   <div className="space-y-1">
@@ -2101,7 +2101,7 @@ export default function QuestionBank({
                     <select
                       value={newQuestion.imageAlign || 'local'}
                       onChange={(e) => setNewQuestion({ ...newQuestion, imageAlign: e.target.value as any })}
-                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500"
+                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-orange-500"
                     >
                       <option value="local">Padrão (Linha Própria)</option>
                       <option value="center">Centralizado</option>
@@ -2140,7 +2140,7 @@ export default function QuestionBank({
                   <select
                     value={newQuestion.subjectId}
                     onChange={(e) => setNewQuestion({ ...newQuestion, subjectId: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-orange-500"
                   >
                     {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                   </select>
@@ -2150,7 +2150,7 @@ export default function QuestionBank({
                   <select
                     value={newQuestion.topicId}
                     onChange={(e) => setNewQuestion({ ...newQuestion, topicId: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-orange-500"
                   >
                     <option value="">Selecione um assunto</option>
                     {topics.filter(t => t.subjectId === newQuestion.subjectId).map(t => (
@@ -2166,7 +2166,7 @@ export default function QuestionBank({
                   <button
                     onClick={() => addOption(false)}
                     disabled={(newQuestion.options?.length || 0) >= 6}
-                    className="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 disabled:opacity-50"
+                    className="text-xs font-bold text-orange-600 hover:text-orange-700 flex items-center gap-1 disabled:opacity-50 cursor-pointer"
                   >
                     <Plus size={14} />
                     Adicionar Alternativa
@@ -2180,7 +2180,7 @@ export default function QuestionBank({
                         name="correctOption"
                         checked={newQuestion.correctOptionIndex === index}
                         onChange={() => setNewQuestion({ ...newQuestion, correctOptionIndex: index })}
-                        className="w-5 h-5 text-indigo-600 focus:ring-indigo-500 mt-1 cursor-pointer"
+                        className="w-5 h-5 text-orange-600 focus:ring-orange-500 mt-1 cursor-pointer"
                       />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -2200,7 +2200,7 @@ export default function QuestionBank({
                       <div className="pt-3">
                         <button
                           onClick={() => removeOption(index, false)}
-                          className="p-2 text-slate-400 hover:text-red-600 transition-colors"
+                          className="p-2 text-slate-400 hover:text-red-600 transition-colors cursor-pointer"
                           title="Remover alternativa"
                         >
                           <Trash2 size={18} />
@@ -2227,7 +2227,7 @@ export default function QuestionBank({
                     type="number"
                     value={newQuestion.year}
                     onChange={(e) => setNewQuestion({ ...newQuestion, year: parseInt(e.target.value) })}
-                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-orange-500"
                   />
                 </div>
                 <div className="space-y-2">
@@ -2235,7 +2235,7 @@ export default function QuestionBank({
                   <select
                     value={newQuestion.difficulty}
                     onChange={(e) => setNewQuestion({ ...newQuestion, difficulty: e.target.value as any })}
-                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-orange-500"
                   >
                     <option value="easy">Fácil</option>
                     <option value="medium">Média</option>
@@ -2252,7 +2252,7 @@ export default function QuestionBank({
                     value={newQuestion.bank || ''}
                     onChange={(e) => setNewQuestion({ ...newQuestion, bank: e.target.value })}
                     placeholder="Ex: FGV, CESPE, FCC..."
-                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-orange-500"
                   />
                 </div>
               </div>
@@ -2264,21 +2264,21 @@ export default function QuestionBank({
                   value={newQuestion.position || ''}
                   onChange={(e) => setNewQuestion({ ...newQuestion, position: e.target.value })}
                   placeholder="Ex: Auditor, Técnico, Analista..."
-                  className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-orange-500"
                 />
               </div>
             </div>
             <div className="p-6 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-3 shrink-0">
               <button
                 onClick={() => setIsAdding(false)}
-                className="px-6 py-3 text-sm font-bold text-slate-500 hover:text-slate-800 transition-colors"
+                className="px-6 py-3 text-sm font-bold text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleAddQuestion}
                 disabled={isSubmitting}
-                className="px-8 py-3 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="px-8 py-3 bg-orange-500 text-white rounded-2xl font-bold hover:bg-orange-600 transition-all shadow-lg shadow-orange-100 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer active:scale-95"
               >
                 {isSubmitting ? (
                   <>
@@ -2295,8 +2295,8 @@ export default function QuestionBank({
       {isBulkEditing && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl shadow-xl max-w-lg w-full p-8 animate-in fade-in zoom-in duration-200">
-            <div className="flex items-center gap-4 text-indigo-600 mb-6">
-              <div className="p-3 bg-indigo-50 rounded-2xl">
+            <div className="flex items-center gap-4 text-orange-600 mb-6">
+              <div className="p-3 bg-orange-50 rounded-2xl">
                 <Edit2 size={24} />
               </div>
               <div>
@@ -2312,7 +2312,7 @@ export default function QuestionBank({
                   <select
                     value={bulkUpdates.subjectId || ''}
                     onChange={(e) => setBulkUpdates(prev => ({ ...prev, subjectId: e.target.value, topicId: '' }))}
-                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 transition-all"
+                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-orange-500 transition-all"
                   >
                     <option value="">Manter original</option>
                     {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
@@ -2324,7 +2324,7 @@ export default function QuestionBank({
                   <select
                     value={bulkUpdates.topicId || ''}
                     onChange={(e) => setBulkUpdates(prev => ({ ...prev, topicId: e.target.value }))}
-                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 transition-all"
+                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-orange-500 transition-all"
                   >
                     <option value="">Manter original</option>
                     {topics.filter(t => !bulkUpdates.subjectId || t.subjectId === bulkUpdates.subjectId).map(t => (
@@ -2338,7 +2338,7 @@ export default function QuestionBank({
                   <select
                     value={bulkUpdates.difficulty || ''}
                     onChange={(e) => setBulkUpdates(prev => ({ ...prev, difficulty: e.target.value as any }))}
-                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 transition-all"
+                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-orange-500 transition-all"
                   >
                     <option value="">Manter original</option>
                     <option value="easy">Fácil</option>
@@ -2354,7 +2354,7 @@ export default function QuestionBank({
                     value={bulkUpdates.year || ''}
                     onChange={(e) => setBulkUpdates(prev => ({ ...prev, year: parseInt(e.target.value) }))}
                     placeholder="Manter original"
-                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 transition-all"
+                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-orange-500 transition-all"
                   />
                 </div>
 
@@ -2367,7 +2367,7 @@ export default function QuestionBank({
                     value={bulkUpdates.bank || ''}
                     onChange={(e) => setBulkUpdates(prev => ({ ...prev, bank: e.target.value }))}
                     placeholder="Manter original"
-                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 transition-all"
+                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-orange-500 transition-all"
                   />
                 </div>
 
@@ -2378,7 +2378,7 @@ export default function QuestionBank({
                     value={bulkUpdates.position || ''}
                     onChange={(e) => setBulkUpdates(prev => ({ ...prev, position: e.target.value }))}
                     placeholder="Manter original"
-                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 transition-all"
+                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-orange-500 transition-all"
                   />
                 </div>
               </div>
@@ -2395,14 +2395,14 @@ export default function QuestionBank({
                     setIsBulkEditing(false);
                     setBulkUpdates({});
                   }}
-                  className="px-6 py-3 text-slate-600 font-bold hover:bg-slate-50 rounded-xl transition-all"
+                  className="px-6 py-3 text-slate-600 font-bold hover:bg-slate-50 rounded-xl transition-all cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   onClick={handleBulkUpdate}
                   disabled={isSubmitting || Object.keys(bulkUpdates).length === 0}
-                  className="px-8 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 disabled:opacity-50 disabled:shadow-none flex items-center gap-2"
+                  className="px-8 py-3 bg-orange-500 text-white font-bold rounded-xl hover:bg-orange-600 transition-all shadow-lg shadow-orange-100 disabled:opacity-50 disabled:shadow-none flex items-center gap-2 cursor-pointer active:scale-95"
                 >
                   {isSubmitting ? (
                     <>
@@ -2421,9 +2421,9 @@ export default function QuestionBank({
       {editingQuestion && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white w-full max-w-2xl max-h-[90vh] flex flex-col rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in duration-300">
-            <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-indigo-600 text-white shrink-0">
+            <div className="p-6 border-b border-orange-600 flex items-center justify-between bg-orange-500 text-white shrink-0">
               <h3 className="text-xl font-bold">Editar Questão</h3>
-              <button onClick={() => setEditingQuestion(null)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
+              <button onClick={() => setEditingQuestion(null)} className="p-2 hover:bg-white/10 rounded-full transition-colors cursor-pointer">
                 <XCircle size={24} />
               </button>
             </div>
@@ -2443,7 +2443,7 @@ export default function QuestionBank({
               {/* Opções de Imagem do Enunciado */}
               <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100/85 space-y-3">
                 <span className="text-xs font-bold uppercase tracking-wider text-slate-550 flex items-center gap-1.5 shadow-sm/10 bg-white px-2.5 py-1 w-max rounded-full border border-slate-100">
-                  <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-ping" />
+                  <span className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-ping" />
                   Imagem do Enunciado (Opcional)
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -2454,7 +2454,7 @@ export default function QuestionBank({
                       placeholder="https://exemplo.com/imagem.png"
                       value={editingQuestion.imageUrl || ''}
                       onChange={(e) => setEditingQuestion({ ...editingQuestion, imageUrl: e.target.value })}
-                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500"
+                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-orange-500"
                     />
                   </div>
                   <div className="space-y-1">
@@ -2462,7 +2462,7 @@ export default function QuestionBank({
                     <select
                       value={editingQuestion.imageAlign || 'local'}
                       onChange={(e) => setEditingQuestion({ ...editingQuestion, imageAlign: e.target.value as any })}
-                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500"
+                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-orange-500"
                     >
                       <option value="local">Padrão (Linha Própria)</option>
                       <option value="center">Centralizado</option>
@@ -2501,7 +2501,7 @@ export default function QuestionBank({
                   <select
                     value={editingQuestion.subjectId}
                     onChange={(e) => setEditingQuestion({ ...editingQuestion, subjectId: e.target.value, topicId: '' })}
-                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-orange-500"
                   >
                     {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                   </select>
@@ -2511,7 +2511,7 @@ export default function QuestionBank({
                   <select
                     value={editingQuestion.topicId}
                     onChange={(e) => setEditingQuestion({ ...editingQuestion, topicId: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-orange-500"
                   >
                     <option value="">Selecione um assunto</option>
                     {topics.filter(t => t.subjectId === editingQuestion.subjectId).map(t => (
@@ -2527,7 +2527,7 @@ export default function QuestionBank({
                   <button
                     onClick={() => addOption(true)}
                     disabled={editingQuestion.options.length >= 6}
-                    className="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 disabled:opacity-50"
+                    className="text-xs font-bold text-orange-600 hover:text-orange-700 flex items-center gap-1 disabled:opacity-50 cursor-pointer"
                   >
                     <Plus size={14} />
                     Adicionar Alternativa
@@ -2541,7 +2541,7 @@ export default function QuestionBank({
                         name="correctOptionEdit"
                         checked={editingQuestion.correctOptionIndex === index}
                         onChange={() => setEditingQuestion({ ...editingQuestion, correctOptionIndex: index })}
-                        className="w-5 h-5 text-indigo-600 focus:ring-indigo-500 mt-1 cursor-pointer"
+                        className="w-5 h-5 text-orange-600 focus:ring-orange-500 mt-1 cursor-pointer"
                       />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -2561,7 +2561,7 @@ export default function QuestionBank({
                       <div className="pt-3">
                         <button
                           onClick={() => removeOption(index, true)}
-                          className="p-2 text-slate-400 hover:text-red-600 transition-colors"
+                          className="p-2 text-slate-400 hover:text-red-600 transition-colors cursor-pointer"
                           title="Remover alternativa"
                         >
                           <Trash2 size={18} />
@@ -2588,7 +2588,7 @@ export default function QuestionBank({
                     type="number"
                     value={editingQuestion.year}
                     onChange={(e) => setEditingQuestion({ ...editingQuestion, year: parseInt(e.target.value) })}
-                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-orange-500"
                   />
                 </div>
                 <div className="space-y-2">
@@ -2596,7 +2596,7 @@ export default function QuestionBank({
                   <select
                     value={editingQuestion.difficulty}
                     onChange={(e) => setEditingQuestion({ ...editingQuestion, difficulty: e.target.value as any })}
-                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-orange-500"
                   >
                     <option value="easy">Fácil</option>
                     <option value="medium">Média</option>
@@ -2613,7 +2613,7 @@ export default function QuestionBank({
                     value={editingQuestion.bank || ''}
                     onChange={(e) => setEditingQuestion({ ...editingQuestion, bank: e.target.value })}
                     placeholder="Ex: FGV, CESPE, FCC..."
-                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-orange-500"
                   />
                 </div>
               </div>
@@ -2625,21 +2625,21 @@ export default function QuestionBank({
                   value={editingQuestion.position || ''}
                   onChange={(e) => setEditingQuestion({ ...editingQuestion, position: e.target.value })}
                   placeholder="Ex: Auditor, Técnico, Analista..."
-                  className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-orange-500"
                 />
               </div>
             </div>
             <div className="p-6 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-3 shrink-0">
               <button
                 onClick={() => setEditingQuestion(null)}
-                className="px-6 py-3 text-sm font-bold text-slate-500 hover:text-slate-800 transition-colors"
+                className="px-6 py-3 text-sm font-bold text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleSaveEdit}
                 disabled={isSubmitting}
-                className="px-8 py-3 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="px-8 py-3 bg-orange-500 text-white rounded-2xl font-bold hover:bg-orange-600 transition-all shadow-lg shadow-orange-100 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer active:scale-95"
               >
                 {isSubmitting ? (
                   <>

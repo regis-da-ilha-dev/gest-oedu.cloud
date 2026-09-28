@@ -59,7 +59,7 @@ export default function MultiSelect({
     <div className={cn("relative w-full", className)} ref={containerRef}>
       <div 
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full min-h-[38px] md:min-h-[46px] px-3 py-1.5 md:px-4 md:py-2 bg-slate-50 border-none rounded-lg sm:rounded-xl text-xs md:text-sm focus-within:ring-2 focus-within:ring-indigo-500 transition-all cursor-pointer flex flex-wrap gap-1 md:gap-1.5 items-center pr-10"
+        className="w-full min-h-[38px] md:min-h-[46px] px-3 py-1.5 md:px-4 md:py-2 bg-slate-50 border-none rounded-lg sm:rounded-xl text-xs md:text-sm focus-within:ring-2 focus-within:ring-orange-500 transition-all cursor-pointer flex flex-wrap gap-1 md:gap-1.5 items-center pr-10"
       >
         {selected.length === 0 ? (
           <span className="text-slate-400">{placeholder}</span>
@@ -69,12 +69,12 @@ export default function MultiSelect({
             return (
               <span 
                 key={id} 
-                className="inline-flex items-center gap-1 px-1.5 py-0.5 md:px-2 md:py-1 bg-indigo-100 text-indigo-700 rounded md:rounded-lg text-[10px] md:text-xs font-bold animate-in zoom-in-95 duration-150"
+                className="inline-flex items-center gap-1 px-1.5 py-0.5 md:px-2 md:py-1 bg-orange-100 text-orange-700 rounded md:rounded-lg text-[10px] md:text-xs font-bold animate-in zoom-in-95 duration-150"
               >
                 {option?.name || id}
                 <X 
                   size={10} 
-                  className="cursor-pointer hover:text-indigo-900 md:w-3 md:h-3" 
+                  className="cursor-pointer hover:text-orange-950 md:w-3 md:h-3" 
                   onClick={(e) => removeOption(id, e)}
                 />
               </span>
@@ -101,7 +101,7 @@ export default function MultiSelect({
                   placeholder="Buscar..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 border-none rounded-lg text-xs focus:ring-1 focus:ring-indigo-500 outline-none"
+                  className="w-full px-3 py-2 bg-slate-50 border-none rounded-lg text-xs focus:ring-1 focus:ring-orange-500 outline-none"
                   onClick={(e) => e.stopPropagation()}
                 />
               </div>
@@ -117,12 +117,12 @@ export default function MultiSelect({
                     className={cn(
                       "flex items-center justify-between px-3 py-2.5 rounded-xl cursor-pointer transition-colors text-xs font-medium",
                       selected.includes(option.id) 
-                        ? "bg-indigo-50 text-indigo-700" 
+                        ? "bg-orange-50 text-orange-700" 
                         : "text-slate-700 hover:bg-slate-50"
                     )}
                   >
                     <span>{option.name}</span>
-                    {selected.includes(option.id) && <Check size={14} className="text-indigo-600" />}
+                    {selected.includes(option.id) && <Check size={14} className="text-orange-600" />}
                   </div>
                 ))
               )}

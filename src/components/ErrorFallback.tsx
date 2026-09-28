@@ -77,7 +77,7 @@ export default function ErrorFallback({ error }: ErrorFallbackProps) {
                 href={databaseUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block text-center font-bold text-indigo-600 hover:text-indigo-800 underline break-all mt-2"
+                className="block text-center font-bold text-orange-600 hover:text-orange-800 underline break-all mt-2"
                 id="firestore-console-link"
               >
                 Abrir Painel do Firestore ↗
@@ -92,7 +92,7 @@ export default function ErrorFallback({ error }: ErrorFallbackProps) {
 
         <button
           onClick={() => window.location.reload()}
-          className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition-colors"
+          className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-bold transition-all shadow-md shadow-orange-100"
           id="reload-button"
         >
           <RefreshCcw size={20} />
@@ -107,7 +107,7 @@ export default function ErrorFallback({ error }: ErrorFallbackProps) {
             )}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-indigo-600 hover:underline font-bold"
+            className="text-orange-600 hover:underline font-bold"
             id="whatsapp-support-link"
           >
             suporte

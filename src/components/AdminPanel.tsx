@@ -47,7 +47,7 @@ function UserPlanBadge({ plan }: { plan: string }) {
     <span className={cn(
       "px-2 inline-flex text-[10px] leading-5 font-bold rounded-full uppercase tracking-wider",
       plan === 'elite' ? "bg-amber-100 text-amber-800 border border-amber-200" :
-      plan === 'pro' ? "bg-indigo-100 text-indigo-800 border border-indigo-200" :
+      plan === 'pro' ? "bg-orange-100 text-orange-800 border border-orange-200" :
       "bg-slate-100 text-slate-800 border border-slate-200"
     )}>
       {getPlanLabel()}

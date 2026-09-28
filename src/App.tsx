@@ -234,7 +234,7 @@ export default function App() {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
           <p className="text-slate-500 font-medium animate-pulse">Carregando GestãoEdu...</p>
         </div>
       </div>
@@ -332,7 +332,7 @@ export default function App() {
             <Route path="/questions" element={
               <React.Suspense fallback={
                 <div className="flex flex-col items-center justify-center p-12 min-h-[400px]">
-                  <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                  <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
                   <p className="mt-4 text-slate-500 font-medium">Carregando Banco de Questões...</p>
                 </div>
               }>
@@ -414,7 +414,7 @@ export default function App() {
                 setShowSuccessModal(false);
                 navigate('/');
               }}
-              className="w-full py-4 bg-indigo-600 text-white rounded-2xl font-bold text-lg hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 flex items-center justify-center gap-2 group"
+              className="w-full py-4 bg-orange-500 text-white rounded-2xl font-bold text-lg hover:bg-orange-600 transition-all shadow-xl shadow-orange-100 flex items-center justify-center gap-2 group cursor-pointer"
             >
               Ir para o Dashboard
               <BookOpen size={20} className="group-hover:translate-x-1 transition-transform" />
