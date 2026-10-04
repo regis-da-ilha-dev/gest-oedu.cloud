@@ -324,9 +324,6 @@ export default function App() {
                 onUpdate={(id, updates) => studyService.updateFlashcard(id, updates)}
                 onReview={(card, quality) => studyService.reviewFlashcard(card, quality)}
                 initialSubjectId={selectedSubjectId || undefined}
-                onClearAI={() => {
-                  setSelectedSubjectId(null);
-                }}
               />
             } />
             <Route path="/questions" element={

@@ -76,7 +76,7 @@ export default function AdminPanel() {
   const [cmsConfig, setCmsConfig] = useState<LandingPageConfig>({
     heroBadge: "⚡ Plataforma #1 em Aprovação Rápida",
     heroTitle: "Sua Aprovação em Concursos Públicos Começa Aqui",
-    heroSubtitle: "Estude de forma estratégica com o maior ecossistema integrado: banco de questões atualizado, gabaritos comentados, flashcards com repetição espaçada (SRS), cronograma inteligente e editais verticalizados.",
+    heroSubtitle: "Estude de forma estratégica com o maior ecossistema integrado: banco de questões atualizado, gabaritos comentados, flashcards com repetição espaçada (SRS), cronograma estratégico e editais verticalizados.",
     ctaPrimaryText: "Começar Gratuitamente",
     ctaSecondaryText: "Conhecer Planos e Preços",
     announcementText: "🎁 Bônus Exclusivo: Ganhe 10 Dias de Teste Grátis em Todos os Planos ao se cadastrar hoje!",

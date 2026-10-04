@@ -60,7 +60,7 @@ export default function LandingPage({
   const [cmsConfig, setCmsConfig] = useState<LandingPageConfig>({
     heroBadge: "⚡ Plataforma #1 em Aprovação Rápida",
     heroTitle: "Sua Aprovação em Concursos Públicos Começa Aqui",
-    heroSubtitle: "Estude de forma estratégica com o maior ecossistema integrado: banco de questões atualizado, gabaritos comentados, flashcards com repetição espaçada (SRS), cronograma inteligente e editais verticalizados.",
+    heroSubtitle: "Estude de forma estratégica com o maior ecossistema integrado: banco de questões atualizado, gabaritos comentados, flashcards com repetição espaçada (SRS), cronograma estratégico e editais verticalizados.",
     ctaPrimaryText: "Começar Gratuitamente",
     ctaSecondaryText: "Conhecer Planos e Preços",
     announcementText: "🎁 Bônus Exclusivo: Ganhe 10 Dias de Teste Grátis em Todos os Planos ao se cadastrar hoje!",
@@ -499,7 +499,7 @@ export default function LandingPage({
             <div className="w-12 h-12 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center shadow-sm">
               <HelpCircle size={24} />
             </div>
-            <h3 className="text-xl font-bold text-slate-900">Banco de Questões Inteligente</h3>
+            <h3 className="text-xl font-bold text-slate-900">Banco de Questões Estratégico</h3>
             <p className="text-sm text-slate-500 leading-relaxed">
               Filtre por disciplina, assunto, banca examinadora, ano, órgão e cargo. Resolva com gabarito comentado na hora e eliminação com a ferramenta tesourinha.
             </p>

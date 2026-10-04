@@ -51,13 +51,12 @@ interface FlashcardListProps {
   onBulkUpdate?: (ids: string[], updates: Partial<Flashcard>) => Promise<void>;
   initialSubjectId?: string | null;
   initialTopicId?: string | null;
-  onClearAI?: () => void;
   userRole?: string;
 }
 
 export default function FlashcardList({ 
   flashcards, allFlashcards: initialAllFlashcards = [], subjects, allSubjects = [], topics, allTopics = [], subscription, onAdd, onAddMany, onDelete, onUpdate, onReview, onBulkDelete, onBulkUpdate,
-  initialSubjectId, initialTopicId, onClearAI, userRole
+  initialSubjectId, initialTopicId, userRole
 }: FlashcardListProps) {
   const navigate = useNavigate();
   const [activeSource, setActiveSource] = useState<'mine' | 'bank'>('mine');

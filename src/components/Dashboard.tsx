@@ -1518,7 +1518,7 @@ export default function Dashboard({
             </div>
           </div>
 
-          {/* Coluna Direita: Cronômetro Inteligente com Salvar Sessão */}
+          {/* Coluna Direita: Cronômetro de Estudo com Salvar Sessão */}
           <div className="flex flex-col justify-between space-y-4">
             <div className="bg-slate-50 border border-slate-100 rounded-2xl p-5 text-center space-y-4 flex flex-col justify-center items-center">
               <div className="flex items-center justify-between w-full">
@@ -1855,7 +1855,7 @@ export default function Dashboard({
                   <p className="text-xs font-black text-slate-400 uppercase tracking-wider">Selecione o Modo de Estudo</p>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
                     
-                    {/* Modo Inteligente */}
+                    {/* Modo Cards do Dia (SRS) */}
                     <button
                       onClick={() => setReviewMode('due')}
                       className={cn(
@@ -1875,7 +1875,7 @@ export default function Dashboard({
                       </div>
                       <div className="min-w-0 flex-1 sm:mt-2">
                         <div className="flex items-center justify-between gap-1">
-                          <p className="text-xs font-black text-slate-800">Modo Inteligente</p>
+                          <p className="text-xs font-black text-slate-800">Revisão Espaçada (SRS)</p>
                           {dueCards.length > 0 && (
                             <span className="text-[9px] sm:text-[10px] font-black bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded-full uppercase shrink-0">
                               {dueCards.length} hoje
@@ -1949,7 +1949,7 @@ export default function Dashboard({
                       <Sparkles size={16} />
                     </div>
                     <div>
-                      <h4 className="text-xs font-black text-amber-900 uppercase tracking-wide">Método Spaced Repetition (Agendamento Inteligente)</h4>
+                      <h4 className="text-xs font-black text-amber-900 uppercase tracking-wide">Método Spaced Repetition (Repetição Espaçada - SRS)</h4>
                       <p className="text-[12px] text-amber-800 leading-snug mt-1">
                         {dueCards.length > 0 
                           ? `Excelente escolha! Você estudará os ${dueCards.length} cards prontos para revisão hoje. À medida que responder, eles ganharão novas datas de retorno e sumirão da sua fila diária.` 

@@ -1689,7 +1689,7 @@ const PerformanceCharts = React.memo(({ subjects, topics, sessions, flashcards, 
               <h3 className="text-base sm:text-lg font-black text-slate-800 uppercase tracking-tight">
                 Diagnóstico de Forças & Fraquezas
               </h3>
-              <p className="text-xs text-slate-400">Classificação inteligente para direcionar suas próximas horas de estudo com máxima eficiência</p>
+              <p className="text-xs text-slate-400">Classificação analítica para direcionar suas próximas horas de estudo com máxima eficiência</p>
             </div>
           </div>
           <button

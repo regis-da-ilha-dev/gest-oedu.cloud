@@ -2205,12 +2205,12 @@ export default function TopicList({
                       </div>
                     </div>
 
-                    {/* Part B: Intelligent Topic & Subject Mapper */}
+                    {/* Part B: Topic & Subject Mapper */}
                     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 space-y-5">
                       <div>
                         <h4 className="font-extrabold text-slate-900 text-sm flex items-center gap-2">
                           <Layers size={16} className="text-orange-600" />
-                          Mapeamento Inteligente de Disciplinas
+                          Mapeamento Estruturado de Disciplinas
                         </h4>
                         <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
                           Escolha onde salvar os tópicos em sua conta. Recomendamos criar novas matérias com os nomes e cores sugeridos pelo concurso, ou você pode mesclar os itens com suas disciplinas já existentes.
@@ -2670,7 +2670,7 @@ export default function TopicList({
               <h3 className="text-lg font-bold">Organizar e Deduplicar?</h3>
             </div>
             <div className="text-slate-600 mb-6 text-xs leading-relaxed space-y-2">
-              <p>Esta ação irá verificar o seu edital e organizar de forma inteligente:</p>
+              <p>Esta ação irá verificar o seu edital e organizar de forma estruturada:</p>
               <p>• <strong>Mesclar tópicos repetidos</strong> sob a mesma matéria, unificando seu progresso, questões resolvidas e flashcards criados.</p>
               <p>• <strong>Mesclar matérias repetidas</strong> de mesmo nome.</p>
               <p>• <strong>Excluir matérias vazias</strong> que não possuem nenhum tópico, flashcard ou questão associada.</p>
