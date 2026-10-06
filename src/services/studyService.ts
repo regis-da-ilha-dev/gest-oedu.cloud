@@ -2169,6 +2169,7 @@ export const studyService = {
       const now = Date.now();
       const cleaned = this.cleanObject({
         ...concursoData,
+        isManual: concursoData.isManual !== undefined ? concursoData.isManual : true,
         createdAt: now,
         updatedAt: now
       });
@@ -2202,6 +2203,127 @@ export const studyService = {
 
   async toggleConcursoFeatured(id: string, isFeatured: boolean) {
     return this.updateConcurso(id, { isFeatured });
+  },
+
+  async autoUpdateTop5FeaturedConcursos(): Promise<{
+    success: boolean;
+    addedOrUpdated: number;
+    preservedManualCount: number;
+    items: Concurso[];
+    source: string;
+  }> {
+    try {
+      // 1. Fetch live 5 destaques from the automated backend endpoint
+      let fetchedList: any[] = [];
+      let source = 'portal_online';
+      try {
+        const response = await fetch('/api/concursos/destaques-online');
+        if (response.ok) {
+          const resJson = await response.json();
+          if (resJson.concursos && Array.isArray(resJson.concursos) && resJson.concursos.length > 0) {
+            fetchedList = resJson.concursos;
+            source = resJson.source || 'portal_online';
+          }
+        }
+      } catch (fetchErr) {
+        console.warn("Falha ao buscar via endpoint online, utilizando fallback seguro:", fetchErr);
+      }
+
+      // Fallback to presets if network is completely down
+      if (fetchedList.length === 0) {
+        fetchedList = EDITAL_PRESETS.slice(0, 5).map((p, idx) => ({
+          title: p.title,
+          institution: p.institution,
+          banca: p.banca || 'A Definir',
+          status: idx === 0 ? 'Edital Publicado' : (idx === 1 ? 'Inscrições Abertas' : 'Banca Definida'),
+          vagas: idx === 0 ? '2.000 vagas' : 'Vagas Imediatas + CR',
+          remuneracao: idx === 0 ? 'R$ 13.600,00' : 'R$ 7.800,00',
+          escolaridade: p.difficulty === 'Superior' ? 'Nível Superior' : 'Nível Médio',
+          dataProva: 'Consulte o cronograma oficial',
+          inscricaoPeriodo: 'Consulte o edital oficial',
+          editalUrl: 'https://www.gov.br',
+          isFeatured: true,
+          featuredOrder: idx + 1,
+          description: p.description,
+          tags: [p.institution, p.banca || 'Geral', 'Destaque'],
+          isManual: false
+        }));
+        source = 'presets_fallback';
+      }
+
+      // 2. Query all existing concursos in Firestore
+      const snapshot = await getDocs(collection(db, 'concursos'));
+      const existingAll: { id: string; data: Concurso }[] = [];
+      snapshot.forEach(docSnap => {
+        existingAll.push({ id: docSnap.id, data: docSnap.data() as Concurso });
+      });
+
+      // 3. Identify MANUAL vs AUTOMATED concursos
+      // Any concurso where isManual !== false is STRICTLY preserved as manual
+      const manualConcursos = existingAll.filter(item => item.data.isManual !== false);
+      const existingAutoConcursos = existingAll.filter(item => item.data.isManual === false);
+
+      const batch = writeBatch(db);
+      const now = Date.now();
+      const updatedItems: Concurso[] = [];
+
+      // 4. Update or replace the 5 automated featured items
+      for (let i = 0; i < 5; i++) {
+        const itemData = fetchedList[i];
+        if (!itemData) break;
+
+        const existingAutoSlot = existingAutoConcursos[i];
+        const docRef = existingAutoSlot 
+          ? doc(db, 'concursos', existingAutoSlot.id) 
+          : doc(collection(db, 'concursos'));
+
+        const cleanConcursoData: any = this.cleanObject({
+          title: itemData.title,
+          institution: itemData.institution,
+          banca: itemData.banca || 'Consulte o Edital',
+          status: itemData.status || 'Edital Publicado',
+          vagas: itemData.vagas || 'Vagas a definir',
+          remuneracao: itemData.remuneracao || 'A definir',
+          escolaridade: itemData.escolaridade || 'Nível Médio / Superior',
+          dataProva: itemData.dataProva || 'A definir',
+          inscricaoPeriodo: itemData.inscricaoPeriodo || 'Consulte o edital',
+          editalUrl: itemData.editalUrl || '',
+          isFeatured: true,
+          featuredOrder: i + 1,
+          description: itemData.description || `${itemData.title} - Destaque nacional`,
+          imageUrl: itemData.imageUrl || 'https://cdn-icons-png.flaticon.com/512/2830/2830284.png',
+          tags: itemData.tags || [itemData.institution, 'Nacional'],
+          isManual: false,
+          sourceUrl: itemData.sourceUrl || '',
+          createdAt: existingAutoSlot ? (existingAutoSlot.data.createdAt || now) : now,
+          updatedAt: now
+        });
+
+        batch.set(docRef, cleanConcursoData, { merge: true });
+        updatedItems.push({ id: docRef.id, ...cleanConcursoData });
+      }
+
+      // If previously there were more than 5 automated items, delete only the surplus automated ones
+      if (existingAutoConcursos.length > 5) {
+        for (let i = 5; i < existingAutoConcursos.length; i++) {
+          batch.delete(doc(db, 'concursos', existingAutoConcursos[i].id));
+        }
+      }
+
+      // Commit changes to Firestore
+      await batch.commit();
+
+      return {
+        success: true,
+        addedOrUpdated: updatedItems.length,
+        preservedManualCount: manualConcursos.length,
+        items: updatedItems,
+        source
+      };
+    } catch (error) {
+      handleFirestoreError(error, OperationType.WRITE, 'concursos/auto-update-destaques');
+      throw error;
+    }
   },
 
   async syncDefaultConcursosFromPresets(): Promise<number> {

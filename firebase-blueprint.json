@@ -208,6 +208,8 @@
         "featuredOrder": { "type": "number" },
         "description": { "type": "string" },
         "imageUrl": { "type": "string" },
+        "isManual": { "type": "boolean" },
+        "sourceUrl": { "type": "string" },
         "createdAt": { "type": "number" },
         "updatedAt": { "type": "number" }
       },

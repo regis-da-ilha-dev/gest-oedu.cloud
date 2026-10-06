@@ -71,6 +71,16 @@ export default function AdminPanel() {
   const [isEditingConcurso, setIsEditingConcurso] = useState(false);
   const [editingConcurso, setEditingConcurso] = useState<Partial<Concurso> | null>(null);
   const [isSyncingPresets, setIsSyncingPresets] = useState(false);
+  const [isAutoUpdatingDestaques, setIsAutoUpdatingDestaques] = useState(false);
+  const [concursoTypeFilter, setConcursoTypeFilter] = useState<'all' | 'manual' | 'auto' | 'featured'>('all');
+  const [autoUpdateModalInfo, setAutoUpdateModalInfo] = useState<{
+    open: boolean;
+    success: boolean;
+    addedOrUpdated: number;
+    preservedManualCount: number;
+    items: Concurso[];
+    source?: string;
+  } | null>(null);
 
   // CMS state
   const [cmsConfig, setCmsConfig] = useState<LandingPageConfig>({
@@ -212,30 +222,53 @@ export default function AdminPanel() {
       return;
     }
     try {
+      const concursoData = {
+        title: editingConcurso.title,
+        institution: editingConcurso.institution,
+        banca: editingConcurso.banca || 'A Definir',
+        status: editingConcurso.status || 'Edital Publicado',
+        vagas: editingConcurso.vagas || 'Vagas Imediatas + CR',
+        remuneracao: editingConcurso.remuneracao || 'A definir',
+        escolaridade: editingConcurso.escolaridade || 'Nível Médio',
+        dataProva: editingConcurso.dataProva || 'A definir',
+        inscricaoPeriodo: editingConcurso.inscricaoPeriodo || 'Consulte o edital',
+        editalUrl: editingConcurso.editalUrl || '',
+        isFeatured: editingConcurso.isFeatured ?? true,
+        featuredOrder: editingConcurso.featuredOrder ?? 1,
+        description: editingConcurso.description || '',
+        isManual: editingConcurso.isManual !== undefined ? editingConcurso.isManual : true
+      };
+
       if (editingConcurso.id) {
-        await studyService.updateConcurso(editingConcurso.id, editingConcurso);
+        await studyService.updateConcurso(editingConcurso.id, concursoData);
       } else {
-        await studyService.addConcurso({
-          title: editingConcurso.title,
-          institution: editingConcurso.institution,
-          banca: editingConcurso.banca || 'A Definir',
-          status: editingConcurso.status || 'Edital Publicado',
-          vagas: editingConcurso.vagas || 'Vagas Imediatas + CR',
-          remuneracao: editingConcurso.remuneracao || 'A definir',
-          escolaridade: editingConcurso.escolaridade || 'Nível Médio',
-          dataProva: editingConcurso.dataProva || 'A definir',
-          inscricaoPeriodo: editingConcurso.inscricaoPeriodo || 'Consulte o edital',
-          editalUrl: editingConcurso.editalUrl || '',
-          isFeatured: editingConcurso.isFeatured ?? true,
-          featuredOrder: editingConcurso.featuredOrder ?? 1,
-          description: editingConcurso.description || ''
-        });
+        await studyService.addConcurso(concursoData);
       }
       setIsEditingConcurso(false);
       setEditingConcurso(null);
     } catch (err) {
       console.error(err);
       alert("Erro ao salvar concurso.");
+    }
+  };
+
+  const handleAutoUpdateTop5Featured = async () => {
+    setIsAutoUpdatingDestaques(true);
+    try {
+      const res = await studyService.autoUpdateTop5FeaturedConcursos();
+      setAutoUpdateModalInfo({
+        open: true,
+        success: true,
+        addedOrUpdated: res.addedOrUpdated,
+        preservedManualCount: res.preservedManualCount,
+        items: res.items,
+        source: res.source
+      });
+    } catch (err: any) {
+      console.error(err);
+      alert("Erro ao buscar e atualizar destaques automáticos. Tente novamente.");
+    } finally {
+      setIsAutoUpdatingDestaques(false);
     }
   };
 
@@ -252,13 +285,26 @@ export default function AdminPanel() {
     }
   };
 
+  const manualCount = useMemo(() => concursos.filter(c => c.isManual !== false).length, [concursos]);
+  const autoCount = useMemo(() => concursos.filter(c => c.isManual === false).length, [concursos]);
+  const featuredCount = useMemo(() => concursos.filter(c => c.isFeatured).length, [concursos]);
+
   const filteredConcursos = useMemo(() => {
-    return concursos.filter(c => 
-      c.title?.toLowerCase().includes(concursoSearch.toLowerCase()) ||
-      c.institution?.toLowerCase().includes(concursoSearch.toLowerCase()) ||
-      c.banca?.toLowerCase().includes(concursoSearch.toLowerCase())
-    );
-  }, [concursos, concursoSearch]);
+    return concursos.filter(c => {
+      const matchesSearch = 
+        !concursoSearch ||
+        c.title?.toLowerCase().includes(concursoSearch.toLowerCase()) ||
+        c.institution?.toLowerCase().includes(concursoSearch.toLowerCase()) ||
+        c.banca?.toLowerCase().includes(concursoSearch.toLowerCase());
+      
+      if (!matchesSearch) return false;
+
+      if (concursoTypeFilter === 'manual') return c.isManual !== false;
+      if (concursoTypeFilter === 'auto') return c.isManual === false;
+      if (concursoTypeFilter === 'featured') return c.isFeatured;
+      return true;
+    });
+  }, [concursos, concursoSearch, concursoTypeFilter]);
 
   // CMS Handlers
   const handleSaveCms = async (e: React.FormEvent) => {
@@ -470,16 +516,27 @@ export default function AdminPanel() {
               </p>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <button
+                onClick={handleAutoUpdateTop5Featured}
+                disabled={isAutoUpdatingDestaques}
+                className="px-4 py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 active:scale-95 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 shadow-sm shadow-orange-500/20 cursor-pointer disabled:opacity-50"
+                title="Busca os 5 concursos mais concorridos da internet de forma automática, preservando todos os que foram inseridos manualmente."
+              >
+                <Globe size={15} className={isAutoUpdatingDestaques ? "animate-spin text-white" : "text-white"} />
+                {isAutoUpdatingDestaques ? "Buscando no site..." : "Atualizar 5 Destaques Automáticos"}
+              </button>
+
               <button
                 onClick={handleSyncPresets}
                 disabled={isSyncingPresets}
-                className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                className="px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                 title="Puxa editais dos presets e cadastra no banco"
               >
                 <RefreshCw size={14} className={isSyncingPresets ? "animate-spin" : ""} />
-                Sincronizar Editais Predefinidos
+                Sincronizar Presets
               </button>
+
               <button
                 onClick={() => {
                   setEditingConcurso({
@@ -493,14 +550,83 @@ export default function AdminPanel() {
                     isFeatured: true,
                     featuredOrder: (concursos.length || 0) + 1,
                     description: '',
-                    editalUrl: ''
+                    editalUrl: '',
+                    isManual: true
                   });
                   setIsEditingConcurso(true);
                 }}
-                className="px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 shadow-sm cursor-pointer"
+                className="px-4 py-2.5 bg-slate-900 hover:bg-black text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 shadow-sm cursor-pointer"
               >
                 <Plus size={16} />
                 Novo Concurso
+              </button>
+            </div>
+          </div>
+
+          {/* Informative Banner & Filters */}
+          <div className="bg-gradient-to-r from-orange-50/70 via-amber-50/50 to-orange-50/70 border border-orange-200/70 rounded-2xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs">
+            <div className="flex items-start gap-3">
+              <div className="p-2 bg-orange-100 text-orange-700 rounded-xl shrink-0 mt-0.5">
+                <Globe size={18} />
+              </div>
+              <div>
+                <p className="font-extrabold text-slate-900">
+                  Atualização Automática no Site & Proteção Integral aos Manuais
+                </p>
+                <p className="text-slate-600 text-[11px] leading-relaxed mt-0.5 max-w-2xl">
+                  Ao clicar em <strong>"Atualizar 5 Destaques Automáticos"</strong>, o sistema varre a web em tempo real e atualiza os 5 principais concursos.
+                  Todos os editais cadastrados manualmente ficam <strong>100% preservados e intocados</strong> na sua base de dados.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0 flex-wrap">
+              <button
+                onClick={() => setConcursoTypeFilter('all')}
+                className={cn(
+                  "px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer",
+                  concursoTypeFilter === 'all'
+                    ? "bg-slate-900 text-white shadow-xs"
+                    : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
+                )}
+              >
+                Todos ({concursos.length})
+              </button>
+              <button
+                onClick={() => setConcursoTypeFilter('manual')}
+                className={cn(
+                  "px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5",
+                  concursoTypeFilter === 'manual'
+                    ? "bg-blue-600 text-white shadow-xs"
+                    : "bg-white text-blue-700 border border-blue-200 hover:bg-blue-50"
+                )}
+              >
+                <User size={12} />
+                Manuais ({manualCount})
+              </button>
+              <button
+                onClick={() => setConcursoTypeFilter('auto')}
+                className={cn(
+                  "px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5",
+                  concursoTypeFilter === 'auto'
+                    ? "bg-emerald-600 text-white shadow-xs"
+                    : "bg-white text-emerald-700 border border-emerald-200 hover:bg-emerald-50"
+                )}
+              >
+                <Globe size={12} />
+                Automáticos ({autoCount})
+              </button>
+              <button
+                onClick={() => setConcursoTypeFilter('featured')}
+                className={cn(
+                  "px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5",
+                  concursoTypeFilter === 'featured'
+                    ? "bg-orange-600 text-white shadow-xs"
+                    : "bg-white text-orange-700 border border-orange-200 hover:bg-orange-50"
+                )}
+              >
+                <Flame size={12} />
+                Destaques ({featuredCount})
               </button>
             </div>
           </div>
@@ -519,10 +645,11 @@ export default function AdminPanel() {
 
           {/* Concursos Table */}
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-x-auto">
-            <table className="min-w-[900px] w-full divide-y divide-slate-200 text-left">
+            <table className="min-w-[950px] w-full divide-y divide-slate-200 text-left">
               <thead className="bg-slate-50">
                 <tr>
                   <th className="px-5 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Destaque na Home</th>
+                  <th className="px-5 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Origem</th>
                   <th className="px-5 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Órgão / Concurso</th>
                   <th className="px-5 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Banca</th>
                   <th className="px-5 py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
@@ -547,6 +674,17 @@ export default function AdminPanel() {
                         {c.isFeatured ? 'Em Destaque' : 'Não Destacado'}
                       </button>
                     </td>
+                    <td className="px-5 py-4 whitespace-nowrap">
+                      {c.isManual !== false ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-blue-50 text-blue-700 border border-blue-200">
+                          <User size={11} /> Manual
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                          <Globe size={11} /> Automático
+                        </span>
+                      )}
+                    </td>
                     <td className="px-5 py-4">
                       <span className="text-xs font-bold text-orange-600 uppercase tracking-wide block">{c.institution}</span>
                       <span className="text-sm font-black text-slate-900">{c.title}</span>
@@ -566,7 +704,18 @@ export default function AdminPanel() {
                       <div><strong className="text-slate-800">Salário:</strong> {c.remuneracao || 'A definir'}</div>
                     </td>
                     <td className="px-5 py-4 whitespace-nowrap text-right text-xs">
-                      <div className="flex items-center justify-end gap-2">
+                      <div className="flex items-center justify-end gap-1.5">
+                        {c.editalUrl && (
+                          <a
+                            href={c.editalUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
+                            title="Abrir página oficial do edital"
+                          >
+                            <ExternalLink size={16} />
+                          </a>
+                        )}
                         <button
                           onClick={() => {
                             setEditingConcurso(c);
@@ -590,8 +739,8 @@ export default function AdminPanel() {
                 ))}
                 {filteredConcursos.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="text-center py-12 text-slate-400 text-xs">
-                      Nenhum concurso encontrado. Clique em "Sincronizar Editais Predefinidos" para preencher automaticamente.
+                    <td colSpan={7} className="text-center py-12 text-slate-400 text-xs">
+                      Nenhum concurso encontrado. Clique em "Atualizar 5 Destaques Automáticos" para buscar na web ou "Novo Concurso" para cadastrar manualmente.
                     </td>
                   </tr>
                 )}
@@ -715,7 +864,7 @@ export default function AdminPanel() {
                       />
                     </div>
 
-                    <div className="sm:col-span-2 flex items-center gap-3 pt-2">
+                    <div className="sm:col-span-2 flex flex-wrap items-center gap-6 pt-2 border-t border-slate-100">
                       <label className="flex items-center gap-2 cursor-pointer">
                         <input
                           type="checkbox"
@@ -725,6 +874,19 @@ export default function AdminPanel() {
                         />
                         <span className="text-xs font-bold text-slate-800">
                           Exibir em Destaque na Vitrine da Página Inicial
+                        </span>
+                      </label>
+
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={editingConcurso?.isManual ?? true}
+                          onChange={(e) => setEditingConcurso(prev => ({ ...prev, isManual: e.target.checked }))}
+                          className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
+                        />
+                        <span className="text-xs font-bold text-blue-900 flex items-center gap-1">
+                          <User size={13} className="text-blue-600" />
+                          Marcar como Cadastro Manual (Protegido contra sobrescrita automática)
                         </span>
                       </label>
                     </div>
@@ -746,6 +908,94 @@ export default function AdminPanel() {
                     </button>
                   </div>
                 </form>
+              </div>
+            </div>
+          )}
+
+          {/* Result Modal for Auto Update Top 5 */}
+          {autoUpdateModalInfo?.open && (
+            <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200">
+              <div className="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-7 shadow-2xl border border-slate-100 space-y-5">
+                <div className="flex items-start justify-between gap-4 border-b border-slate-100 pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-3 bg-emerald-100 text-emerald-700 rounded-2xl shrink-0 shadow-xs">
+                      <CheckCircle2 size={24} />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+                        5 Destaques Atualizados com Sucesso!
+                      </h3>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        Busca automática realizada em tempo real no portal nacional de concursos.
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setAutoUpdateModalInfo(null)}
+                    className="p-1.5 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition-colors"
+                  >
+                    <XCircle size={20} />
+                  </button>
+                </div>
+
+                {/* Preserved Manual Notification */}
+                <div className="bg-blue-50/70 border border-blue-200/80 rounded-2xl p-4 flex items-center gap-3">
+                  <div className="p-2 bg-blue-100 text-blue-700 rounded-xl shrink-0">
+                    <User size={18} />
+                  </div>
+                  <div className="text-xs text-blue-900">
+                    <span className="font-extrabold text-blue-950 block">
+                      {autoUpdateModalInfo.preservedManualCount} Concurso(s) Manual(is) Preservado(s)
+                    </span>
+                    Nenhum edital inserido ou editado manualmente foi alterado ou excluído. Suas inserções manuais permanecem 100% salvas.
+                  </div>
+                </div>
+
+                {/* 5 Updated Items List */}
+                <div className="space-y-2">
+                  <p className="text-xs font-bold text-slate-600 uppercase tracking-wider">
+                    Novos Destaques Carregados na Vitrine ({autoUpdateModalInfo.items.length})
+                  </p>
+                  <div className="divide-y divide-slate-100 rounded-2xl border border-slate-200 bg-slate-50/50 max-h-[260px] overflow-y-auto">
+                    {autoUpdateModalInfo.items.map((item, idx) => (
+                      <div key={item.id || idx} className="p-3.5 flex items-center justify-between gap-3 text-xs hover:bg-white transition-colors">
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="font-black text-orange-600 uppercase text-[10px] tracking-wide">
+                              #{idx + 1} {item.institution}
+                            </span>
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                              {item.status}
+                            </span>
+                          </div>
+                          <p className="font-bold text-slate-900 truncate mt-0.5">{item.title}</p>
+                          <p className="text-[11px] text-slate-500 mt-0.5">
+                            {item.vagas} • {item.remuneracao} • {item.dataProva}
+                          </p>
+                        </div>
+                        {item.editalUrl && (
+                          <a
+                            href={item.editalUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:text-blue-600 text-[11px] font-bold shrink-0 flex items-center gap-1 shadow-2xs"
+                          >
+                            <ExternalLink size={12} /> Link
+                          </a>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex justify-end pt-2 border-t border-slate-100">
+                  <button
+                    onClick={() => setAutoUpdateModalInfo(null)}
+                    className="px-6 py-2.5 bg-slate-900 hover:bg-black text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-md"
+                  >
+                    Concluir e Ver Vitrine
+                  </button>
+                </div>
               </div>
             </div>
           )}

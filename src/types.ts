@@ -170,6 +170,8 @@ export interface Concurso {
   description?: string;
   tags?: string[];
   imageUrl?: string;
+  isManual?: boolean;
+  sourceUrl?: string;
   createdAt: number;
   updatedAt: number;
 }
